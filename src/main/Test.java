@@ -16,7 +16,7 @@ public class Test {
 	 * @throws IOException 
 	 * @throws ClassNotFoundException 
 	 */
-	public static void main(String[] args) throws IOException, ClassNotFoundException {
+	public static void test() throws IOException, ClassNotFoundException {
 		// Example of using the modules within a simple pipeline
 		String arabicText="ذَهَبْــــــــــــتٌ هند إلى الجامعٍة..";
 		SentenceDetector sd=new SentenceDetector();
