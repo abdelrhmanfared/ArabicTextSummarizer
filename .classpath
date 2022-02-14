@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="lib" path="lib/opennlp-maxent-3.0.1-incubating.jar"/>
+	<classpathentry kind="lib" path="lib/opennlp-tools-1.5.1-incubating.jar"/>
+	<classpathentry kind="lib" path="lib/seg.jar"/>
+	<classpathentry kind="lib" path="lib/stanford-postagger.jar"/>
+	<classpathentry kind="lib" path="lib/stanford-segmenter-2012-07-09-doc.jar"/>
+	<classpathentry kind="lib" path="lib/stanford-segmenter-2012-07-09-src.jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>
