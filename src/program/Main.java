@@ -4,9 +4,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Scanner;
-
-import preprocessing.Preprocessing;
-import test.Test;
+import textrank.Textrank;
 
 public class Main {
 
@@ -16,8 +14,8 @@ public class Main {
 		
 		String ArabicText = readfile("ArabicText.txt");
 		try {
-			Preprocessing pre = new Preprocessing(ArabicText);
-			System.out.print(pre.getRootText());
+			Textrank tr = new Textrank(ArabicText);
+			System.out.print(tr.getSummarizedText());
 		} catch (ClassNotFoundException | IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
