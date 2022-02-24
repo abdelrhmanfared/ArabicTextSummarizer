@@ -70,7 +70,7 @@ public class Textrank {
 
 		for (int i = 0; i < sentences.length; i++)
 			if (sentences[i].length() > q1 && sentences[i].length() < q3)
-				sentences_score[i] = sentences[i].length() / max;
+				sentences_score[i] = (double) sentences[i].length() / max;
 
 		return sentences_score;
 	}
