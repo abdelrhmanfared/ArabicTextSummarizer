@@ -160,8 +160,6 @@ public class Preprocessing {
 		return normalized_paragraphs;
 	}
 
-
-
 	private String addSpacesAroundPeriods(String text) {
 		String Temp = new String();
 		for (int i = 0; i < text.length() - 1; i++) {
@@ -177,6 +175,7 @@ public class Preprocessing {
 		return Temp;
 	}
 
+	
 	private String[] splitSentences(String[] sentences) {
 		ArrayList<String> tempOriginal = new ArrayList<String>();
 		for (int i = 0; i < sentences.length; i++) {
