@@ -58,19 +58,19 @@ public class Textrank {
 	// Counting the number of words in the sentence (can be used to classify
 	// sentence as too short or too long)
 	// root stemmed
-	private double[] sentenceLength(String[] sentences) {
-		double[] sentences_score = new double[sentences.length];
-		int[] sentences_lengths = new int[sentences.length];
+	private double[] sentenceLength(String[][] sentences_words) {
+		double[] sentences_score = new double[sentences_words.length];
+		int[] sentences_lengths = new int[sentences_words.length];
 
-		for (int i = 0; i < sentences.length; i++)
-			sentences_lengths[i] = sentences[i].length();
+		for (int i = 0; i < sentences_words.length; i++)
+			sentences_lengths[i] = sentences_words[i].length;
 
 		int[] help = sentenceLength_helper(sentences_lengths);
 		int q1 = help[0], max = help[1], q3 = help[2];
-
-		for (int i = 0; i < sentences.length; i++)
-			if (sentences[i].length() > q1 && sentences[i].length() < q3)
-				sentences_score[i] = (double) sentences[i].length() / max;
+		
+		for (int i = 0; i < sentences_words.length; i++)
+			if (sentences_words[i].length > q1 && sentences_words[i].length < q3)
+				sentences_score[i] = (double) sentences_words[i].length / max;
 
 		return sentences_score;
 	}
