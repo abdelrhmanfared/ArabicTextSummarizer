@@ -23,7 +23,7 @@ public class Textrank {
 		pre = new Preprocessing(text);
 
 		// Extract features
-			
+
 		summarizedText = "";
 	}
 
@@ -67,7 +67,7 @@ public class Textrank {
 
 		int[] help = sentenceLength_helper(sentences_lengths);
 		int _q1 = help[0], max = help[1], _q3 = help[2];
-		
+
 		for (int i = 0; i < sentences_words.length; i++)
 			if (sentences_words[i].length > _q1 && sentences_words[i].length < _q3)
 				sentences_score[i] = (double) sentences_words[i].length / max;
@@ -88,11 +88,10 @@ public class Textrank {
 		// Median of second half
 		int q3 = values[mid_index + median(values, mid_index + 1, values.length)];
 
-
 		int iqr = q3 - q1;
-		int _q1 = q1 - (int)(1.5f * iqr);
-		int _q3 = q3 + (int)(1.5f * iqr);
-		
+		int _q1 = q1 - (int) (1.5f * iqr);
+		int _q3 = q3 + (int) (1.5f * iqr);
+
 		int max = 0;
 		for (int i = 0; i < values.length; i++) {
 			if (values[i] > _q1 && values[i] < _q3)
@@ -127,30 +126,30 @@ public class Textrank {
 
 	// Words in the sentence such as â€œtherefore, finally and thusâ€� can be a good
 	// indicators of significant content
-	//normalized
+	// normalized
 	private double[] cueWords(String[] sentences) {
 		double[] sentences_score = new double[sentences.length];
 		int[] cue_counts = new int[sentences.length];
 		int total = 0;
-		
-		String[] cue_words= {
-				"الافضل"
-		};
-		
-		for(int i=0; i<sentences.length; i++)
-		{
-			for(int j=0; j<cue_words.length; j++)
-			{
-				if(sentences[i].contains(cue_words[j]))
-				{
+
+		String[] cue_words = { "الافضل" };
+
+		for (String cue : cue_words)
+			cue = arn.normalize(cue);
+
+		for (int i = 0; i < sentences.length; i++) {
+			for (int j = 0; j < cue_words.length; j++) {
+				if (sentences[i].contains(cue_words[j])) {
 					cue_counts[i]++;
 					total++;
 				}
 			}
 		}
-		
-		for(int i=0; i<sentences.length; i++)
-			sentences_score[i] = (double)cue_counts[i] / total;
+
+		if (total != 0) {
+			for (int i = 0; i < sentences.length; i++)
+				sentences_score[i] = (double) cue_counts[i] / total;
+		}
 		return sentences_score;
 	}
 
