@@ -130,9 +130,27 @@ public class Textrank {
 	//normalized
 	private double[] cueWords(String[] sentences) {
 		double[] sentences_score = new double[sentences.length];
+		int[] cue_counts = new int[sentences.length];
+		int total = 0;
 		
+		String[] cue_words= {
+				"الافضل"
+		};
 		
+		for(int i=0; i<sentences.length; i++)
+		{
+			for(int j=0; j<cue_words.length; j++)
+			{
+				if(sentences[i].contains(cue_words[j]))
+				{
+					cue_counts[i]++;
+					total++;
+				}
+			}
+		}
 		
+		for(int i=0; i<sentences.length; i++)
+			sentences_score[i] = (double)cue_counts[i] / total;
 		return sentences_score;
 	}
 
