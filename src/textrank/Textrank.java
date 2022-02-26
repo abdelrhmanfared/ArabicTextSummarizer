@@ -23,7 +23,7 @@ public class Textrank {
 		pre = new Preprocessing(text);
 
 		// Extract features
-
+			
 		summarizedText = "";
 	}
 
@@ -66,10 +66,10 @@ public class Textrank {
 			sentences_lengths[i] = sentences_words[i].length;
 
 		int[] help = sentenceLength_helper(sentences_lengths);
-		int q1 = help[0], max = help[1], q3 = help[2];
+		int _q1 = help[0], max = help[1], _q3 = help[2];
 		
 		for (int i = 0; i < sentences_words.length; i++)
-			if (sentences_words[i].length > q1 && sentences_words[i].length < q3)
+			if (sentences_words[i].length > _q1 && sentences_words[i].length < _q3)
 				sentences_score[i] = (double) sentences_words[i].length / max;
 
 		return sentences_score;
@@ -83,14 +83,19 @@ public class Textrank {
 		int mid_index = median(values, 0, values.length);
 
 		// Median of first half
-		int Q1 = values[median(values, 0, mid_index)];
+		int q1 = values[median(values, 0, mid_index)];
 
 		// Median of second half
-		int Q3 = values[mid_index + median(values, mid_index + 1, values.length)];
+		int q3 = values[mid_index + median(values, mid_index + 1, values.length)];
 
+
+		int iqr = q3 - q1;
+		int _q1 = q1 - (int)(1.5f * iqr);
+		int _q3 = q3 + (int)(1.5f * iqr);
+		
 		int max = 0;
 		for (int i = 0; i < values.length; i++) {
-			if (values[i] > Q1 && values[i] < Q3)
+			if (values[i] > _q1 && values[i] < _q3)
 				if (values[i] > max)
 					max = values[i];
 		}
@@ -108,9 +113,9 @@ public class Textrank {
 //			
 //			res[0]= (end_q1 % 2 == 0)?  	
 
-		res[0] = Q1;
+		res[0] = _q1;
 		res[1] = max;
-		res[2] = Q3;
+		res[2] = _q3;
 		return res;
 	}
 
@@ -122,9 +127,13 @@ public class Textrank {
 
 	// Words in the sentence such as â€œtherefore, finally and thusâ€� can be a good
 	// indicators of significant content
-	@SuppressWarnings("unused")
-	private int cueWords() {
-		return 0;
+	//normalized
+	private double[] cueWords(String[] sentences) {
+		double[] sentences_score = new double[sentences.length];
+		
+		
+		
+		return sentences_score;
 	}
 
 	// Words that are used to emphasize or focus on special idea such as â€�have
