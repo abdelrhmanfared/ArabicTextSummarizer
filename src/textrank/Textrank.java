@@ -1,13 +1,50 @@
 package textrank;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import preprocessing.Preprocessing;
 import utilities.AraNormalizer;
 import utilities.TrainedTokenizer;
+
+class Score
+{
+	public int index;
+	public double score;
+	
+	public Score(int index, double score)
+	{
+		this.index = index;
+		this.score = score;
+	}
+}
+
+class Sortbyscore implements Comparator<Score> {
+	 
+    // Method
+    // Sorting in descending order of score number
+    public int compare(Score a, Score b)
+    {
+ 
+        return Double.compare(b.score, a.score);
+    }
+}
+
+class Sortbyindex implements Comparator<Score> {
+	 
+    // Method
+    // Sorting in ascending order of index number
+    public int compare(Score a, Score b)
+    {
+ 
+        return Double.compare(a.index, b.index);
+    }
+}
 
 public class Textrank {
 	private Preprocessing pre;
@@ -21,10 +58,41 @@ public class Textrank {
 
 	public Textrank(String text) throws ClassNotFoundException, IOException {
 		pre = new Preprocessing(text);
-
-		// Extract features
-
+		double ratio = 0.3;
 		summarizedText = "";
+		
+		// Extract features
+		//double[] keyPhrases = keyPhrases(lightText_sentences, topKeys, post);
+		//double[] sentenceLocation = sentencelocation(original_paragraphs, originalText_sentences);
+		//double[] titleSimilarity = similarityWithTitle(lightText_sentences, tokens, lightSentencesTokens, title, topKeys);
+		//double[] senCentrality = sentenceCentrality(rootText_sentences, rootTextTokens, rootSentencesTokens);
+		double[] senLength = sentenceLength(pre.getrootSentencesTokens());
+		double[] cuePhrases = cueWords(pre.getNormalized_sentences());
+		double[] strongWords = positiveKeyWords(pre.getNormalized_sentences());
+		double[] numberScores = numberScore(pre.getRootText_sentences(), pre.getrootSentencesTokens());
+		//double[] weakWords = occurrenceOfNonEssentialInformation(normalized_sentences);
+		
+		//Ranking
+		ArrayList<Score> sentences_scores = new ArrayList<Score>();
+		String[] originalsentences = pre.getOriginalText_sentences();
+		
+		for (int i = 0; i < originalsentences.length; i++) {
+			sentences_scores.add(new Score(i, //keyPhrases[i] + sentenceLocation[i] + titleSimilarity[i] + senCentrality[i] + 
+					senLength[i] + cuePhrases[i] + strongWords[i] + numberScores[i])); // + weakWords[i];))
+		}
+		
+		Collections.sort(sentences_scores, new Sortbyscore());
+		
+		int Summarylength = (int) (ratio * originalsentences.length);
+		
+		ArrayList<Score> summary = new ArrayList<Score>();
+		for(int i=0; i<Summarylength; i++)
+			summary.add(sentences_scores.get(i));
+		Collections.sort(summary, new Sortbyindex());
+		
+		for(Score score : summary)
+			summarizedText += originalsentences[score.index];
+
 	}
 
 	// A short list of important terms that provide a condensed summary of the main
