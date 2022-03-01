@@ -470,7 +470,7 @@ public class Textrank {
 		return 0;
 	}
 	
-	// Occurence of non-essential information Score based.
+	// Occurence of non-essential information.
 	public double[] WeakWords_Scoring(String[] Sentences) { 
 		String[] WeakWords = {"بالاضافة","علي سبيل المثال","مثل","كمثال","علي اي حال","علاوة علي ذلك","أولا","ثانيا","ثم","زيادة علي ذلك","بصيغة أخري"};
 		for(String ww : WeakWords) {
@@ -504,51 +504,6 @@ public class Textrank {
 				}
 			}
 			i++;
-		}
-		return sentenceScoreWW;
-	}
-	
-	// Occurence of non-essential information Machine Learning based.
-	public double[][] WeakWords_ScoringML(String[] Sentences) { 
-		String[] WeakWords = {"بالاضافة","علي سبيل المثال","مثل","كمثال","علي اي حال","علاوة علي ذلك","أولا","ثانيا","ثم","زيادة علي ذلك","بصيغة أخري"};
-		for(String ww : WeakWords) {
-			ww = arn.normalize(ww);
-		}
-		int[] sentenceCount = new int[Sentences.length];
-		int[] sentenceWW = new int[Sentences.length];
-		
-		for(int i=0;i<Sentences.length;i++) {
-			
-			String[] SentenceWords = Sentences[i].split(" ");
-			sentenceCount[i] = SentenceWords.length;
-			
-			for(int j=0;j<Sentences.length;j++) {
-				Pattern pattern = Pattern.compile(".*\\b" + WeakWords[j] + "\\b.*");
-				Matcher matcher = pattern.matcher(Sentences[i]);
-				while (matcher.find()) {
-					sentenceWW[i]++;
-				}	
-			}
-		}
-		
-		double[] sentenceScoreWW_Start = new double[Sentences.length];
-		double[] sentenceScoreWW_OtherLocation = new double[Sentences.length];
-		int i=0;
-		for(String Sentence : Sentences) {
-			for(String WW : WeakWords) {
-				if(Sentence.startsWith(WW))
-					{sentenceScoreWW_Start[i] = -2;break;}
-				else {
-					sentenceScoreWW_OtherLocation[i] = ((double)sentenceWW[i])/((double)sentenceCount[i]);
-				}
-			}
-			i++;
-		}
-		double[][] sentenceScoreWW = new double[Sentences.length][2];
-		for(int k=0;k<sentenceScoreWW.length;k++)
-		{
-			sentenceScoreWW [k][0] = sentenceScoreWW_Start[k];
-			sentenceScoreWW[k][1] = sentenceScoreWW_OtherLocation[k];
 		}
 		return sentenceScoreWW;
 	}
