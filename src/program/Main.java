@@ -15,6 +15,12 @@ public class Main {
 		String ArabicText = readfile("ArabicText.txt");
 		try {
 			Textrank tr = new Textrank(ArabicText);
+			
+			//SALMA 
+//			double[] scores = tr.sentencelocation(ArabicText);
+//			for(int i=0; i<scores.length; i++)
+//				System.out.print("score: "+ scores[i]);
+			//******************
 			System.out.print(tr.getSummarizedText());
 		} catch (ClassNotFoundException | IOException e) {
 			// TODO Auto-generated catch block
