@@ -17,6 +17,7 @@ public class Main {
 			Textrank tr = new Textrank(ArabicText);
 			
 			//SALMA 
+			//*****************
 //			double[] scores = tr.sentencelocation(ArabicText);
 //			for(int i=0; i<scores.length; i++)
 //				System.out.print("score: "+ scores[i]);

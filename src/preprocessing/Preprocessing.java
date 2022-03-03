@@ -95,14 +95,15 @@ public class Preprocessing {
 		return originalText_sentences;
 	}
 	
+	//SALMA
 	//Sentence Detector for paragraphs
-//	public String[] SentencesOfParagraph(String paragraph) throws IOException {
-//		SentenceDetector sd = new SentenceDetector();
-//		String[] sentencesOfParagraph;
-//		sentencesOfParagraph = sd.detectSentences(paragraph);
-//		sentencesOfParagraph = splitSentences(sentencesOfParagraph);
-//		return sentencesOfParagraph;
-//	}
+	public String[] SentencesOfParagraph(String paragraph) throws IOException {
+		SentenceDetector sd = new SentenceDetector();
+		String[] sentencesOfParagraph;
+		sentencesOfParagraph = sd.detectSentences(paragraph);
+		sentencesOfParagraph = splitSentences(sentencesOfParagraph);
+		return sentencesOfParagraph;
+	}
 	
 	public String[] getLightText_sentences() throws IOException {
 		SentenceDetector sd = new SentenceDetector();
