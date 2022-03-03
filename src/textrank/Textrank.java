@@ -109,64 +109,64 @@ public class Textrank {
 	}
 
 	// Relating to the position of a sentence to the paragraph and document
-//	public  double[] sentencelocation(String text)
-//	{
-//		
-//		int numberOfParagraphs = pre.getOriginal_paragraphs().length;
-//		String[] paragraphs = pre.getOriginal_paragraphs();
-//		String[][] sentences = new String[numberOfParagraphs][];
-//		ArrayList<Double> SentenceLocationScores = new ArrayList<Double>();
-//		int lastParagraph = numberOfParagraphs-1;
-//		
-//		//Detect the boundaries of each sentence for each paragraph.
-//		for(int eachParagraph=0; eachParagraph<numberOfParagraphs; eachParagraph++)
-//		{	try {
-//				sentences[eachParagraph] = pre.SentencesOfParagraph(paragraphs[eachParagraph]);
-//			} catch (IOException e) {
-//				// TODO Auto-generated catch block
-//				System.out.println("An error in sentence detection has occurred.");
-//				e.printStackTrace();
-//			}
-//		}
-//		
-//		//Sentence locations cases.
-//		for(int eachParagraph=0; eachParagraph<numberOfParagraphs; eachParagraph++)
-//		{
-//			for(int eachSentence=0; eachSentence<sentences[eachParagraph].length; eachSentence++)
-//			{
-//				if(eachParagraph == 0)
-//				{
-//					if(eachSentence == 0)
-//						SentenceLocationScores.add(Double.valueOf(3));
-//					else
-//						SentenceLocationScores.add(Double.valueOf(1/Math.sqrt(Double.valueOf(eachSentence+1))));
-//				}
-//				
-//				else if(eachParagraph == lastParagraph)
-//				{
-//					if(eachSentence==0)
-//						SentenceLocationScores.add(Double.valueOf(2));
-//					else
-//						SentenceLocationScores.add(Double.valueOf(1/Math.sqrt(Double.valueOf(eachSentence+1))));
-//				}
-//				
-//				else
-//				{
-//					if(eachSentence == 0)
-//						SentenceLocationScores.add(Double.valueOf(1));
-//					else
-//						SentenceLocationScores.add(Double.valueOf(1/Math.sqrt(Double.valueOf( (eachSentence+1) + ((eachParagraph+1)*(eachParagraph+1)) ))));
-//				}
-//			}
-//		}
-//		
-//		//Convert Double ArrayList --> double[] 
-//		double[] scores = new double[SentenceLocationScores.size()];
-//		for(int i=0; i<SentenceLocationScores.size(); i++)
-//			scores[i]=SentenceLocationScores.get(i).doubleValue();
-//		
-//		return scores;
-//	}
+	public  double[] sentencelocation(String text)
+	{
+		
+		int numberOfParagraphs = pre.getOriginal_paragraphs().length;
+		String[] paragraphs = pre.getOriginal_paragraphs();
+		String[][] sentences = new String[numberOfParagraphs][];
+		ArrayList<Double> SentenceLocationScores = new ArrayList<Double>();
+		int lastParagraph = numberOfParagraphs-1;
+		
+		//Detect the boundaries of each sentence for each paragraph.
+		for(int eachParagraph=0; eachParagraph<numberOfParagraphs; eachParagraph++)
+		{	try {
+				sentences[eachParagraph] = pre.SentencesOfParagraph(paragraphs[eachParagraph]);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				System.out.println("An error in sentence detection has occurred.");
+				e.printStackTrace();
+			}
+		}
+		
+		//Sentence locations cases.
+		for(int eachParagraph=0; eachParagraph<numberOfParagraphs; eachParagraph++)
+		{
+			for(int eachSentence=0; eachSentence<sentences[eachParagraph].length; eachSentence++)
+			{
+				if(eachParagraph == 0)
+				{
+					if(eachSentence == 0)
+						SentenceLocationScores.add(Double.valueOf(3));
+					else
+						SentenceLocationScores.add(Double.valueOf(1/Math.sqrt(Double.valueOf(eachSentence+1))));
+				}
+				
+				else if(eachParagraph == lastParagraph)
+				{
+					if(eachSentence==0)
+						SentenceLocationScores.add(Double.valueOf(2));
+					else
+						SentenceLocationScores.add(Double.valueOf(1/Math.sqrt(Double.valueOf(eachSentence+1))));
+				}
+				
+				else
+				{
+					if(eachSentence == 0)
+						SentenceLocationScores.add(Double.valueOf(1));
+					else
+						SentenceLocationScores.add(Double.valueOf(1/Math.sqrt(Double.valueOf( (eachSentence+1) + ((eachParagraph+1)*(eachParagraph+1)) ))));
+				}
+			}
+		}
+		
+		//Convert Double ArrayList --> double[] 
+		double[] scores = new double[SentenceLocationScores.size()];
+		for(int i=0; i<SentenceLocationScores.size(); i++)
+			scores[i]=SentenceLocationScores.get(i).doubleValue();
+		
+		return scores;
+	}
 
 	public double[] cosineTitle(String[] titleTokens, String[] token, String[] sentences, String[][] sentenceTokens) {
 		int new_len = token.length + titleTokens.length;
