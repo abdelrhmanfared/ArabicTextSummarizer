@@ -50,7 +50,7 @@ public class Preprocessing {
 			}
 		}
 		rootText = rootText.trim().replaceAll(" +", " ");
-		rootText = addSpacesAroundPeriods(rootText);
+		//rootText = addSpacesAroundPeriods(rootText);
 
 		lightText = "";
 		for (int i = 0; i < tokens.length; i++) {
@@ -62,7 +62,7 @@ public class Preprocessing {
 			}
 		}
 		lightText = lightText.trim().replaceAll(" +", " ");
-		lightText = addSpacesAroundPeriods(lightText);
+		//lightText = addSpacesAroundPeriods(lightText);
 
 	}
 	
@@ -91,7 +91,7 @@ public class Preprocessing {
 		SentenceDetector sd = new SentenceDetector();
 		String[] originalText_sentences;
 		originalText_sentences = sd.detectSentences(original_text);
-		originalText_sentences = splitSentences(originalText_sentences);
+		//originalText_sentences = splitSentences(originalText_sentences);
 		return originalText_sentences;
 	}
 	
@@ -109,21 +109,21 @@ public class Preprocessing {
 		SentenceDetector sd = new SentenceDetector();
 		String[] lightText_sentences;
 		lightText_sentences = sd.detectSentences(lightText);
-		lightText_sentences = splitSentences(lightText_sentences);
+		//lightText_sentences = splitSentences(lightText_sentences);
 		return lightText_sentences;
 	}
 	public String[] getRootText_sentences() throws IOException {
 		SentenceDetector sd = new SentenceDetector();
 		String[] rootText_sentences;
 		rootText_sentences = sd.detectSentences(rootText);
-		rootText_sentences = splitSentences(rootText_sentences);
+		//rootText_sentences = splitSentences(rootText_sentences);
 		return rootText_sentences;
 	}
 	public String[] getNormalized_sentences() throws IOException {
 		SentenceDetector sd = new SentenceDetector();
 		String[] normalized_sentences;
 		normalized_sentences = sd.detectSentences(normalizedText);
-		normalized_sentences = splitSentences(normalized_sentences);
+		//normalized_sentences = splitSentences(normalized_sentences);
 		return normalized_sentences;
 	}
 	public String[][] getrootSentencesTokens() throws IOException {
@@ -180,20 +180,20 @@ public class Preprocessing {
 			if (text.charAt(i) == '.' && text.charAt(i + 1) != ' ' && text.charAt(i + 1) != '.') {
 				Temp += ' ';
 			}
-			if (text.charAt(i) != '.' && text.charAt(i + 1) == '.') {
+			/*if (text.charAt(i) != '.' && text.charAt(i + 1) == '.') {
 				Temp += ' ';
-			}
+			}*/
 		}
 		Temp += text.charAt(text.length() - 1);
 		return Temp;
 	}
 
-	private String[] splitSentences(String[] sentences) {
+	/*private String[] splitSentences(String[] sentences) {
 		ArrayList<String> tempOriginal = new ArrayList<String>();
 		for (int i = 0; i < sentences.length; i++) {
 			String[] tempSentences = sentences[i].split("(?<=(؟|!))");
 			tempOriginal.addAll(Arrays.asList(tempSentences));
 		}
 		return tempOriginal.toArray(sentences);
-	}
+	}*/
 }
