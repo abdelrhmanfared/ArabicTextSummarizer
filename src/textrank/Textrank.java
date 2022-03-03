@@ -59,7 +59,7 @@ public class Textrank {
 
 	public Textrank(String text) throws ClassNotFoundException, IOException {
 		pre = new Preprocessing(text);
-		double ratio = 0.3;
+		double ratio = (double) 1 / 3;
 		summarizedText = "";
 
 		// Extract features
@@ -79,7 +79,8 @@ public class Textrank {
 		// Ranking
 		ArrayList<Score> sentences_scores = new ArrayList<Score>();
 		String[] originalsentences = pre.getOriginalText_sentences();
-
+		//String[] normalizedsentences = pre.getNormalized_sentences();
+		
 		for (int i = 0; i < originalsentences.length; i++) {
 			sentences_scores.add(new Score(i, // keyPhrases[i] + sentenceLocation[i] + titleSimilarity[i] +
 												// senCentrality[i] +
@@ -108,7 +109,6 @@ public class Textrank {
 	}
 
 	// Relating to the position of a sentence to the paragraph and document
-	//	//Relating to the position of a sentence to the paragraph and document
 //	public  double[] sentencelocation(String text)
 //	{
 //		
@@ -496,6 +496,7 @@ public class Textrank {
 			}
 		}
 		double[] Sentance_Score = new double[sentences.length];
+		if (Num == 0)return Sentance_Score;
 		for (int i = 0; i < sentences.length; i++) {
 			Sentance_Score[i] = (double) sen[i] / Num;
 		}
