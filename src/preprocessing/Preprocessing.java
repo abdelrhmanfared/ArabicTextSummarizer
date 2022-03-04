@@ -101,7 +101,7 @@ public class Preprocessing {
 		SentenceDetector sd = new SentenceDetector();
 		String[] sentencesOfParagraph;
 		sentencesOfParagraph = sd.detectSentences(paragraph);
-		sentencesOfParagraph = splitSentences(sentencesOfParagraph);
+		//sentencesOfParagraph = splitSentences(sentencesOfParagraph);
 		return sentencesOfParagraph;
 	}
 	

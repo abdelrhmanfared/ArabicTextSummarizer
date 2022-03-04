@@ -62,13 +62,13 @@ public class Textrank {
 		double ratio = (double) 1 / 3;
 		summarizedText = "";
 
+		//positiveKeyWords(new String[] {"شهداء"});
+		
 		// Extract features
 		// double[] keyPhrases = keyPhrases(lightText_sentences, topKeys, post);
 		double[] sentenceLocation = sentencelocation();
-		// double[] titleSimilarity = similarityWithTitle(lightText_sentences, tokens,
-		// lightSentencesTokens, title, topKeys);
-		// double[] senCentrality = sentenceCentrality(rootText_sentences,
-		// rootTextTokens, rootSentencesTokens);
+		// double[] titleSimilarity = similarityWithTitle(lightText_sentences, tokens, lightSentencesTokens, title, topKeys);
+		double[] senCentrality = sentenceCentrality(pre.getRootText_sentences(), pre.getRootTextTokens(), pre.getrootSentencesTokens());
 		double[] senLength = sentenceLength(pre.getrootSentencesTokens());
 		double[] cuePhrases = cueWords(pre.getNormalized_sentences());
 		double[] strongWords = positiveKeyWords(pre.getNormalized_sentences());
@@ -81,9 +81,8 @@ public class Textrank {
 		//String[] normalizedsentences = pre.getNormalized_sentences();
 		
 		for (int i = 0; i < originalsentences.length; i++) {
-			sentences_scores.add(new Score(i, // keyPhrases[i] + sentenceLocation[i] + titleSimilarity[i] +
-												// senCentrality[i] +
-					senLength[i] + cuePhrases[i] + strongWords[i] + numberScores[i] + weakWords[i]));
+			sentences_scores.add(new Score(i, /*keyPhrases[i] +*/ sentenceLocation[i] + /*titleSimilarity[i] +*/
+				senCentrality[i] + senLength[i] + cuePhrases[i] + strongWords[i] + numberScores[i] + weakWords[i]));
 		}
 
 		Collections.sort(sentences_scores, new Sortbyscore());
