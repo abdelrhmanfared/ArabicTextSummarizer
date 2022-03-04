@@ -64,8 +64,7 @@ public class Textrank {
 
 		// Extract features
 		// double[] keyPhrases = keyPhrases(lightText_sentences, topKeys, post);
-		// double[] sentenceLocation = sentencelocation(original_paragraphs,
-		// originalText_sentences);
+		double[] sentenceLocation = sentencelocation();
 		// double[] titleSimilarity = similarityWithTitle(lightText_sentences, tokens,
 		// lightSentencesTokens, title, topKeys);
 		// double[] senCentrality = sentenceCentrality(rootText_sentences,
@@ -109,7 +108,7 @@ public class Textrank {
 	}
 
 	// Relating to the position of a sentence to the paragraph and document
-	public  double[] sentencelocation(String text)
+	public double[] sentencelocation()
 	{
 		
 		int numberOfParagraphs = pre.getOriginal_paragraphs().length;
