@@ -18,7 +18,7 @@ public class Main {
 
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
-<<<<<<< HEAD
+/*<<<<<<< HEAD
 		
 		/*
 =======
@@ -38,10 +38,10 @@ public class Main {
 		} catch (IOException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
-		}*/
+		}
 		
->>>>>>> 7595ac036012f94a0354b934608b586f15d29401
-		String ArabicText = readfile("ArabicText.txt");
+>>>>>>> 7595ac036012f94a0354b934608b586f15d29401*/
+/*		String ArabicText = readfile("ArabicText.txt");
 		try {
 			Textrank tr = new Textrank(ArabicText);
 			
