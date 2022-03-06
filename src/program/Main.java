@@ -41,7 +41,7 @@ public class Main {
 		}
 		
 >>>>>>> 7595ac036012f94a0354b934608b586f15d29401*/
-/*		String ArabicText = readfile("ArabicText.txt");
+		String ArabicText = readfile("ArabicText.txt");
 		try {
 			Textrank tr = new Textrank(ArabicText);
 			
@@ -55,8 +55,8 @@ public class Main {
 		} catch (ClassNotFoundException | IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}*/
-       try {
+		}
+       /*try {
     	String filename = "EASCModified.csv";
         InputStream fileInputStream = new FileInputStream(filename);
         Reader reader = new InputStreamReader(fileInputStream, "UTF-8"); // leave charset out for default
@@ -73,7 +73,7 @@ public class Main {
     } catch (Exception e) {
         System.err.println(e.getMessage()); // handle all exceptions
 
-    }
+    }*/
 }
 	
 	public static String readfile(String filename) {
