@@ -47,8 +47,8 @@ class Sortbyindex implements Comparator<Score> {
 }
 
 public class Textrank {
-	private Preprocessing pre;
 	private String summarizedText;
+	private Preprocessing pre;
 	AraNormalizer arn = new AraNormalizer();
 	DiacriticsRemover dr = new DiacriticsRemover();
 	LightStemmer10 ls10 = new LightStemmer10();
@@ -61,19 +61,22 @@ public class Textrank {
 		pre = new Preprocessing(text);
 		double ratio = (double) 1 / 3;
 		summarizedText = "";
-
-		//positiveKeyWords(new String[] {"شهداء"});
+		
+		//Parameters
+		String[] RootText_sentences = pre.getRootText_sentences();
+		String[][] rootSentencesTokens = pre.getrootSentencesTokens();
+		String[] Normalized_sentences = pre.getNormalized_sentences();
 		
 		// Extract features
 		// double[] keyPhrases = keyPhrases(lightText_sentences, topKeys, post);
-		double[] sentenceLocation = sentencelocation();
+		double[] sentenceLocation = sentencelocation(pre.getOriginal_paragraphs());
 		// double[] titleSimilarity = similarityWithTitle(lightText_sentences, tokens, lightSentencesTokens, title, topKeys);
-		//double[] senCentrality = sentenceCentrality(pre.getRootText_sentences(), pre.getRootTextTokens(), pre.getrootSentencesTokens());
-		double[] senLength = sentenceLength(pre.getrootSentencesTokens());
-		double[] cuePhrases = cueWords(pre.getNormalized_sentences());
-		double[] strongWords = positiveKeyWords(pre.getNormalized_sentences());
-		double[] numberScores = numberScore(pre.getRootText_sentences(), pre.getrootSentencesTokens());
-		double[] weakWords = WeakWords_Scoring(pre.getNormalized_sentences());
+		double[] senCentrality = sentenceCentrality(RootText_sentences, pre.getRootTextTokens(), rootSentencesTokens);
+		double[] senLength = sentenceLength(rootSentencesTokens);
+		double[] cuePhrases = cueWords(Normalized_sentences);
+		double[] strongWords = positiveKeyWords(Normalized_sentences);
+		double[] numberScores = numberScore(RootText_sentences, rootSentencesTokens);
+		double[] weakWords = WeakWords_Scoring(Normalized_sentences );
 
 		// Ranking
 		ArrayList<Score> sentences_scores = new ArrayList<Score>();
@@ -82,7 +85,7 @@ public class Textrank {
 		
 		for (int i = 0; i < originalsentences.length; i++) {
 			sentences_scores.add(new Score(i, /*keyPhrases[i] +*/ sentenceLocation[i] + /*titleSimilarity[i] +*/
-				/*senCentrality[i] +*/ senLength[i] + cuePhrases[i] + strongWords[i] + numberScores[i] + weakWords[i]));
+				senCentrality[i] + senLength[i] + cuePhrases[i] + strongWords[i] + numberScores[i] + weakWords[i]));
 		}
 
 		Collections.sort(sentences_scores, new Sortbyscore());
@@ -107,11 +110,10 @@ public class Textrank {
 	}
 
 	// Relating to the position of a sentence to the paragraph and document
-	public double[] sentencelocation()
+	public double[] sentencelocation(String[] paragraphs)
 	{
 		
-		int numberOfParagraphs = pre.getOriginal_paragraphs().length;
-		String[] paragraphs = pre.getOriginal_paragraphs();
+		int numberOfParagraphs = paragraphs.length;
 		String[][] sentences = new String[numberOfParagraphs][];
 		ArrayList<Double> SentenceLocationScores = new ArrayList<Double>();
 		int lastParagraph = numberOfParagraphs-1;

@@ -1,5 +1,4 @@
-<%@ page language="java" contentType="text/html; charset=ISO-8859-1"
-    pageEncoding="ISO-8859-1"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8"%>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -39,7 +38,7 @@
              </div>
              <form action="Working" method="post" class="form">
              <div class="AreaField">
-                <textarea name="originalText" id="textarea1" cols="30" rows="10"><%=s%></textarea>
+                <textarea name="originalText" id="textarea1" cols="30" rows="10">${original }</textarea>
              </div>
              <div class="bottomHeader">
                 <a href="#" id="uploadbtn"><i class="fa-solid fa-upload"></i>&nbsp;&nbsp;<strong>Upload File</strong></a>
@@ -53,7 +52,7 @@
                 <header class="Header">Summarized</header>
              </div>
              <div class="AreaField">
-                 <textarea readonly name="originalText" id="" cols="30" rows="10"><%=s%></textarea>
+                 <textarea readonly name="originalText" id="" cols="30" rows="10">${result }</textarea>
             </div>
              <div class="bottomHeader">
                 <header class="Accuracy">Accuraccy:</header>
