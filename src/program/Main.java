@@ -52,7 +52,7 @@ public class Main {
 //				System.out.print("score: "+ scores[i]);
 			//******************
 			System.out.print(tr.getSummarizedText());
-		} catch (ClassNotFoundException | IOException e) {
+		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}

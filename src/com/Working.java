@@ -38,15 +38,12 @@ public class Working extends HttpServlet {
 		String text = request.getParameter("originalText");
 		Textrank tr;
 		try {
-			//String text = program.Main.readfile("ArabicText.txt");
+			// String text = program.Main.readfile("ArabicText.txt");
 			tr = new Textrank(text);
 			request.setAttribute("original", text);
 			request.setAttribute("result", tr.getSummarizedText());
 			request.getRequestDispatcher("/HomeJSP.jsp").forward(request, response);
-		} catch (ClassNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
+		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}

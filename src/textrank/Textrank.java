@@ -57,7 +57,7 @@ public class Textrank {
 		return summarizedText;
 	}
 
-	public Textrank(String text) throws ClassNotFoundException, IOException {
+	public Textrank(String text) throws Exception {
 		pre = new Preprocessing(text);
 		double ratio = (double) 1 / 3;
 		summarizedText = "";
@@ -66,6 +66,7 @@ public class Textrank {
 		String[] RootText_sentences = pre.getRootText_sentences();
 		String[][] rootSentencesTokens = pre.getrootSentencesTokens();
 		String[] Normalized_sentences = pre.getNormalized_sentences();
+		String[] originalsentences = pre.getOriginalText_sentences();
 		
 		// Extract features
 		// double[] keyPhrases = keyPhrases(lightText_sentences, topKeys, post);
@@ -77,11 +78,13 @@ public class Textrank {
 		double[] strongWords = positiveKeyWords(Normalized_sentences);
 		double[] numberScores = numberScore(RootText_sentences, rootSentencesTokens);
 		double[] weakWords = WeakWords_Scoring(Normalized_sentences );
-
+		
+		if(RootText_sentences.length != originalsentences.length || rootSentencesTokens.length != originalsentences.length
+				|| Normalized_sentences.length != originalsentences.length)
+			throw new Exception("LENGTHS NOT THE SAME!");
+		
 		// Ranking
 		ArrayList<Score> sentences_scores = new ArrayList<Score>();
-		String[] originalsentences = pre.getOriginalText_sentences();
-		//String[] normalizedsentences = pre.getNormalized_sentences();
 		
 		for (int i = 0; i < originalsentences.length; i++) {
 			sentences_scores.add(new Score(i, /*keyPhrases[i] +*/ sentenceLocation[i] + /*titleSimilarity[i] +*/
