@@ -42,7 +42,7 @@ public class Working extends HttpServlet {
 			tr = new Textrank(text);
 			request.setAttribute("original", text);
 			request.setAttribute("result", tr.getSummarizedText());
-			request.getRequestDispatcher("/HomeJSP.jsp").forward(request, response);
+			request.getRequestDispatcher("HomeJSP.jsp").forward(request, response);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
