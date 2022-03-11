@@ -13,44 +13,15 @@ import java.util.Scanner;
 
 import preprocessing.Preprocessing;
 import textrank.Textrank;
+import utilities.*;
 
 public class Main {
 
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
-/*<<<<<<< HEAD
-		
-		/*
-=======
-		/*Preprocessing test;
-		try {
-			test = new Preprocessing(
-					 "لو أتيح لنا أن ننظر إلى مستقبل اللغة العربية فتُرى ماذا نجد؟، هل نجد لغة واحدة يكتبها ويتكلمها المتعلمون من أهل مصر وأهل العراق وأهل الشام وغيرهم من الأمم العربية بفروق ضئيلة لا تزيد على الفروق بين لغة أهل استراليا ولغة أهل إنجلترا، وهل تكون هذه اللغة قريبة من اللغة العربية التي أكتبها الآن قرب لغة الإنجليزي المتعلم الآن من لغة شكسبير؟، أم هل نجد لغات مختلفة؛ لغة في مصر وأخرى في العراق وأخرى في لبنان؟، مثلها كمثل اللغة الألمانية واللغة السويدية واللغة الهولندية في تقاربها وتباعدها، كل لغة متأقلمة بلهجة أهلها، ولا صلة بين أيها وبين لغة هذا المقال إلا كالصلة بين اللغة الألمانية واللغة اللاتينية. وبعبارة أخرى: هل ستحيا اللغة العربية وتنتشر أو ستموت وتندثر وتحل محلها لغات أخرى؟!."
-					);
-		String[] org = test.getOriginalText_sentences();
-		String[] norm = test.getNormalized_sentences();
-		String[] light = test.getLightText_sentences();
-		String[] root = test.getRootText_sentences();
-	      System.out.println("An error occurred.");
-		} catch (ClassNotFoundException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		} catch (IOException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
-		
->>>>>>> 7595ac036012f94a0354b934608b586f15d29401*/
 		String ArabicText = readfile("ArabicText.txt");
 		try {
 			Textrank tr = new Textrank(ArabicText);
-			
-			//SALMA 
-			//*****************
-//			double[] scores = tr.sentencelocation(ArabicText);
-//			for(int i=0; i<scores.length; i++)
-//				System.out.print("score: "+ scores[i]);
-			//******************
 			System.out.print(tr.getSummarizedText());
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
@@ -89,6 +60,28 @@ public class Main {
 	      System.out.println("An error occurred.");
 	      e.printStackTrace();
 	      return null;
+	    }
+	
+	  }
+	
+	public static void test() {
+	    try {
+	    	LightStemmer1 l1 = new LightStemmer1();
+			LightStemmer2 l2 = new LightStemmer2();
+			LightStemmer3 l3 = new LightStemmer3();
+			LightStemmer8 l8 = new LightStemmer8();
+			LightStemmer10 l10 = new LightStemmer10();
+			RootStemmer rt = new RootStemmer();
+			String word = "بينه";
+			System.out.println(l1.findStem(word));
+			System.out.println(l2.findStem(word));
+			System.out.println(l3.findStem(word));
+			System.out.println(l8.findStem(word));
+			System.out.println(l10.findStem(word));
+			System.out.println(rt.findRoot(word));
+	    		  
+	    } catch (Exception e) {
+	      e.printStackTrace();
 	    }
 	
 	  }

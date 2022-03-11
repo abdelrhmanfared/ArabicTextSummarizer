@@ -1,5 +1,6 @@
 package textrank;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
@@ -14,7 +15,9 @@ import preprocessing.Preprocessing;
 import utilities.AraNormalizer;
 import utilities.DiacriticsRemover;
 import utilities.LightStemmer10;
+import utilities.LightStemmer2;
 import utilities.PunctuationsRemover;
+import utilities.TrainedTokenizer;
 
 class Score {
 	public int index;
@@ -61,34 +64,36 @@ public class Textrank {
 		pre = new Preprocessing(text);
 		double ratio = (double) 1 / 3;
 		summarizedText = "";
-		
-		//Parameters
-		String[] RootText_sentences = pre.getRootText_sentences();
+
+		// Parameters
+		String[] rooText_sentences = pre.getRootText_sentences();
 		String[][] rootSentencesTokens = pre.getrootSentencesTokens();
-		String[] Normalized_sentences = pre.getNormalized_sentences();
+		String[] light_sentences = pre.getLightText_sentences();
 		String[] originalsentences = pre.getOriginalText_sentences();
-		
+
 		// Extract features
 		// double[] keyPhrases = keyPhrases(lightText_sentences, topKeys, post);
 		double[] sentenceLocation = sentencelocation(pre.getOriginal_paragraphs());
-		// double[] titleSimilarity = similarityWithTitle(lightText_sentences, tokens, lightSentencesTokens, title, topKeys);
-		double[] senCentrality = sentenceCentrality(RootText_sentences, pre.getRootTextTokens(), rootSentencesTokens);
+		// double[] titleSimilarity = similarityWithTitle(lightText_sentences, tokens,
+		// lightSentencesTokens, title, topKeys);
+		double[] senCentrality = sentenceCentrality(rooText_sentences, pre.getRootTextTokens(), rootSentencesTokens);
 		double[] senLength = sentenceLength(rootSentencesTokens);
-		double[] cuePhrases = cueWords(Normalized_sentences);
-		double[] strongWords = positiveKeyWords(Normalized_sentences);
-		double[] numberScores = numberScore(RootText_sentences, rootSentencesTokens);
-		double[] weakWords = WeakWords_Scoring(Normalized_sentences );
-		
-		if(RootText_sentences.length != originalsentences.length || rootSentencesTokens.length != originalsentences.length
-				|| Normalized_sentences.length != originalsentences.length)
+		double[] cuePhrases = cueWords(light_sentences);
+		double[] strongWords = positiveKeyWords(light_sentences);
+		double[] numberScores = numberScore(rooText_sentences, rootSentencesTokens);
+		double[] weakWords = WeakWords_Scoring(light_sentences);
+
+		if (rooText_sentences.length != originalsentences.length
+				|| rootSentencesTokens.length != originalsentences.length
+				|| light_sentences.length != originalsentences.length)
 			throw new Exception("LENGTHS NOT THE SAME!");
-		
+
 		// Ranking
 		ArrayList<Score> sentences_scores = new ArrayList<Score>();
-		
+
 		for (int i = 0; i < originalsentences.length; i++) {
-			sentences_scores.add(new Score(i, /*keyPhrases[i] +*/ sentenceLocation[i] + /*titleSimilarity[i] +*/
-				senCentrality[i] + senLength[i] + cuePhrases[i] + strongWords[i] + numberScores[i] + weakWords[i]));
+			sentences_scores.add(new Score(i, /* keyPhrases[i] + */ sentenceLocation[i] + /* titleSimilarity[i] + */
+					senCentrality[i] + senLength[i] + cuePhrases[i] + strongWords[i] + numberScores[i] + weakWords[i]));
 		}
 
 		Collections.sort(sentences_scores, new Sortbyscore());
@@ -113,17 +118,16 @@ public class Textrank {
 	}
 
 	// Relating to the position of a sentence to the paragraph and document
-	public double[] sentencelocation(String[] paragraphs)
-	{
-		
+	public double[] sentencelocation(String[] paragraphs) {
+
 		int numberOfParagraphs = paragraphs.length;
 		String[][] sentences = new String[numberOfParagraphs][];
 		ArrayList<Double> SentenceLocationScores = new ArrayList<Double>();
-		int lastParagraph = numberOfParagraphs-1;
-		
-		//Detect the boundaries of each sentence for each paragraph.
-		for(int eachParagraph=0; eachParagraph<numberOfParagraphs; eachParagraph++)
-		{	try {
+		int lastParagraph = numberOfParagraphs - 1;
+
+		// Detect the boundaries of each sentence for each paragraph.
+		for (int eachParagraph = 0; eachParagraph < numberOfParagraphs; eachParagraph++) {
+			try {
 				sentences[eachParagraph] = pre.SentencesOfParagraph(paragraphs[eachParagraph]);
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
@@ -131,43 +135,39 @@ public class Textrank {
 				e.printStackTrace();
 			}
 		}
-		
-		//Sentence locations cases.
-		for(int eachParagraph=0; eachParagraph<numberOfParagraphs; eachParagraph++)
-		{
-			for(int eachSentence=0; eachSentence<sentences[eachParagraph].length; eachSentence++)
-			{
-				if(eachParagraph == 0)
-				{
-					if(eachSentence == 0)
+
+		// Sentence locations cases.
+		for (int eachParagraph = 0; eachParagraph < numberOfParagraphs; eachParagraph++) {
+			for (int eachSentence = 0; eachSentence < sentences[eachParagraph].length; eachSentence++) {
+				if (eachParagraph == 0) {
+					if (eachSentence == 0)
 						SentenceLocationScores.add(Double.valueOf(3));
 					else
-						SentenceLocationScores.add(Double.valueOf(1/Math.sqrt(Double.valueOf(eachSentence+1))));
+						SentenceLocationScores.add(Double.valueOf(1 / Math.sqrt(Double.valueOf(eachSentence + 1))));
 				}
-				
-				else if(eachParagraph == lastParagraph)
-				{
-					if(eachSentence==0)
+
+				else if (eachParagraph == lastParagraph) {
+					if (eachSentence == 0)
 						SentenceLocationScores.add(Double.valueOf(2));
 					else
-						SentenceLocationScores.add(Double.valueOf(1/Math.sqrt(Double.valueOf(eachSentence+1))));
+						SentenceLocationScores.add(Double.valueOf(1 / Math.sqrt(Double.valueOf(eachSentence + 1))));
 				}
-				
-				else
-				{
-					if(eachSentence == 0)
+
+				else {
+					if (eachSentence == 0)
 						SentenceLocationScores.add(Double.valueOf(1));
 					else
-						SentenceLocationScores.add(Double.valueOf(1/Math.sqrt(Double.valueOf( (eachSentence+1) + ((eachParagraph+1)*(eachParagraph+1)) ))));
+						SentenceLocationScores.add(Double.valueOf(1 / Math.sqrt(
+								Double.valueOf((eachSentence + 1) + ((eachParagraph + 1) * (eachParagraph + 1))))));
 				}
 			}
 		}
-		
-		//Convert Double ArrayList --> double[] 
+
+		// Convert Double ArrayList --> double[]
 		double[] scores = new double[SentenceLocationScores.size()];
-		for(int i=0; i<SentenceLocationScores.size(); i++)
-			scores[i]=SentenceLocationScores.get(i).doubleValue();
-		
+		for (int i = 0; i < SentenceLocationScores.size(); i++)
+			scores[i] = SentenceLocationScores.get(i).doubleValue();
+
 		return scores;
 	}
 
@@ -441,46 +441,57 @@ public class Textrank {
 				"لهذا السبب", "لذلك", "بذلك", "ولهذا", "بشكل كبير", "بشكل ملحوظ", "على هذا الشرط", "على ناحية اخرى",
 				"على صعيد اخر", "تلخيصا", "منطقيا" };
 
-		for (int i = 0; i < cue_words.length; i++)
-			cue_words[i] = arn.normalize(cue_words[i]);
+		try {
+			findlight(cue_words);
 
-		for (int i = 0; i < sentences.length; i++) {
-			for (int j = 0; j < cue_words.length; j++) {
-				if (sentences[i].contains(cue_words[j])) {
-					cue_counts[i]++;
-					total++;
+			for (int i = 0; i < sentences.length; i++) {
+				for (int j = 0; j < cue_words.length; j++) {
+					if (sentences[i].contains(cue_words[j])) {
+						cue_counts[i]++;
+						total++;
+					}
 				}
 			}
-		}
 
-		for (int i = 0; i < sentences.length; i++)
-			sentences_score[i] = (double) cue_counts[i] / total;
+			for (int i = 0; i < sentences.length; i++)
+				sentences_score[i] = (double) cue_counts[i] / total;
+
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		return sentences_score;
 	}
 
 	private double[] positiveKeyWords(String[] sentance) {
+		double Sentance_Score[] = new double[sentance.length];
 		String[] Postive_Words = { "وثق", "أكد", "بالتأكيد", "من المؤكد", "من المثبت", "اثبات", "اثبت ", "اقرار", "اقر",
 				"تأييد", "ايد", "أدلة", "ايجاب", "بينة", "دليل", "تأكيد", "تحديد", "تحقيق", "تقرير", "جزم", "شهادة",
 				"برهان", "توكيد", "من المصدق", "تصديق", "صدق", "دلل", "حدد", "حقق", "برهن", "شهد", "ذو معنى",
 				"كل المعنى", "دلالي" };
 
-		for (int i = 0; i < Postive_Words.length; i++)
-			Postive_Words[i] = arn.normalize(Postive_Words[i]);
+		try {
+			findlight(Postive_Words);
 
-		int Total = 0, freq[] = new int[sentance.length];
-		for (int i = 0; i < sentance.length; i++) {
-			for (int j = 0; j < Postive_Words.length; j++) {
-				if (sentance[i].contains(Postive_Words[j])) {
-					Total++;
-					freq[i]++;
+			int Total = 0, freq[] = new int[sentance.length];
+			for (int i = 0; i < sentance.length; i++) {
+				for (int j = 0; j < Postive_Words.length; j++) {
+					if (sentance[i].contains(Postive_Words[j])) {
+						Total++;
+						freq[i]++;
+					}
 				}
 			}
-		}
-		double Sentance_Score[] = new double[sentance.length];
-		if (Total == 0)
-			return Sentance_Score;
-		for (int i = 0; i < sentance.length; i++) {
-			Sentance_Score[i] = (double) freq[i] / Total;
+
+			if (Total == 0)
+				return Sentance_Score;
+			for (int i = 0; i < sentance.length; i++) {
+				Sentance_Score[i] = (double) freq[i] / Total;
+
+			}
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 		return Sentance_Score;
 	}
@@ -499,7 +510,8 @@ public class Textrank {
 			}
 		}
 		double[] Sentance_Score = new double[sentences.length];
-		if (Num == 0)return Sentance_Score;
+		if (Num == 0)
+			return Sentance_Score;
 		for (int i = 0; i < sentences.length; i++) {
 			Sentance_Score[i] = (double) sen[i] / Num;
 		}
@@ -508,41 +520,62 @@ public class Textrank {
 
 	// Occurence of non-essential information.
 	public double[] WeakWords_Scoring(String[] Sentences) {
+		double[] sentenceScoreWW = new double[Sentences.length];
 		String[] WeakWords = { "بالاضافة", "علي سبيل المثال", "مثل", "كمثال", "علي اي حال", "علاوة علي ذلك", "أولا",
 				"ثانيا", "ثم", "زيادة علي ذلك", "بصيغة أخري" };
-		for (int i = 0; i<WeakWords.length; i++) {
-			WeakWords[i] = arn.normalize(WeakWords[i]);
-		}
-		int[] sentenceCount = new int[Sentences.length];
-		int[] sentenceWW = new int[Sentences.length];
+		try {
+			findlight(WeakWords);
 
-		for (int i = 0; i < Sentences.length; i++) {
+			int[] sentenceCount = new int[Sentences.length];
+			int[] sentenceWW = new int[Sentences.length];
 
-			String[] SentenceWords = Sentences[i].split(" ");
-			sentenceCount[i] = SentenceWords.length;
+			for (int i = 0; i < Sentences.length; i++) {
 
-			for (int j = 0; j < WeakWords.length; j++) {
-				Pattern pattern = Pattern.compile(".*\\b" + WeakWords[j] + "\\b.*");
-				Matcher matcher = pattern.matcher(Sentences[i]);
-				while (matcher.find()) {
-					sentenceWW[i]++;
+				String[] SentenceWords = Sentences[i].split(" ");
+				sentenceCount[i] = SentenceWords.length;
+
+				for (int j = 0; j < WeakWords.length; j++) {
+					if (Sentences[i].contains(WeakWords[j])) {
+						sentenceWW[i]++;
+					}
 				}
 			}
+
+			int i = 0;
+			for (String Sentence : Sentences) {
+				for (String WW : WeakWords) {
+					if (Sentence.startsWith(WW)) {
+						sentenceScoreWW[i] = -2;
+						break;
+					} else {
+						sentenceScoreWW[i] = -1 * ((double) sentenceWW[i]) / ((double) sentenceCount[i]);
+					}
+				}
+				i++;
+			}
+
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 
-		double[] sentenceScoreWW = new double[Sentences.length];
-		int i = 0;
-		for (String Sentence : Sentences) {
-			for (String WW : WeakWords) {
-				if (Sentence.startsWith(WW)) {
-					sentenceScoreWW[i] = -2;
-					break;
-				} else {
-					sentenceScoreWW[i] = ((double) sentenceWW[i]) / ((double) sentenceCount[i]);
-				}
-			}
-			i++;
-		}
 		return sentenceScoreWW;
+	}
+
+	private void findlight(String[] words) throws Exception {
+		for (int i = 0; i < words.length; i++)
+			words[i] = arn.normalize(words[i]);
+
+		LightStemmer2 ls2 = new LightStemmer2();
+		TrainedTokenizer tok = new TrainedTokenizer();
+		for (int i = 0; i < words.length; i++) {
+			String[] tokens = tok.tokenize(words[i]);
+			String lightText = " ";
+			for (int j = 0; j < tokens.length; j++) {
+				String stem = ls2.findStem(tokens[j]);
+				lightText = lightText + stem + " ";
+			}
+			words[i] = lightText;
+		}
 	}
 }
