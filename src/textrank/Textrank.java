@@ -1,6 +1,7 @@
 package textrank;
 
 import java.io.FileNotFoundException;
+import KPminer.*;
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
