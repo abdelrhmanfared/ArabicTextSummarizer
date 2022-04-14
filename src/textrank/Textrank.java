@@ -61,45 +61,54 @@ public class Textrank {
 		return summarizedText;
 	}
 
-	public Textrank(String text) throws Exception {
+	public Textrank(String text, int no_sentences) throws Exception {
 		pre = new Preprocessing(text);
 		double ratio = (double) 1 / 3;
 		summarizedText = "";
 
 		// Parameters
+		String[] originalsentences = pre.getOriginalText_sentences();
+		if(originalsentences.length == 1)
+		{
+			summarizedText = originalsentences[0];
+			return;
+		}
 		String[] rooText_sentences = pre.getRootText_sentences();
 		String[][] rootSentencesTokens = pre.getrootSentencesTokens();
 		String[] light_sentences = pre.getLightText_sentences();
-		String[] originalsentences = pre.getOriginalText_sentences();
+		
+		if (rooText_sentences.length != originalsentences.length
+				|| rootSentencesTokens.length != originalsentences.length
+				|| light_sentences.length != originalsentences.length
+				|| no_sentences > originalsentences.length)
+			throw new Exception("LENGTHS NOT THE SAME!");
 
 		// Extract features
 		// double[] keyPhrases = keyPhrases(lightText_sentences, topKeys, post);
-		double[] sentenceLocation = sentencelocation(pre.getOriginal_paragraphs());
+		//double[] sentenceLocation = sentencelocation(pre.getOriginal_paragraphs());
 		// double[] titleSimilarity = similarityWithTitle(lightText_sentences, tokens,
 		// lightSentencesTokens, title, topKeys);
-		double[] senCentrality = sentenceCentrality(rooText_sentences, pre.getRootTextTokens(), rootSentencesTokens);
+		//double[] senCentrality = sentenceCentrality(rooText_sentences, pre.getRootTextTokens(), rootSentencesTokens);
 		double[] senLength = sentenceLength(rootSentencesTokens);
 		double[] cuePhrases = cueWords(light_sentences);
 		double[] strongWords = positiveKeyWords(light_sentences);
 		double[] numberScores = numberScore(rooText_sentences, rootSentencesTokens);
 		double[] weakWords = WeakWords_Scoring(light_sentences);
 
-		if (rooText_sentences.length != originalsentences.length
-				|| rootSentencesTokens.length != originalsentences.length
-				|| light_sentences.length != originalsentences.length)
-			throw new Exception("LENGTHS NOT THE SAME!");
 
 		// Ranking
 		ArrayList<Score> sentences_scores = new ArrayList<Score>();
 
 		for (int i = 0; i < originalsentences.length; i++) {
-			sentences_scores.add(new Score(i, /* keyPhrases[i] + */ sentenceLocation[i] + /* titleSimilarity[i] + */
-					senCentrality[i] + senLength[i] + cuePhrases[i] + strongWords[i] + numberScores[i] + weakWords[i]));
+			sentences_scores.add(new Score(i, /* keyPhrases[i] + */ /*sentenceLocation[i] +*/ /* titleSimilarity[i] + */
+					/*senCentrality[i] +*/ senLength[i] + cuePhrases[i] + strongWords[i] + numberScores[i] + weakWords[i]));
 		}
 
 		Collections.sort(sentences_scores, new Sortbyscore());
 
-		int Summarylength = (int) (ratio * originalsentences.length);
+		int Summarylength = no_sentences;
+		if(no_sentences == -1)
+			Summarylength = (int) (ratio * originalsentences.length);
 
 		ArrayList<Score> summary = new ArrayList<Score>();
 		for (int i = 0; i < Summarylength; i++)

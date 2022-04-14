@@ -29,6 +29,7 @@ public class Main {
 		}
 		*/
        try {
+    	SentenceDetector sd = new SentenceDetector();
     	String filename = "EASCModified.csv";
         InputStream fileInputStream = new FileInputStream(filename);
         Reader reader = new InputStreamReader(fileInputStream, "UTF-8"); // leave charset out for default
@@ -37,12 +38,14 @@ public class Main {
 		ArrayList<String> summary_genrated = new ArrayList<String>();
 		ArrayList<String> system_generated = new ArrayList<String>();
 		String line = bufferedReader.readLine();
-        while ((line = bufferedReader.readLine()) != null) {
+		int i = 0;
+        while ((line = bufferedReader.readLine()) != null && i++ < 10) {
         	String [] row = line.split(",");
         	Text_genrated.add(row[1]);
         	summary_genrated.add(row[2]);
         	//System.out.println(row[1]);
-        	system_generated.add((new Textrank(row[1])).getSummarizedText());
+        	Textrank tr = new Textrank(row[1], -1);
+        	system_generated.add(tr.getSummarizedText());
         	
         }
        System.out.println(system_generated.get(0));
