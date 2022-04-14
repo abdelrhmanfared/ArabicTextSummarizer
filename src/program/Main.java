@@ -19,7 +19,7 @@ public class Main {
 
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
-		String ArabicText = readfile("ArabicText.txt");
+		/*String ArabicText = readfile("ArabicText.txt");
 		try {
 			Textrank tr = new Textrank(ArabicText);
 			System.out.print(tr.getSummarizedText());
@@ -27,24 +27,29 @@ public class Main {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-       /*try {
+		*/
+       try {
     	String filename = "EASCModified.csv";
         InputStream fileInputStream = new FileInputStream(filename);
         Reader reader = new InputStreamReader(fileInputStream, "UTF-8"); // leave charset out for default
         BufferedReader bufferedReader = new BufferedReader(reader);
 		ArrayList<String> Text_genrated = new ArrayList<String>();
 		ArrayList<String> summary_genrated = new ArrayList<String>();
+		ArrayList<String> system_generated = new ArrayList<String>();
 		String line = bufferedReader.readLine();
-        while ((line = bufferedReader.readLine()) != null) {        	
+        while ((line = bufferedReader.readLine()) != null) {
         	String [] row = line.split(",");
         	Text_genrated.add(row[1]);
         	summary_genrated.add(row[2]);
+        	//System.out.println(row[1]);
+        	system_generated.add((new Textrank(row[1])).getSummarizedText());
+        	
         }
-        
+       System.out.println(system_generated.get(0));
     } catch (Exception e) {
         System.err.println(e.getMessage()); // handle all exceptions
 
-    }*/
+    }
 }
 	
 	public static String readfile(String filename) {
@@ -72,7 +77,7 @@ public class Main {
 			LightStemmer8 l8 = new LightStemmer8();
 			LightStemmer10 l10 = new LightStemmer10();
 			RootStemmer rt = new RootStemmer();
-			String word = "بينه";
+			String word = "Ø¨ÙŠÙ†Ù‡";
 			System.out.println(l1.findStem(word));
 			System.out.println(l2.findStem(word));
 			System.out.println(l3.findStem(word));
