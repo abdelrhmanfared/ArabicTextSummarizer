@@ -9,16 +9,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
-import preprocessing.Preprocessing;
-import utilities.AraNormalizer;
-import utilities.DiacriticsRemover;
-import utilities.LightStemmer10;
-import utilities.LightStemmer2;
-import utilities.PunctuationsRemover;
-import utilities.TrainedTokenizer;
+import preprocessing.Preprocessing1;
 
 class Score {
 	public int index;
@@ -52,63 +44,53 @@ class Sortbyindex implements Comparator<Score> {
 
 public class Textrank {
 	private String summarizedText;
-	private Preprocessing pre;
-	AraNormalizer arn = new AraNormalizer();
-	DiacriticsRemover dr = new DiacriticsRemover();
-	LightStemmer10 ls10 = new LightStemmer10();
+	private Preprocessing1 pre;
 
 	public String getSummarizedText() {
 		return summarizedText;
 	}
 
 	public Textrank(String text, int no_sentences) throws Exception {
-		pre = new Preprocessing(text);
+		pre = new Preprocessing1(text);
 		double ratio = (double) 1 / 3;
 		summarizedText = "";
 
 		// Parameters
-		String[] originalsentences = pre.getOriginalText_sentences();
-		if(originalsentences.length == 1)
+		if(pre.getOriginalSentences().length == 1)
 		{
-			summarizedText = originalsentences[0];
+			summarizedText = pre.getOriginalSentences()[0];
 			return;
 		}
-		String[] rooText_sentences = pre.getRootText_sentences();
-		String[][] rootSentencesTokens = pre.getrootSentencesTokens();
-		String[] light_sentences = pre.getLightText_sentences();
 		
-		if (rooText_sentences.length != originalsentences.length
-				|| rootSentencesTokens.length != originalsentences.length
-				|| light_sentences.length != originalsentences.length
-				|| no_sentences > originalsentences.length)
+		if (no_sentences > pre.getOriginalSentences().length)
 			throw new Exception("LENGTHS NOT THE SAME!");
 
 		// Extract features
-		// double[] keyPhrases = keyPhrases(lightText_sentences, topKeys, post);
+		//double[] keyPhrases = keyPhrases(pre.getLight10Sentences(), topKeys, post);
 		//double[] sentenceLocation = sentencelocation(pre.getOriginal_paragraphs());
-		// double[] titleSimilarity = similarityWithTitle(lightText_sentences, tokens,
-		// lightSentencesTokens, title, topKeys);
-		//double[] senCentrality = sentenceCentrality(rooText_sentences, pre.getRootTextTokens(), rootSentencesTokens);
-		double[] senLength = sentenceLength(rootSentencesTokens);
-		double[] cuePhrases = cueWords(light_sentences);
-		double[] strongWords = positiveKeyWords(light_sentences);
-		double[] numberScores = numberScore(rooText_sentences, rootSentencesTokens);
-		double[] weakWords = WeakWords_Scoring(light_sentences);
+		//double[] titleSimilarity = similarityWithTitle(pre.getLightSentencesTokens(), pre.getTokens(),
+		//pre.getLight10SentencesTokens(), title, topKeys);
+		double[] senCentrality = sentenceCentrality(pre.getRootSentences(), pre.getRootTokens(), pre.getRootSentencesTokens());
+		double[] senLength = sentenceLength(pre.getRootSentencesTokens());
+		double[] cuePhrases = cueWords(pre.getLight10Sentences());
+		double[] strongWords = positiveKeyWords(pre.getLight10Sentences());
+		double[] numberScores = numberScore(pre.getRootSentences(), pre.getRootSentencesTokens());
+		double[] weakWords = WeakWords_Scoring(pre.getLight10Sentences());
 
 
 		// Ranking
 		ArrayList<Score> sentences_scores = new ArrayList<Score>();
 
-		for (int i = 0; i < originalsentences.length; i++) {
+		for (int i = 0; i < pre.getOriginalSentences().length; i++) {
 			sentences_scores.add(new Score(i, /* keyPhrases[i] + */ /*sentenceLocation[i] +*/ /* titleSimilarity[i] + */
-					/*senCentrality[i] +*/ senLength[i] + cuePhrases[i] + strongWords[i] + numberScores[i] + weakWords[i]));
+					senCentrality[i] + senLength[i] + cuePhrases[i] + strongWords[i] + numberScores[i] + weakWords[i]));
 		}
 
 		Collections.sort(sentences_scores, new Sortbyscore());
 
 		int Summarylength = no_sentences;
 		if(no_sentences == -1)
-			Summarylength = (int) (ratio * originalsentences.length);
+			Summarylength = (int) (ratio * pre.getOriginalSentences().length);
 
 		ArrayList<Score> summary = new ArrayList<Score>();
 		for (int i = 0; i < Summarylength; i++)
@@ -116,7 +98,7 @@ public class Textrank {
 		Collections.sort(summary, new Sortbyindex());
 
 		for (Score score : summary)
-			summarizedText += originalsentences[score.index];
+			summarizedText += pre.getOriginalSentences()[score.index];
 
 	}
 
@@ -128,7 +110,7 @@ public class Textrank {
 	}
 
 	// Relating to the position of a sentence to the paragraph and document
-	public double[] sentencelocation(String[] paragraphs) {
+	/*public double[] sentencelocation(String[] paragraphs) {
 
 		int numberOfParagraphs = paragraphs.length;
 		String[][] sentences = new String[numberOfParagraphs][];
@@ -179,7 +161,7 @@ public class Textrank {
 			scores[i] = SentenceLocationScores.get(i).doubleValue();
 
 		return scores;
-	}
+	}*/
 
 	public double[] cosineTitle(String[] titleTokens, String[] token, String[] sentences, String[][] sentenceTokens) {
 		int new_len = token.length + titleTokens.length;
@@ -261,9 +243,9 @@ public class Textrank {
 		String[] title = tokens[0].split(" ");
 
 		for (int i = 0; i < title.length; i++) {
-			title[i] = arn.normalize(title[i]);
-			title[i] = dr.removeDiacritics(title[i]);
-			title[i] = ls10.findStem(title[i]);
+			title[i] = pre.arn.normalize(title[i]);
+			title[i] = pre.dr.removeDiacritics(title[i]);
+			title[i] = pre.ls10.findStem(title[i]);
 		}
 
 		double[] sentence_TitleCosineScores = cosineTitle(title, token, sentences_light, sentenceTokens);
@@ -574,15 +556,13 @@ public class Textrank {
 
 	private void findlight(String[] words) throws Exception {
 		for (int i = 0; i < words.length; i++)
-			words[i] = arn.normalize(words[i]);
+			words[i] = pre.arn.normalize(words[i]);
 
-		LightStemmer2 ls2 = new LightStemmer2();
-		TrainedTokenizer tok = new TrainedTokenizer();
 		for (int i = 0; i < words.length; i++) {
-			String[] tokens = tok.tokenize(words[i]);
+			String[] tokens = pre.tok.tokenize(words[i]);
 			String lightText = " ";
 			for (int j = 0; j < tokens.length; j++) {
-				String stem = ls2.findStem(tokens[j]);
+				String stem = pre.ls2.findStem(tokens[j]);
 				lightText = lightText + stem + " ";
 			}
 			words[i] = lightText;

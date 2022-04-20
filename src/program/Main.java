@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 import preprocessing.Preprocessing;
+import preprocessing.Preprocessing1;
 import textrank.Textrank;
 import utilities.*;
 
@@ -25,17 +26,20 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 //import javafx.scene.control.Cell;
 public class Main {
 
-	public static void main(String[] args) throws IOException {
+	public static void main(String[] args)  {
 		// TODO Auto-generated method stub
-		/*String ArabicText = readfile("ArabicText.txt");
+		String ArabicText = readfile("ArabicText.txt");
 		try {
-			Textrank tr = new Textrank(ArabicText);
-			System.out.print(tr.getSummarizedText());
+			Preprocessing1 pre = new Preprocessing1(ArabicText);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		*/
+		
+		
+	}
+	public static void accuracy() throws IOException
+	{
 		XSSFWorkbook workbook = new XSSFWorkbook();
 		XSSFSheet sheet = workbook.createSheet("Accuracy1");
 		XSSFSheet sheet2 = workbook.createSheet("Accuracy2");
@@ -190,6 +194,7 @@ public class Main {
        	fileOutputStream.close();
        	System.out.println("Excel file is Created");
        }catch (FileNotFoundException ex) {}
+       
 }
 	
 	public static float Rouge_1(String reference,String generated,String Method) {
