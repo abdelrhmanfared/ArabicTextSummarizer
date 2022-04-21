@@ -27,15 +27,18 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 public class Main {
 
 	public static void main(String[] args)  {
+		/*
 		// TODO Auto-generated method stub
 		String ArabicText = readfile("ArabicText.txt");
 		try {
-			Preprocessing1 pre = new Preprocessing1(ArabicText);
+			Preprocessing1 pre1 = new Preprocessing1(ArabicText);
+			Preprocessing pre = new Preprocessing(ArabicText);
+			accuracy();
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+		*/
 		
 	}
 	public static void accuracy() throws IOException
@@ -94,8 +97,12 @@ public class Main {
 		float FScore1,FScore2;
 		
 		
-        while ((line = bufferedReader.readLine()) != null && i++ < 10) {
+        while ((line = bufferedReader.readLine()) != null) {
+        	System.out.println("Summarizing article #" + ++i + "...");
         	String [] row = line.split(",");
+        	if(row.length > 3)
+            	System.out.println("Dataset reading error !");
+        	
         	Text_genrated.add(row[1]);
         	summary_genrated.add(row[2]);
         	//System.out.println(row[1]);

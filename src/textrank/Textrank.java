@@ -70,7 +70,7 @@ public class Textrank {
 		//double[] sentenceLocation = sentencelocation(pre.getOriginal_paragraphs());
 		//double[] titleSimilarity = similarityWithTitle(pre.getLightSentencesTokens(), pre.getTokens(),
 		//pre.getLight10SentencesTokens(), title, topKeys);
-		double[] senCentrality = sentenceCentrality(pre.getRootSentences(), pre.getRootTokens(), pre.getRootSentencesTokens());
+		//double[] senCentrality = sentenceCentrality(pre.getRootSentences(), pre.getRootTokens(), pre.getRootSentencesTokens());
 		double[] senLength = sentenceLength(pre.getRootSentencesTokens());
 		double[] cuePhrases = cueWords(pre.getLight10Sentences());
 		double[] strongWords = positiveKeyWords(pre.getLight10Sentences());
@@ -83,7 +83,7 @@ public class Textrank {
 
 		for (int i = 0; i < pre.getOriginalSentences().length; i++) {
 			sentences_scores.add(new Score(i, /* keyPhrases[i] + */ /*sentenceLocation[i] +*/ /* titleSimilarity[i] + */
-					senCentrality[i] + senLength[i] + cuePhrases[i] + strongWords[i] + numberScores[i] + weakWords[i]));
+					/*senCentrality[i] +*/ senLength[i] + cuePhrases[i] + strongWords[i] + numberScores[i] + weakWords[i]));
 		}
 
 		Collections.sort(sentences_scores, new Sortbyscore());

@@ -50,6 +50,7 @@ public class Preprocessing1 {
 		dr = new DiacriticsRemover();
 		pr = new PunctuationsRemover();
 		ls10 = new LightStemmer10();
+		ls2 = new LightStemmer2();
 		sd = new SentenceDetector();
 
 		// Sentences
@@ -103,10 +104,19 @@ public class Preprocessing1 {
 
 			light10Sentences[i] = light10Sentence.trim();
 			rootSentences[i] = rootSentence.trim();
-		}
 
-		tokens = (String[]) tokensArrayList.toArray();
-		rootTokens = (String[]) rootTokensArrayList.toArray();
+			// TESTING !!!!!
+			//System.out.println(originalSentences[i]);
+			//System.out.println(normalizedSentence);
+			//System.out.println(light10Sentences[i]);
+			//System.out.println(rootSentences[i]);
+			// END TESTING !!!!!
+		}
+		
+		tokens = new String[tokensArrayList.size()];
+		tokens = tokensArrayList.toArray(tokens);
+		rootTokens = new String[rootTokensArrayList.size()];
+		rootTokens = rootTokensArrayList.toArray(rootTokens);
 
 	}
 
