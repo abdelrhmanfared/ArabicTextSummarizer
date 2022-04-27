@@ -46,14 +46,8 @@ public class Preprocessing1 {
 	}
 
 	public Preprocessing1(String arabictext) throws IOException, ClassNotFoundException {
-		tok = new TrainedTokenizer();
-		rs = new RootStemmer();
-		arn = new AraNormalizer();
-		dr = new DiacriticsRemover();
-		pr = new PunctuationsRemover();
-		ls10 = new LightStemmer10();
-		ls2 = new LightStemmer2();
-		sd = new SentenceDetector();
+		
+		this();
 
 		// Sentences
 		arabictext = arabictext.trim();
@@ -184,10 +178,6 @@ public class Preprocessing1 {
 	 */
 	public String getLightText() {
 		return lightText;
-	}
-
-	public String getOrginal() {
-		return Orginal;
 	}
 
 	public String getOrginal() {

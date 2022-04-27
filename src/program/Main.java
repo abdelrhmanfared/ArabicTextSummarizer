@@ -27,7 +27,7 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 public class Main {
 
 	public static void main(String[] args)  {
-		/*
+		
 		// TODO Auto-generated method stub
 		String ArabicText = readfile("ArabicText.txt");
 		try {
@@ -38,7 +38,7 @@ public class Main {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		*/
+		
 		
 	}
 	public static void accuracy() throws IOException

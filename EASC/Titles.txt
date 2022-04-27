@@ -1,0 +1,153 @@
+Art and Music (1)*لودفيج فان بيتهوفن
+Art and Music (2)*الناي
+Art and Music (3)*العود
+art and music (8)*نجيب محفوظ
+art and music (9)*فيروز
+Art and Music (10)*لوتشانو بافاروتي
+education (4)*الرياضيات
+education (5)*الفيزياء
+education (6)*الأحياء
+education (7)*كيمياء
+environment (1)*سحاب
+environment (4)*البركان
+environment (5)*العاصفة الثلجية
+environment (6)*نفط
+environment (7)*الزلزال
+environment (8)*الثلج
+environment (9)*الحيتان
+environment (10)*الشمس
+environment (11)*الثعبان
+environment (12)*الفضة
+environment (13)*البحر
+environment (14)*المطر
+environment (15)*الأوزون
+environment (16)*قمر
+environment (17)*الأسد
+environment (18)*البرق
+environment (19)*الحديد
+environment (20)*الذهب
+environment (21)*السمك
+environment (22)*علم الفلك
+environment (23)*الطاقة
+environment (24)*ديناصور
+environment (25)*الألماس
+environment (26)*التمر
+environment (27)*الفحم الحجري
+environment (28)*القطة
+environment (29)*الجمل
+environment (30)*الدب
+environment (31)*نمل
+environment (32)*الحيوانات
+environment (33)*زحل
+environment (34)*الطبيعة
+finance (1)*المالية
+finance (15)*المصرف
+health (2)*إثنا عشري
+health (3)*المعدة
+health (7)*القلب
+health (8)*الصداع
+health (9)*خلية الدم الحمراء
+health (10)*البنكرياس
+health (11)*مريء
+health (14)*الرئة
+health (15)*سيجارة
+health (16)*المخدرات
+health (17)*الكبد
+politics (6)*الأمم المتحدة
+politics (14)*قضية لوكربي
+politics (15)*تاريخ ليبيا المعاصر
+politics (16)*السياسة البربرية
+politics (17)*حرب اليمن
+politics (18)*حرب فيتنام
+politics (19)*الصراع العربي الإسرائيلي
+politics (20)*الحرب العالمية الثانية
+politics (21)*الحرب الباردة
+religion (1)*المسيحية
+religion (2)*محمد
+religion (3)*الإسلام
+religion (5)*التوراة
+religion (6)*الدين البهائي
+religion (7)*بوذية
+religion (8)*الزرادشتية
+Science and Technology (2)*تويوتا
+Science and Technology (4)*الانسان الآلي
+Science and Technology (5)*مايكروسوفت
+Science and Technology (8)*شاشات اللمس
+Science and Technology (9)*الكاميرا
+Science and Technology (10)*القرص المرن
+Science and Technology (11)*الحاسوب
+Science and Technology (12)*السيارة
+Science and Technology (14)*مرسيدس
+Science and Technology (15)*الصاروخ
+Science and Technology (16)*سفينة
+sport (1)*البيسبول
+sport (2)*كأس العالم لكرة القدم
+sport (3)*السباحة
+sport (4)*الألعاب الأولمبية
+sport (5)*هوكي الجليد
+sport (6)*كرة القدم
+sport (7)*كرة اليد
+sport (8)*الجمباز
+sport (9)*الكارتيه
+sport (10)*الملاكمة
+tourisms (1)*متحف اللوفر
+tourisms (2)*الأردن
+tourisms (3)*مدينة عمان
+tourisms (4)*القدس
+tourisms (5)*نهر النيل
+tourisms (6)*نهر الأردن
+tourisms (7)*الهيمالايا
+tourisms (8)*إمارة دبي
+tourisms (9)*جمهورية الصين الشعبية
+tourisms (10)*فلسطين
+tourisms (11)*البتراء
+tourisms (12)*أهرامات الجيزة
+tourisms (13)*مكتبة الإسكندرية
+tourisms (14)*بيج بن
+Art and Music (7)*
+education (3)*
+environment (3)*
+health (4)*
+health (12)*
+health (13)*
+politics (2)*
+politics (3)*
+politics (4)*
+politics (5)*
+politics (7)*
+politics (8)*
+politics (9)*
+Art and Music (4)*
+Art and Music (5)*
+Art and Music (6)*
+education (1)*
+education (2)*
+finance (2)*
+finance (3)*
+finance (4)*
+finance (5)*
+finance (6)*
+finance (7)*
+finance (8)*
+finance (9)*
+finance (10)*
+finance (11)*
+finance (12)*
+finance (13)*
+finance (14)*
+finance (16)*
+finance (17)*
+health (1)*
+health (5)*
+health (6)*
+politics (1)*
+politics (10)*
+politics (11)*
+politics (12)*
+politics (13)*
+religion (4)*
+Science and Technology (1)*
+Science and Technology (3)*
+Science and Technology (6)*
+Science and Technology (7)*
+Science and Technology (13)*

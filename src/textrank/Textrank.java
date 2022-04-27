@@ -1,14 +1,10 @@
 package textrank;
 
-import java.io.FileNotFoundException;
 import KPminer.*;
-import edu.stanford.nlp.ling.Word;
 
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
-
-import org.apache.commons.math3.analysis.function.Sqrt;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -16,8 +12,6 @@ import java.util.Collections;
 import java.util.Comparator;
 
 import preprocessing.Preprocessing1;
-import utilities.AraNormalizer;
-import utilities.DiacriticsRemover;
 import utilities.StanfordPOSTagger;
 
 class Score {
