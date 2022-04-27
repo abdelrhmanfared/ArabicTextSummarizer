@@ -3,6 +3,7 @@ package preprocessing;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import KPminer.Extractor;
 import utilities.AraNormalizer;
 import utilities.DiacriticsRemover;
 import utilities.LightStemmer10;
@@ -123,7 +124,7 @@ public class Preprocessing1 {
 		rootTokens = rootTokensArrayList.toArray(rootTokens);
 
 	}
-
+	
 	/**
 	 * @return the originalSentences
 	 */
@@ -183,6 +184,14 @@ public class Preprocessing1 {
 	public String getOrginal() {
 		// TODO Auto-generated method stub
 		return Orginal;
+	}
+
+	public String[] KpMinnerWords(int number) {
+		// TODO Auto-generated method stub
+		Extractor extractor = new Extractor();
+		String lightText = getLightText();
+		String[] Words = extractor.getTopN(number, lightText, true);
+		return Words;
 	}
 
 }

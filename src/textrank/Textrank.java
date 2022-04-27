@@ -104,22 +104,25 @@ public class Textrank {
 
 	}
 
-	@SuppressWarnings("unused")
-	public int Key_phreases_SVM(String[] Sentences) {
-		// key phrase frequency 
-		// key phrase length 
-		// proper names 
-		return 0;
+	public double[][] Key_phreases_SVM(String[] Sentences) {
+		String Words [] = pre.KpMinnerWords(7); 
+		double sentanceScore [][] = new double [Sentences.length][3];
+		// function to get key phrase frequency 
+		double kpF [] = KeyphraseFrequency(Sentences ,Words);
+		int kpL [] = KeyphraseLength(Words);
+		int ProperName[] = ProperName(Words);
+		return KpScoreSVM(kpL, ProperName, kpF, Words, Sentences);
 	}
 // A short list of important terms that provide a condensed summary of the main
 	// topics of a document
 	private  double[] keyPhrases(String[] Sentences) {
-		Extractor extractor = new Extractor();
-		String lightText = pre.getLightText();
-		String[] Words = extractor.getTopN(7, lightText, true);
+		String Words [] = pre.KpMinnerWords(7); 
 		// function to get key phrase frequency 
+		// key phrase frequency 
 		double kpF [] = KeyphraseFrequency(Sentences ,Words);
+		// key phrase length 
 		int kpL [] = KeyphraseLength(Words);
+		// proper names 
 		int ProperName[] = ProperName(Words);
 		return KpScore(kpL, ProperName, kpF, Words, Sentences);
 	}
@@ -155,6 +158,7 @@ public class Textrank {
 	}
 
 	private int[] ProperName(String [] words) {
+		
 		// POS Tagging
 // In English data, determiners (DT), nouns (NN, NNS, NNP etc.),
 // verbs (VB, VBD, VBP etc.), prepositions (IN) might be more frequent.
@@ -201,6 +205,22 @@ public class Textrank {
 		}
 		return SentanceKpScore;
 	}
+
+	private double [][] KpScoreSVM(int [] kpL , int [] ProperName , double [] kpF , String[]words , String []  sentences) {
+		double SentanceKpScore[][] = new double[words.length][3];
+		
+		for (int i=0;i<sentences.length;i++) {
+			for (int j=0;j<words.length;j++) {
+				if (sentences[i].contains(" "+words[j]+" ")) {
+					SentanceKpScore[i][0]+=kpF[j];
+					SentanceKpScore[i][1] = (kpL[j] >= 2)?1:0;
+					SentanceKpScore[i][2] = --ProperName[j];					
+				}
+			}
+		}
+		return SentanceKpScore;
+	}
+	
 	// Relating to the position of a sentence to the paragraph and document
 	/*public double[] sentencelocation(String[] paragraphs) {
 
