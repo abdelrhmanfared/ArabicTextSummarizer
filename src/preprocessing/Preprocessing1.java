@@ -24,7 +24,7 @@ public class Preprocessing1 {
 	private String[] rootTokens;
 	
 	private String lightText;
-
+	private String Orginal;
 	public TrainedTokenizer tok;
 	public RootStemmer rs;
 	public AraNormalizer arn;
@@ -57,6 +57,7 @@ public class Preprocessing1 {
 
 		// Sentences
 		arabictext = arabictext.trim();
+		Orginal = arabictext;
 		originalSentences = sd.detectSentences(arabictext);
 		int NO_SENTENCES = originalSentences.length;
 
@@ -183,6 +184,15 @@ public class Preprocessing1 {
 	 */
 	public String getLightText() {
 		return lightText;
+	}
+
+	public String getOrginal() {
+		return Orginal;
+	}
+
+	public String getOrginal() {
+		// TODO Auto-generated method stub
+		return Orginal;
 	}
 
 }

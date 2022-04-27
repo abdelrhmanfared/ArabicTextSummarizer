@@ -2,15 +2,23 @@ package textrank;
 
 import java.io.FileNotFoundException;
 import KPminer.*;
+import edu.stanford.nlp.ling.Word;
+
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
+
+import org.apache.commons.math3.analysis.function.Sqrt;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 
 import preprocessing.Preprocessing1;
+import utilities.AraNormalizer;
+import utilities.DiacriticsRemover;
+import utilities.StanfordPOSTagger;
 
 class Score {
 	public int index;
@@ -102,13 +110,103 @@ public class Textrank {
 
 	}
 
-	// A short list of important terms that provide a condensed summary of the main
-	// topics of a document
 	@SuppressWarnings("unused")
-	private int keyPhrases() {
+	public int Key_phreases_SVM(String[] Sentences) {
+		// key phrase frequency 
+		// key phrase length 
+		// proper names 
 		return 0;
 	}
+// A short list of important terms that provide a condensed summary of the main
+	// topics of a document
+	private  double[] keyPhrases(String[] Sentences) {
+		Extractor extractor = new Extractor();
+		String lightText = pre.getLightText();
+		String[] Words = extractor.getTopN(7, lightText, true);
+		// function to get key phrase frequency 
+		double kpF [] = KeyphraseFrequency(Sentences ,Words);
+		int kpL [] = KeyphraseLength(Words);
+		int ProperName[] = ProperName(Words);
+		return KpScore(kpL, ProperName, kpF, Words, Sentences);
+	}
 
+	private double[] KeyphraseFrequency(String[] sentences, String[] words) {
+		int totalKPF = 0;
+		int SentanceScore [] = new int [words.length];
+		for (int i=0;i<sentences.length;i++) {
+			for (int j=0;j<words.length;j++) {
+				if (sentences[i].contains(words[j])) {
+					totalKPF++;
+					SentanceScore[j]++;
+				}
+			}
+		}
+		double Score[] = new double [words.length];
+		if (totalKPF == 0)return Score;
+		for (int i=0;i<Score.length;i++)Score[i] = (SentanceScore[i]*1.0/totalKPF);
+		
+		
+		// TODO Auto-generated method stub
+		return Score;
+	}
+
+	private int[] KeyphraseLength( String[] words) {
+		int kpL[] = new int [words.length];
+//		return length of number of words consist the key phrase
+		for (int i=0;i<words.length;i++) {
+			String s[] = words[i].split(" ");
+			kpL[i] = s.length;
+		}
+		return kpL;
+	}
+
+	private int[] ProperName(String [] words) {
+		// POS Tagging
+// In English data, determiners (DT), nouns (NN, NNS, NNP etc.),
+// verbs (VB, VBD, VBP etc.), prepositions (IN) might be more frequent.
+		
+
+		int pN [] = new int[words.length];
+		try {
+		StanfordPOSTagger stf = new StanfordPOSTagger();
+		String txt = pre.getOrginal();
+		String pos = stf.tagText(txt);
+		pos = pre.arn.normalize(pos);
+		pos = pre.dr.removeDiacritics(pos);
+		String Proper_Names []=pos.split("/|\\s");
+		Arrays.fill(pN, 1);
+		for(int i=0;i<Proper_Names.length;i++) {
+			Proper_Names[i] = pre.ls10.findStem(Proper_Names[i]);
+			for (int j=0;j<words.length;j++) {
+				if (Proper_Names[i].contains(words[j])) {
+					if (Proper_Names[i].equals("NNP") || Proper_Names[i].equals("NNPS"))pN[j] = 2;
+				}
+			}
+		}
+		}
+		catch (Exception e) {
+			// TODO: handle exception
+		}
+		
+		return pN;
+	}
+	
+	private double [] KpScore(int [] kpL , int [] ProperName , double [] kpF , String[]words , String []  sentences) {
+		double KpScore[] = new double[words.length];
+		for (int i=0;i<words.length;i++) {
+			KpScore[i] = ProperName[i] * kpF[i]*1.0* Math.sqrt(kpL[i]);
+		}
+		double SentanceKpScore[] = new double[words.length];
+		
+		for (int i=0;i<sentences.length;i++) {
+			for (int j=0;j<words.length;j++) {
+				if (sentences[i].contains(words[j])) {
+					SentanceKpScore[i]+=KpScore[j];
+				}
+			}
+		}
+		return SentanceKpScore;
+	}
 	// Relating to the position of a sentence to the paragraph and document
 	/*public double[] sentencelocation(String[] paragraphs) {
 
@@ -435,7 +533,7 @@ public class Textrank {
 
 		try {
 			findlight(cue_words);
-
+			
 			for (int i = 0; i < sentences.length; i++) {
 				for (int j = 0; j < cue_words.length; j++) {
 					if (sentences[i].contains(cue_words[j])) {
@@ -474,7 +572,7 @@ public class Textrank {
 					}
 				}
 			}
-
+			
 			if (Total == 0)
 				return Sentance_Score;
 			for (int i = 0; i < sentance.length; i++) {
@@ -553,7 +651,7 @@ public class Textrank {
 
 		return sentenceScoreWW;
 	}
-
+	
 	private void findlight(String[] words) throws Exception {
 		for (int i = 0; i < words.length; i++)
 			words[i] = pre.arn.normalize(words[i]);
