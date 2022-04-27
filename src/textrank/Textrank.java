@@ -135,7 +135,7 @@ public class Textrank {
 		int SentanceScore [] = new int [words.length];
 		for (int i=0;i<sentences.length;i++) {
 			for (int j=0;j<words.length;j++) {
-				if (sentences[i].contains(words[j])) {
+				if (sentences[i].contains(" "+words[j]+" ")) {
 					totalKPF++;
 					SentanceScore[j]++;
 				}
@@ -178,7 +178,7 @@ public class Textrank {
 		for(int i=0;i<Proper_Names.length;i++) {
 			Proper_Names[i] = pre.ls10.findStem(Proper_Names[i]);
 			for (int j=0;j<words.length;j++) {
-				if (Proper_Names[i].contains(words[j])) {
+				if (Proper_Names[i].contains(" "+words[j]+" ")) {
 					if (Proper_Names[i].equals("NNP") || Proper_Names[i].equals("NNPS"))pN[j] = 2;
 				}
 			}
@@ -200,7 +200,7 @@ public class Textrank {
 		
 		for (int i=0;i<sentences.length;i++) {
 			for (int j=0;j<words.length;j++) {
-				if (sentences[i].contains(words[j])) {
+				if (sentences[i].contains(" "+words[j]+" ")) {
 					SentanceKpScore[i]+=KpScore[j];
 				}
 			}
