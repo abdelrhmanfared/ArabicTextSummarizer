@@ -22,6 +22,8 @@ public class Preprocessing1 {
 
 	private String[] tokens;
 	private String[] rootTokens;
+	
+	private String lightText;
 
 	public TrainedTokenizer tok;
 	public RootStemmer rs;
@@ -68,7 +70,9 @@ public class Preprocessing1 {
 		// Sentences' Tokens
 		light10SentencesTokens = new String[NO_SENTENCES][];
 		rootSentencesTokens = new String[NO_SENTENCES][];
-
+		
+		lightText = "";
+		
 		for (int i = 0; i < NO_SENTENCES; i++) {
 			String normalizedSentence = arn.normalize(originalSentences[i]);
 			normalizedSentence = dr.removeDiacritics(normalizedSentence);
@@ -87,7 +91,10 @@ public class Preprocessing1 {
 
 				String light10Token = ls10.findStem(sentenceTokens[j]);
 				String rootToken = rs.findRoot(sentenceTokens[j]);
-
+				
+				// Text
+				lightText += light10Token;
+				
 				// Sentences
 				light10Sentence += " " + light10Token;
 				rootSentence += " " + rootToken;
@@ -112,6 +119,8 @@ public class Preprocessing1 {
 			//System.out.println(rootSentences[i]);
 			// END TESTING !!!!!
 		}
+		
+		lightText = lightText.trim();
 		
 		tokens = new String[tokensArrayList.size()];
 		tokens = tokensArrayList.toArray(tokens);
@@ -167,6 +176,13 @@ public class Preprocessing1 {
 	 */
 	public String[] getRootTokens() {
 		return rootTokens;
+	}
+
+	/**
+	 * @return the lightText
+	 */
+	public String getLightText() {
+		return lightText;
 	}
 
 }
