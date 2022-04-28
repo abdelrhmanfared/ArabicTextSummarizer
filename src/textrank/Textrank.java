@@ -1,18 +1,26 @@
 package textrank;
 
 import KPminer.*;
+import edu.stanford.nlp.ling.Sentence;
+import javafx.util.Pair;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 
+import preprocessing.Preprocessing;
 import preprocessing.Preprocessing1;
 import utilities.StanfordPOSTagger;
+import utilities.TrainedTokenizer;
 
 class Score {
 	public int index;
@@ -43,7 +51,68 @@ class Sortbyindex implements Comparator<Score> {
 		return a.index - b.index;
 	}
 }
-
+class CosineSimlarity{
+	public double[][] BOW(String[] sentences,String[] tokens) throws FileNotFoundException, IOException {
+		HashSet<String> BOW = new HashSet<String>();
+		for(String token : tokens)
+			BOW.add(token);
+	Map<String, ArrayList<Pair<String, Integer>>> BowMatrix = new HashMap<String,ArrayList<Pair<String, Integer>>>(); 
+	int termCount = 0;	
+		for(String BOWord : BOW)
+		{
+				for(int i=0;i<sentences.length;i++)
+				{
+					termCount = termCount(sentences[i], BOWord);
+					if(!BowMatrix.containsKey(sentences[i]))
+					{ArrayList<Pair<String, Integer>> list= new ArrayList<Pair<String,Integer>>();
+					 list.add(new Pair<String, Integer>(BOWord, termCount));
+					 BowMatrix.put(sentences[i],list);}
+					else
+					 BowMatrix.get(sentences[i]).add(new Pair<String, Integer>(BOWord, termCount));
+				}
+		}
+		
+		double[][] cosineBOW = new double[sentences.length][sentences.length];
+		for(int i=0;i<sentences.length;i++)
+		{
+			for(int j=0;j<sentences.length;j++)
+			{
+				if(i==j)
+					cosineBOW[i][j] = 1.0;
+				else if(cosineBOW[j][i] != 0)
+					cosineBOW[i][j] = cosineBOW[j][i];
+				else
+				{
+					double top=0;
+					double bottom=0;
+					double bottom1 =0;
+					double bottom2 =0;
+					
+					for(int k=0;k<BowMatrix.get(sentences[i]).size();k++)
+					{
+						top+=(BowMatrix.get(sentences[i]).get(k).getValue()*BowMatrix.get(sentences[j]).get(k).getValue());
+						bottom1+= Math.pow(BowMatrix.get(sentences[i]).get(k).getValue(), 2.0);
+						bottom2+=Math.pow(BowMatrix.get(sentences[j]).get(k).getValue(), 2.0);
+					}
+					bottom = Math.sqrt(bottom1) * Math.sqrt(bottom2);
+					cosineBOW[i][j] = top/bottom;
+				}
+			}
+		}
+		return cosineBOW;
+	}
+	public int termCount(String sentence,String term) throws FileNotFoundException, IOException {
+		TrainedTokenizer tokenizer = new TrainedTokenizer();
+		String[] tokens = tokenizer.tokenize(sentence);
+		int counter = 0;
+		
+		for(String token : tokens)
+			if(term.equals(token.toString()))
+				counter++;
+		
+		return counter;
+	}
+}
 public class Textrank {
 	private String summarizedText;
 	private Preprocessing1 pre;
@@ -72,7 +141,7 @@ public class Textrank {
 		//double[] sentenceLocation = sentencelocation(pre.getOriginal_paragraphs());
 		//double[] titleSimilarity = similarityWithTitle(pre.getLightSentencesTokens(), pre.getTokens(),
 		//pre.getLight10SentencesTokens(), title, topKeys);
-		//double[] senCentrality = sentenceCentrality(pre.getRootSentences(), pre.getRootTokens(), pre.getRootSentencesTokens());
+		double[] senCentrality = sentenceCentrality(pre.getRootSentences(), pre.getRootTokens(), pre.getRootSentencesTokens());
 		double[] senLength = sentenceLength(pre.getRootSentencesTokens());
 		double[] cuePhrases = cueWords(pre.getLight10Sentences());
 		double[] strongWords = positiveKeyWords(pre.getLight10Sentences());
@@ -85,7 +154,7 @@ public class Textrank {
 
 		for (int i = 0; i < pre.getOriginalSentences().length; i++) {
 			sentences_scores.add(new Score(i, /* keyPhrases[i] + */ /*sentenceLocation[i] +*/ /* titleSimilarity[i] + */
-					/*senCentrality[i] +*/ senLength[i] + cuePhrases[i] + strongWords[i] + numberScores[i] + weakWords[i]));
+					senCentrality[i] + senLength[i] + cuePhrases[i] + strongWords[i] + numberScores[i] + weakWords[i]));
 		}
 
 		Collections.sort(sentences_scores, new Sortbyscore());
@@ -396,8 +465,40 @@ public class Textrank {
 
 	// The similarity or the overlapping between a sentence and other sentences in
 	// the document
-	private double[] sentenceCentrality(String[] sentences, String[] tokens, String[][] senTokens) {
-		Set<String> words = new HashSet<String>();
+	private double[] sentenceCentrality(String[] sentences, String[] tokens, String[][] senTokens) throws FileNotFoundException, IOException {
+		
+		double Threshold = 0.2;
+		double [][] CosineSimMatrix;
+		double []CentralityMatrix = new double[sentences.length];
+		CosineSimlarity cosSim = new CosineSimlarity();
+		CosineSimMatrix = cosSim.BOW(sentences, tokens);
+		for(int i=0;i<CosineSimMatrix.length;i++)
+		{
+			for(int j=0;j<CosineSimMatrix[i].length;j++)
+				System.out.print(CosineSimMatrix[i][j]+" ");
+			System.out.println();
+		}
+				
+		Map<String, Integer> SimlarityDegree = new HashMap<String, Integer>();
+		int MaxDegree = 0;
+		int SentenceDegree = 0;
+		for(int i=0;i<CosineSimMatrix.length;i++)
+		{
+			for(int j=0;j<CosineSimMatrix[i].length;j++)
+				if(CosineSimMatrix[i][j] >= Threshold)
+					SentenceDegree++;
+		
+			SimlarityDegree.put(sentences[i], SentenceDegree);
+			if(SentenceDegree > MaxDegree)
+				MaxDegree = SentenceDegree;
+		}
+		int k=0;
+		for(Map.Entry<String, Integer> entry : SimlarityDegree.entrySet())
+			{CentralityMatrix[k] = entry.getValue();k++;}
+		
+		return CentralityMatrix;
+		
+		/*Set<String> words = new HashSet<String>();
 		for (String str : tokens) {
 			words.add(str);
 		}
@@ -477,7 +578,7 @@ public class Textrank {
 			}
 		}
 
-		return senCentrality;
+		return senCentrality;*/
 	}
 
 	private double[] sentenceLength(String[][] sentences_words) {
