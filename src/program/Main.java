@@ -32,7 +32,7 @@ public class Main {
 	public static void main(String[] args) throws IOException  {
 		
 		// TODO Auto-generated method stub
-		String ArabicText = readfile("ArabicText.txt");
+		/*String ArabicText = readfile("ArabicText.txt");
 		try {
 			//Preprocessing1 pre1 = new Preprocessing1(ArabicText);
 			//Preprocessing pre = new Preprocessing(ArabicText);
@@ -60,7 +60,9 @@ public class Main {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 			e.getMessage();
-		}		
+		}		*/
+		accuracy();
+
 
 	}
 	public static String 	readall(String fullpath) throws IOException {

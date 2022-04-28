@@ -355,7 +355,7 @@ private double[] sentenceCentrality(String[] sentences, String[] tokens, String[
 		double [][] CosineSimMatrix;
 		double []CentralityMatrix = new double[sentences.length];
 		CosineSimlarity cosSim = new CosineSimlarity();
-		CosineSimMatrix = cosSim.BOW(sentences, tokens);
+		CosineSimMatrix = cosSim.TF_IDF(sentences, tokens);
 		for(int i=0;i<CosineSimMatrix.length;i++)
 		{
 			for(int j=0;j<CosineSimMatrix[i].length;j++)
