@@ -29,7 +29,7 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 //import javafx.scene.control.Cell;
 public class Main {
 
-	public static void main(String[] args)  {
+	public static void main(String[] args) throws IOException  {
 		
 		// TODO Auto-generated method stub
 		String ArabicText = readfile("ArabicText.txt");
@@ -59,8 +59,8 @@ public class Main {
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}
-		
+			e.getMessage();
+		}		
 		
 	}
 	public static String 	readall(String fullpath) throws IOException {
