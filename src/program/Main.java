@@ -34,8 +34,9 @@ public class Main {
 		// TODO Auto-generated method stub
 		String ArabicText = readfile("ArabicText.txt");
 		try {
-			Preprocessing1 pre1 = new Preprocessing1(ArabicText);
-			Preprocessing pre = new Preprocessing(ArabicText);
+			//Preprocessing1 pre1 = new Preprocessing1(ArabicText);
+			//Preprocessing pre = new Preprocessing(ArabicText);
+			Textrank tr = new Textrank(ArabicText, null, -1);
 			String path = "‪C:\\Users\\body fared\\Documents\\GitHub\\ArabicTextSummarizer\\EASC\\";
 			InputStream fileInputStream = new FileInputStream(path+"Titles.txt");
 	        Reader reader = new InputStreamReader(fileInputStream, "UTF-8");
@@ -54,7 +55,7 @@ public class Main {
 	        	Articles.add(readall(path+"\\Articles\\"+FileName.get(i)+".txt")); 
 	        	Summaries.add(readall(path+"\\Summaries\\"+FileName.get(i)+"_A.txt")); 
 	      }
-			accuracy();
+			//accuracy();
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -136,7 +137,7 @@ public class Main {
         	Text_genrated.add(row[1]);
         	summary_genrated.add(row[2]);
         	//System.out.println(row[1]);
-        	Textrank tr = new Textrank(row[1], -1);
+        	Textrank tr = new Textrank(row[1], null, -1);
         	system_generated.add(tr.getSummarizedText());
             //System.out.println(system_generated.get(i)+"\n\n");
             /*System.out.printf("%f,%f,%f\n",

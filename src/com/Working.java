@@ -39,7 +39,7 @@ public class Working extends HttpServlet {
 		Textrank tr;
 		try {
 			// String text = program.Main.readfile("ArabicText.txt");
-			tr = new Textrank(text, -1);
+			tr = new Textrank(text, null, -1);
 			request.setAttribute("original", text);
 			request.setAttribute("result", tr.getSummarizedText());
 			request.getRequestDispatcher("HomeJSP.jsp").forward(request, response);

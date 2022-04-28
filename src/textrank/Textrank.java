@@ -7,40 +7,9 @@ import java.util.Set;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.Comparator;
 
 import preprocessing.Preprocessing1;
 import utilities.StanfordPOSTagger;
-
-class Score {
-	public int index;
-	public double score;
-
-	public Score(int index, double score) {
-		this.index = index;
-		this.score = score;
-	}
-}
-
-class Sortbyscore implements Comparator<Score> {
-
-	// Method
-	// Sorting in descending order of score number
-	public int compare(Score a, Score b) {
-
-		return Double.compare(b.score, a.score);
-	}
-}
-
-class Sortbyindex implements Comparator<Score> {
-
-	// Method
-	// Sorting in ascending order of index number
-	public int compare(Score a, Score b) {
-
-		return a.index - b.index;
-	}
-}
 
 public class Textrank {
 	private String summarizedText;
@@ -52,7 +21,6 @@ public class Textrank {
 
 	public Textrank(String text, String title, int no_sentences) throws Exception {
 		pre = new Preprocessing1(text);
-		double ratio = (double) 1 / 3;
 		summarizedText = "";
 
 		// Parameters
@@ -65,10 +33,10 @@ public class Textrank {
 			throw new Exception("LENGTHS NOT THE SAME!");
 
 		// Extract features
-		// double[] keyPhrases = keyPhrases(pre.getLight10Sentences(), topKeys, post);
+		//double[] keyPhrases = keyPhrases(pre.getLight10Sentences());
 		double[] sentenceLocation = sentencelocation(pre.getParagraphsSentences(), pre.getOriginalSentences().length);
-		double[] titleSimilarity = similarityWithTitle(pre.getLight10Sentences(), pre.getTokens(),
-				pre.getLight10SentencesTokens(), title, pre.KpMinnerWords(7));
+		//double[] titleSimilarity = similarityWithTitle(pre.getLight10Sentences(), pre.getTokens(),
+				//pre.getLight10SentencesTokens(), title, pre.KpMinnerWords(7));
 		// double[] senCentrality = sentenceCentrality(pre.getRootSentences(),
 		// pre.getRootTokens(), pre.getRootSentencesTokens());
 		double[] senLength = sentenceLength(pre.getRootSentencesTokens());
@@ -81,18 +49,15 @@ public class Textrank {
 		ArrayList<Score> sentences_scores = new ArrayList<Score>();
 
 		for (int i = 0; i < pre.getOriginalSentences().length; i++) {
-			sentences_scores.add(new Score(i, /* keyPhrases[i] + */ /* sentenceLocation[i] + */ /*
-																								 * titleSimilarity[i] +
-																								 */
-					/* senCentrality[i] + */ senLength[i] + cuePhrases[i] + strongWords[i] + numberScores[i]
-							+ weakWords[i]));
+			sentences_scores.add(new Score(i, /*keyPhrases[i] +*/ sentenceLocation[i] + //titleSimilarity[i] +
+			/* senCentrality[i] + */ senLength[i] + cuePhrases[i] + strongWords[i] + numberScores[i] + weakWords[i]));
 		}
 
 		Collections.sort(sentences_scores, new Sortbyscore());
 
 		int Summarylength = no_sentences;
 		if (no_sentences == -1)
-			Summarylength = (int) (ratio * pre.getOriginalSentences().length);
+			Summarylength = (int) ((double) 1 / 3 * pre.getOriginalSentences().length);
 
 		ArrayList<Score> summary = new ArrayList<Score>();
 		for (int i = 0; i < Summarylength; i++)
@@ -252,8 +217,9 @@ public class Textrank {
 		// rem
 		int ind = paragraphsSentences[0].length;
 		for (int i = 1; i < paragraphsSentences.length - 1; i++) {
+			ind++;
 			for (int j = 1; j < paragraphsSentences[i].length; j++) {
-				SentenceLocationScores[++ind] = 1.0 / Math.sqrt(((double) j + 1.0) + (double) ((i + 1) * (i + 1)));
+				SentenceLocationScores[ind++] = 1.0 / Math.sqrt(((double) j + 1.0) + (double) ((i + 1) * (i + 1)));
 			}
 		}
 

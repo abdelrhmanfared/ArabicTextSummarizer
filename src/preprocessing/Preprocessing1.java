@@ -102,7 +102,7 @@ public class Preprocessing1 {
 					String rootToken = rs.findRoot(sentenceTokens[k]);
 
 					// Text
-					lightText += light10Token;
+					lightText += " " + light10Token;
 
 					// Sentences
 					light10Sentence += " " + light10Token;
