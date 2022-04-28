@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -12,6 +13,8 @@ import java.io.PrintWriter;
 import java.io.Reader;
 import java.util.ArrayList;
 import java.util.Scanner;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 import preprocessing.Preprocessing;
 import preprocessing.Preprocessing1;
@@ -33,6 +36,24 @@ public class Main {
 		try {
 			Preprocessing1 pre1 = new Preprocessing1(ArabicText);
 			Preprocessing pre = new Preprocessing(ArabicText);
+			String path = "‪C:\\Users\\body fared\\Documents\\GitHub\\ArabicTextSummarizer\\EASC\\";
+			InputStream fileInputStream = new FileInputStream(path+"Titles.txt");
+	        Reader reader = new InputStreamReader(fileInputStream, "UTF-8");
+	        BufferedReader bufferedReader = new BufferedReader(reader);
+	        String T = "";
+	        ArrayList<String> FileName  = new ArrayList<String>();
+	        ArrayList<String> title  = new ArrayList<String>();
+	        ArrayList<String> Articles  = new ArrayList<String>();
+	        ArrayList<String> Summaries  = new ArrayList<String>();	        
+	        while( (T = bufferedReader.readLine()) != null) {	       
+	        	String[] v = T.split("\\*");
+	    		FileName.add(v[0]);
+	    		if (v.length > 1) {title.add(v[1]);}
+	        }
+	        for (int i=0;i<FileName.size();i++) {
+	        	Articles.add(readall(path+"\\Articles\\"+FileName.get(i)+".txt")); 
+	        	Summaries.add(readall(path+"\\Summaries\\"+FileName.get(i)+"_A.txt")); 
+	      }
 			accuracy();
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
@@ -41,6 +62,15 @@ public class Main {
 		
 		
 	}
+	public static String 	readall(String fullpath) throws IOException {
+		InputStream fs = new FileInputStream(fullpath);
+		Reader rd = new InputStreamReader(fs, "UTF-8");
+        BufferedReader bf = new BufferedReader(rd);
+        String tmp = "" , s = "";
+        while((s = bf.readLine()) != null)tmp+=s;
+        return tmp;		
+	}
+
 	public static void accuracy() throws IOException
 	{
 		XSSFWorkbook workbook = new XSSFWorkbook();
