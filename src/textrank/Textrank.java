@@ -1,7 +1,5 @@
 package textrank;
 
-import KPminer.*;
-
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
@@ -52,46 +50,48 @@ public class Textrank {
 		return summarizedText;
 	}
 
-	public Textrank(String text, int no_sentences) throws Exception {
+	public Textrank(String text, String title, int no_sentences) throws Exception {
 		pre = new Preprocessing1(text);
 		double ratio = (double) 1 / 3;
 		summarizedText = "";
 
 		// Parameters
-		if(pre.getOriginalSentences().length == 1)
-		{
+		if (pre.getOriginalSentences().length == 1) {
 			summarizedText = pre.getOriginalSentences()[0];
 			return;
 		}
-		
+
 		if (no_sentences > pre.getOriginalSentences().length)
 			throw new Exception("LENGTHS NOT THE SAME!");
 
 		// Extract features
-		//double[] keyPhrases = keyPhrases(pre.getLight10Sentences(), topKeys, post);
-		//double[] sentenceLocation = sentencelocation(pre.getOriginal_paragraphs());
-		//double[] titleSimilarity = similarityWithTitle(pre.getLightSentencesTokens(), pre.getTokens(),
-		//pre.getLight10SentencesTokens(), title, topKeys);
-		//double[] senCentrality = sentenceCentrality(pre.getRootSentences(), pre.getRootTokens(), pre.getRootSentencesTokens());
+		// double[] keyPhrases = keyPhrases(pre.getLight10Sentences(), topKeys, post);
+		double[] sentenceLocation = sentencelocation(pre.getParagraphsSentences(), pre.getOriginalSentences().length);
+		double[] titleSimilarity = similarityWithTitle(pre.getLight10Sentences(), pre.getTokens(),
+				pre.getLight10SentencesTokens(), title, pre.KpMinnerWords(7));
+		// double[] senCentrality = sentenceCentrality(pre.getRootSentences(),
+		// pre.getRootTokens(), pre.getRootSentencesTokens());
 		double[] senLength = sentenceLength(pre.getRootSentencesTokens());
 		double[] cuePhrases = cueWords(pre.getLight10Sentences());
 		double[] strongWords = positiveKeyWords(pre.getLight10Sentences());
 		double[] numberScores = numberScore(pre.getRootSentences(), pre.getRootSentencesTokens());
 		double[] weakWords = WeakWords_Scoring(pre.getLight10Sentences());
 
-
 		// Ranking
 		ArrayList<Score> sentences_scores = new ArrayList<Score>();
 
 		for (int i = 0; i < pre.getOriginalSentences().length; i++) {
-			sentences_scores.add(new Score(i, /* keyPhrases[i] + */ /*sentenceLocation[i] +*/ /* titleSimilarity[i] + */
-					/*senCentrality[i] +*/ senLength[i] + cuePhrases[i] + strongWords[i] + numberScores[i] + weakWords[i]));
+			sentences_scores.add(new Score(i, /* keyPhrases[i] + */ /* sentenceLocation[i] + */ /*
+																								 * titleSimilarity[i] +
+																								 */
+					/* senCentrality[i] + */ senLength[i] + cuePhrases[i] + strongWords[i] + numberScores[i]
+							+ weakWords[i]));
 		}
 
 		Collections.sort(sentences_scores, new Sortbyscore());
 
 		int Summarylength = no_sentences;
-		if(no_sentences == -1)
+		if (no_sentences == -1)
 			Summarylength = (int) (ratio * pre.getOriginalSentences().length);
 
 		ArrayList<Score> summary = new ArrayList<Score>();
@@ -105,175 +105,160 @@ public class Textrank {
 	}
 
 	public double[][] Key_phreases_SVM(String[] Sentences) {
-		String Words [] = pre.KpMinnerWords(7); 
-		double sentanceScore [][] = new double [Sentences.length][3];
-		// function to get key phrase frequency 
-		double kpF [] = KeyphraseFrequency(Sentences ,Words);
-		int kpL [] = KeyphraseLength(Words);
+		String Words[] = pre.KpMinnerWords(7);
+		double sentanceScore[][] = new double[Sentences.length][3];
+		// function to get key phrase frequency
+		double kpF[] = KeyphraseFrequency(Sentences, Words);
+		int kpL[] = KeyphraseLength(Words);
 		int ProperName[] = ProperName(Words);
 		return KpScoreSVM(kpL, ProperName, kpF, Words, Sentences);
 	}
+
 // A short list of important terms that provide a condensed summary of the main
 	// topics of a document
-	private  double[] keyPhrases(String[] Sentences) {
-		String Words [] = pre.KpMinnerWords(7); 
-		// function to get key phrase frequency 
-		// key phrase frequency 
-		double kpF [] = KeyphraseFrequency(Sentences ,Words);
-		// key phrase length 
-		int kpL [] = KeyphraseLength(Words);
-		// proper names 
+	private double[] keyPhrases(String[] Sentences) {
+		String Words[] = pre.KpMinnerWords(7);
+		// function to get key phrase frequency
+		// key phrase frequency
+		double kpF[] = KeyphraseFrequency(Sentences, Words);
+		// key phrase length
+		int kpL[] = KeyphraseLength(Words);
+		// proper names
 		int ProperName[] = ProperName(Words);
 		return KpScore(kpL, ProperName, kpF, Words, Sentences);
 	}
 
 	private double[] KeyphraseFrequency(String[] sentences, String[] words) {
 		int totalKPF = 0;
-		int SentanceScore [] = new int [words.length];
-		for (int i=0;i<sentences.length;i++) {
-			for (int j=0;j<words.length;j++) {
-				if (sentences[i].contains(" "+words[j]+" ")) {
+		int SentanceScore[] = new int[words.length];
+		for (int i = 0; i < sentences.length; i++) {
+			for (int j = 0; j < words.length; j++) {
+				if (sentences[i].contains(" " + words[j] + " ")) {
 					totalKPF++;
 					SentanceScore[j]++;
 				}
 			}
 		}
-		double Score[] = new double [words.length];
-		if (totalKPF == 0)return Score;
-		for (int i=0;i<Score.length;i++)Score[i] = (SentanceScore[i]*1.0/totalKPF);
-		
-		
+		double Score[] = new double[words.length];
+		if (totalKPF == 0)
+			return Score;
+		for (int i = 0; i < Score.length; i++)
+			Score[i] = (SentanceScore[i] * 1.0 / totalKPF);
+
 		// TODO Auto-generated method stub
 		return Score;
 	}
 
-	private int[] KeyphraseLength( String[] words) {
-		int kpL[] = new int [words.length];
+	private int[] KeyphraseLength(String[] words) {
+		int kpL[] = new int[words.length];
 //		return length of number of words consist the key phrase
-		for (int i=0;i<words.length;i++) {
+		for (int i = 0; i < words.length; i++) {
 			String s[] = words[i].split(" ");
 			kpL[i] = s.length;
 		}
 		return kpL;
 	}
 
-	private int[] ProperName(String [] words) {
-		
+	private int[] ProperName(String[] words) {
+
 		// POS Tagging
 // In English data, determiners (DT), nouns (NN, NNS, NNP etc.),
 // verbs (VB, VBD, VBP etc.), prepositions (IN) might be more frequent.
-		
 
-		int pN [] = new int[words.length];
+		int pN[] = new int[words.length];
 		try {
-		StanfordPOSTagger stf = new StanfordPOSTagger();
-		String txt = pre.getOrginal();
-		String pos = stf.tagText(txt);
-		pos = pre.arn.normalize(pos);
-		pos = pre.dr.removeDiacritics(pos);
-		String Proper_Names []=pos.split("/|\\s");
-		Arrays.fill(pN, 1);
-		for(int i=0;i<Proper_Names.length;i++) {
-			Proper_Names[i] = pre.ls10.findStem(Proper_Names[i]);
-			for (int j=0;j<words.length;j++) {
-				if (Proper_Names[i].contains(" "+words[j]+" ")) {
-					if (Proper_Names[i].equals("NNP") || Proper_Names[i].equals("NNPS"))pN[j] = 2;
+			StanfordPOSTagger stf = new StanfordPOSTagger();
+			String txt = pre.getOrginal();
+			String pos = stf.tagText(txt);
+			pos = pre.arn.normalize(pos);
+			pos = pre.dr.removeDiacritics(pos);
+			String Proper_Names[] = pos.split("/|\\s");
+			Arrays.fill(pN, 1);
+			for (int i = 0; i < Proper_Names.length; i++) {
+				Proper_Names[i] = pre.ls10.findStem(Proper_Names[i]);
+				for (int j = 0; j < words.length; j++) {
+					if (Proper_Names[i].contains(" " + words[j] + " ")) {
+						if (Proper_Names[i].equals("NNP") || Proper_Names[i].equals("NNPS"))
+							pN[j] = 2;
+					}
 				}
 			}
-		}
-		}
-		catch (Exception e) {
+		} catch (Exception e) {
 			// TODO: handle exception
 		}
-		
+
 		return pN;
 	}
-	
-	private double [] KpScore(int [] kpL , int [] ProperName , double [] kpF , String[]words , String []  sentences) {
+
+	private double[] KpScore(int[] kpL, int[] ProperName, double[] kpF, String[] words, String[] sentences) {
 		double KpScore[] = new double[words.length];
-		for (int i=0;i<words.length;i++) {
-			KpScore[i] = ProperName[i] * kpF[i]*1.0* Math.sqrt(kpL[i]);
+		for (int i = 0; i < words.length; i++) {
+			KpScore[i] = ProperName[i] * kpF[i] * 1.0 * Math.sqrt(kpL[i]);
 		}
 		double SentanceKpScore[] = new double[words.length];
-		
-		for (int i=0;i<sentences.length;i++) {
-			for (int j=0;j<words.length;j++) {
-				if (sentences[i].contains(" "+words[j]+" ")) {
-					SentanceKpScore[i]+=KpScore[j];
+
+		for (int i = 0; i < sentences.length; i++) {
+			for (int j = 0; j < words.length; j++) {
+				if (sentences[i].contains(" " + words[j] + " ")) {
+					SentanceKpScore[i] += KpScore[j];
 				}
 			}
 		}
 		return SentanceKpScore;
 	}
 
-	private double [][] KpScoreSVM(int [] kpL , int [] ProperName , double [] kpF , String[]words , String []  sentences) {
+	private double[][] KpScoreSVM(int[] kpL, int[] ProperName, double[] kpF, String[] words, String[] sentences) {
 		double SentanceKpScore[][] = new double[words.length][3];
-		
-		for (int i=0;i<sentences.length;i++) {
-			for (int j=0;j<words.length;j++) {
-				if (sentences[i].contains(" "+words[j]+" ")) {
-					SentanceKpScore[i][0]+=kpF[j];
-					SentanceKpScore[i][1] = (kpL[j] >= 2)?1:0;
-					SentanceKpScore[i][2] = --ProperName[j];					
+
+		for (int i = 0; i < sentences.length; i++) {
+			for (int j = 0; j < words.length; j++) {
+				if (sentences[i].contains(" " + words[j] + " ")) {
+					SentanceKpScore[i][0] += kpF[j];
+					SentanceKpScore[i][1] = (kpL[j] >= 2) ? 1 : 0;
+					SentanceKpScore[i][2] = --ProperName[j];
 				}
 			}
 		}
 		return SentanceKpScore;
 	}
-	
+
 	// Relating to the position of a sentence to the paragraph and document
-	/*public double[] sentencelocation(String[] paragraphs) {
+	public double[] sentencelocation(String[][] paragraphsSentences, int NO_SENTENCES) {
+		double[] SentenceLocationScores = new double[NO_SENTENCES];
+		int lastParagraphStart = NO_SENTENCES - paragraphsSentences[paragraphsSentences.length - 1].length;
 
-		int numberOfParagraphs = paragraphs.length;
-		String[][] sentences = new String[numberOfParagraphs][];
-		ArrayList<Double> SentenceLocationScores = new ArrayList<Double>();
-		int lastParagraph = numberOfParagraphs - 1;
+		// FIRST SENTENCES
+		// last parag
+		SentenceLocationScores[lastParagraphStart] = 2.0;
 
-		// Detect the boundaries of each sentence for each paragraph.
-		for (int eachParagraph = 0; eachParagraph < numberOfParagraphs; eachParagraph++) {
-			try {
-				sentences[eachParagraph] = pre.SentencesOfParagraph(paragraphs[eachParagraph]);
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				System.out.println("An error in sentence detection has occurred.");
-				e.printStackTrace();
+		// first parag
+		SentenceLocationScores[0] = 3.0;
+
+		// rem parags
+		for (int i = 0, ind = 0; i < paragraphsSentences.length - 2; i++) {
+			ind += paragraphsSentences[i].length;
+			SentenceLocationScores[ind] = 1;
+		}
+
+		// PARAGRAPHS
+		// first
+		for (int i = 1; i < paragraphsSentences[0].length; i++)
+			SentenceLocationScores[i] = 1.0 / Math.sqrt((double) i + 1.0);
+
+		// last
+		for (int i = 1; i < paragraphsSentences[paragraphsSentences.length - 1].length; i++)
+			SentenceLocationScores[lastParagraphStart + i] = 1.0 / Math.sqrt((double) i + 1.0);
+
+		// rem
+		int ind = paragraphsSentences[0].length;
+		for (int i = 1; i < paragraphsSentences.length - 1; i++) {
+			for (int j = 1; j < paragraphsSentences[i].length; j++) {
+				SentenceLocationScores[++ind] = 1.0 / Math.sqrt(((double) j + 1.0) + (double) ((i + 1) * (i + 1)));
 			}
 		}
 
-		// Sentence locations cases.
-		for (int eachParagraph = 0; eachParagraph < numberOfParagraphs; eachParagraph++) {
-			for (int eachSentence = 0; eachSentence < sentences[eachParagraph].length; eachSentence++) {
-				if (eachParagraph == 0) {
-					if (eachSentence == 0)
-						SentenceLocationScores.add(Double.valueOf(3));
-					else
-						SentenceLocationScores.add(Double.valueOf(1 / Math.sqrt(Double.valueOf(eachSentence + 1))));
-				}
-
-				else if (eachParagraph == lastParagraph) {
-					if (eachSentence == 0)
-						SentenceLocationScores.add(Double.valueOf(2));
-					else
-						SentenceLocationScores.add(Double.valueOf(1 / Math.sqrt(Double.valueOf(eachSentence + 1))));
-				}
-
-				else {
-					if (eachSentence == 0)
-						SentenceLocationScores.add(Double.valueOf(1));
-					else
-						SentenceLocationScores.add(Double.valueOf(1 / Math.sqrt(
-								Double.valueOf((eachSentence + 1) + ((eachParagraph + 1) * (eachParagraph + 1))))));
-				}
-			}
-		}
-
-		// Convert Double ArrayList --> double[]
-		double[] scores = new double[SentenceLocationScores.size()];
-		for (int i = 0; i < SentenceLocationScores.size(); i++)
-			scores[i] = SentenceLocationScores.get(i).doubleValue();
-
-		return scores;
-	}*/
+		return SentenceLocationScores;
+	}
 
 	public double[] cosineTitle(String[] titleTokens, String[] token, String[] sentences, String[][] sentenceTokens) {
 		int new_len = token.length + titleTokens.length;
@@ -547,7 +532,7 @@ public class Textrank {
 
 		try {
 			findlight(cue_words);
-			
+
 			for (int i = 0; i < sentences.length; i++) {
 				for (int j = 0; j < cue_words.length; j++) {
 					if (sentences[i].contains(cue_words[j])) {
@@ -586,7 +571,7 @@ public class Textrank {
 					}
 				}
 			}
-			
+
 			if (Total == 0)
 				return Sentance_Score;
 			for (int i = 0; i < sentance.length; i++) {
@@ -665,7 +650,7 @@ public class Textrank {
 
 		return sentenceScoreWW;
 	}
-	
+
 	private void findlight(String[] words) throws Exception {
 		for (int i = 0; i < words.length; i++)
 			words[i] = pre.arn.normalize(words[i]);

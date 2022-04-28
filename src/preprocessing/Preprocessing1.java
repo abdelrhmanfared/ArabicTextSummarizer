@@ -14,18 +14,21 @@ import utilities.SentenceDetector;
 import utilities.TrainedTokenizer;
 
 public class Preprocessing1 {
+	private String lightText;
+	private String originalText;
+
 	private String[] originalSentences;
 	private String[] light10Sentences;
 	private String[] rootSentences;
+
+	private String[][] paragraphsSentences;
 
 	private String[][] light10SentencesTokens;
 	private String[][] rootSentencesTokens;
 
 	private String[] tokens;
 	private String[] rootTokens;
-	
-	private String lightText;
-	private String Orginal;
+
 	public TrainedTokenizer tok;
 	public RootStemmer rs;
 	public AraNormalizer arn;
@@ -47,84 +50,116 @@ public class Preprocessing1 {
 	}
 
 	public Preprocessing1(String arabictext) throws IOException, ClassNotFoundException {
-		
 		this();
 
-		// Sentences
 		arabictext = arabictext.trim();
-		Orginal = arabictext;
-		originalSentences = sd.detectSentences(arabictext);
-		int NO_SENTENCES = originalSentences.length;
+		originalText = arabictext;
+		lightText = "";
 
-		light10Sentences = new String[NO_SENTENCES];
-		rootSentences = new String[NO_SENTENCES];
+		// Sentences
+		ArrayList<String> originalSentencesList = new ArrayList<String>();
+		ArrayList<String> light10SentencesList = new ArrayList<String>();
+		ArrayList<String> rootSentencesList = new ArrayList<String>();
+
+		// Paragraphs
+		String[] paragraphs = arabictext.split("(?<=\\.| ؟ |!)(\\s*)((\\r?\\n){2,})");
+		int NO_PARAGRAPHS = paragraphs.length;
+		paragraphsSentences = new String[NO_PARAGRAPHS][];
+
+		// Sentences' Tokens
+		ArrayList<String[]> light10SentencesTokensList = new ArrayList<String[]>();
+		ArrayList<String[]> rootSentencesTokensList = new ArrayList<String[]>();
+
+		// light10SentencesTokens = new String[NO_SENTENCES][];
+		// rootSentencesTokens = new String[NO_SENTENCES][];
 
 		// Tokens
 		ArrayList<String> tokensArrayList = new ArrayList<String>();
 		ArrayList<String> rootTokensArrayList = new ArrayList<String>();
 
-		// Sentences' Tokens
-		light10SentencesTokens = new String[NO_SENTENCES][];
-		rootSentencesTokens = new String[NO_SENTENCES][];
-		
-		lightText = "";
-		
-		for (int i = 0; i < NO_SENTENCES; i++) {
-			String normalizedSentence = arn.normalize(originalSentences[i]);
-			normalizedSentence = dr.removeDiacritics(normalizedSentence);
-			normalizedSentence = pr.removePunctuations(normalizedSentence);
+		for (int i = 0; i < NO_PARAGRAPHS; i++) {
+			String[] sentences = paragraphsSentences[i] = sd.detectSentences(paragraphs[i]);
+			int NO_SENTENCES = sentences.length;
 
-			String[] sentenceTokens = tok.tokenize(normalizedSentence);
-			int NO_TOKENS = sentenceTokens.length;
+			for (int j = 0; j < NO_SENTENCES; j++) {
+				String normalizedSentence = arn.normalize(sentences[j]);
+				normalizedSentence = dr.removeDiacritics(normalizedSentence);
+				normalizedSentence = pr.removePunctuations(normalizedSentence);
 
-			light10SentencesTokens[i] = new String[NO_TOKENS];
-			rootSentencesTokens[i] = new String[NO_TOKENS];
+				String[] sentenceTokens = tok.tokenize(normalizedSentence);
+				int NO_TOKENS = sentenceTokens.length;
 
-			String light10Sentence = "";
-			String rootSentence = "";
+				String[] light10SentenceTokens = new String[NO_TOKENS];
+				String[] rootSentenceTokens = new String[NO_TOKENS];
+				// light10SentencesTokens[j] = new String[NO_TOKENS];
+				// rootSentencesTokens[j] = new String[NO_TOKENS];
 
-			for (int j = 0; j < NO_TOKENS; j++) {
+				String light10Sentence = "";
+				String rootSentence = "";
 
-				String light10Token = ls10.findStem(sentenceTokens[j]);
-				String rootToken = rs.findRoot(sentenceTokens[j]);
-				
-				// Text
-				lightText += light10Token;
-				
-				// Sentences
-				light10Sentence += " " + light10Token;
-				rootSentence += " " + rootToken;
+				for (int k = 0; k < NO_TOKENS; k++) {
+					String light10Token = ls10.findStem(sentenceTokens[k]);
+					String rootToken = rs.findRoot(sentenceTokens[k]);
 
-				// Tokens
-				tokensArrayList.add(sentenceTokens[j]);
-				rootTokensArrayList.add(rootToken);
+					// Text
+					lightText += light10Token;
 
-				// Sentences' Tokens
-				light10SentencesTokens[i][j] = light10Token;
-				rootSentencesTokens[i][j] = rootToken;
+					// Sentences
+					light10Sentence += " " + light10Token;
+					rootSentence += " " + rootToken;
 
+					// Tokens
+					tokensArrayList.add(sentenceTokens[k]);
+					rootTokensArrayList.add(rootToken);
+
+					// Sentences' Tokens
+					light10SentenceTokens[k] = light10Token;
+					rootSentenceTokens[k] = rootToken;
+				}
+
+				originalSentencesList.add(sentences[j]);
+				light10SentencesList.add(light10Sentence.trim());
+				rootSentencesList.add(rootSentence.trim());
+				// light10Sentences[j] = light10Sentence.trim();
+				// rootSentences[j] = rootSentence.trim();
+
+				light10SentencesTokensList.add(light10SentenceTokens);
+				rootSentencesTokensList.add(rootSentenceTokens);
+
+				// TESTING !!!!!
+				// System.out.println(originalSentences[i]);
+				// System.out.println(normalizedSentence);
+				// System.out.println(light10Sentences[i]);
+				// System.out.println(rootSentences[i]);
+				// END TESTING !!!!!
 			}
-
-			light10Sentences[i] = light10Sentence.trim();
-			rootSentences[i] = rootSentence.trim();
-
-			// TESTING !!!!!
-			//System.out.println(originalSentences[i]);
-			//System.out.println(normalizedSentence);
-			//System.out.println(light10Sentences[i]);
-			//System.out.println(rootSentences[i]);
-			// END TESTING !!!!!
 		}
-		
+
+		// Text
 		lightText = lightText.trim();
-		
+
+		// Sentences
+		originalSentences = new String[originalSentencesList.size()];
+		originalSentences = originalSentencesList.toArray(originalSentences);
+		light10Sentences = new String[light10SentencesList.size()];
+		light10Sentences = light10SentencesList.toArray(light10Sentences);
+		rootSentences = new String[rootSentencesList.size()];
+		rootSentences = rootSentencesList.toArray(rootSentences);
+
+		// Tokens
 		tokens = new String[tokensArrayList.size()];
 		tokens = tokensArrayList.toArray(tokens);
 		rootTokens = new String[rootTokensArrayList.size()];
 		rootTokens = rootTokensArrayList.toArray(rootTokens);
 
+		// Sentences' Tokens
+		light10SentencesTokens = new String[light10SentencesTokensList.size()][];
+		light10SentencesTokens = light10SentencesTokensList.toArray(light10SentencesTokens);
+		rootSentencesTokens = new String[rootSentencesTokensList.size()][];
+		rootSentencesTokens = rootSentencesTokensList.toArray(rootSentencesTokens);
+
 	}
-	
+
 	/**
 	 * @return the originalSentences
 	 */
@@ -146,6 +181,13 @@ public class Preprocessing1 {
 		return rootSentences;
 	}
 
+	/**
+	 * @return the paragraphsSentences
+	 */
+	public String[][] getParagraphsSentences() {
+		return paragraphsSentences;
+	}
+	
 	/**
 	 * @return the lightSentencesTokens
 	 */
@@ -183,7 +225,7 @@ public class Preprocessing1 {
 
 	public String getOrginal() {
 		// TODO Auto-generated method stub
-		return Orginal;
+		return originalText;
 	}
 
 	public String[] KpMinnerWords(int number) {
