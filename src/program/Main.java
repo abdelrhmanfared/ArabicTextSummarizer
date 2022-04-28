@@ -61,7 +61,7 @@ public class Main {
 			e.printStackTrace();
 			e.getMessage();
 		}		
-		
+
 	}
 	public static String 	readall(String fullpath) throws IOException {
 		InputStream fs = new FileInputStream(fullpath);
