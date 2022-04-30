@@ -5,7 +5,7 @@ import java.io.IOException;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-
+import java.util.regex.Pattern;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -545,6 +545,34 @@ private double[] sentenceCentrality(String[] sentences, String[] tokens, String[
 		}
 		return Sentance_Score;
 	}
+	private int[] positiveWordsSVM(String[] sentance) {
+		
+		String[] Postive_Words = { "وثق", "أكد", "بالتأكيد", "من المؤكد", "من المثبت", "اثبات", "اثبت ", "اقرار", "اقر",
+				"تأييد", "ايد", "أدلة", "ايجاب", "بينة", "دليل", "تأكيد", "تحديد", "تحقيق", "تقرير", "جزم", "شهادة",
+				"برهان", "توكيد", "من المصدق", "تصديق", "صدق", "دلل", "حدد", "حقق", "برهن", "شهد", "ذو معنى",
+				"كل المعنى", "دلالي" };
+		
+		for(int i = 0 ; i < Postive_Words.length ; i++)
+		{
+			Postive_Words[i] = pre.arn.normalize(Postive_Words[i]);			
+		}
+		
+		int[]sentSW_scores = new int[sentance.length];
+		for(int i = 0 ; i < sentance.length ; i++)
+		{
+		
+		  for(int j = 0 ; j < Postive_Words.length ; j++)
+		   {
+			  if(sentance[i].matches(".*\\b" + Postive_Words[j] + "\\b.*"))
+			  {
+				  sentSW_scores[i] = 1;
+				  break;
+			  }
+		
+		   }
+		}
+		return sentSW_scores;
+	}
 
 	public double[] numberScore(String[] sentences, String[][] Word) throws IOException {
 		int sen[] = new int[sentences.length], Num = 0;
@@ -611,6 +639,65 @@ private double[] sentenceCentrality(String[] sentences, String[] tokens, String[
 
 		return sentenceScoreWW;
 	}
+	
+	public double[][] WeakWords_Scoring_SVM(String[] Sentences)
+	{
+		String[] WeakWords = { "بالاضافة", "علي سبيل المثال", "مثل", "كمثال", "علي اي حال", "علاوة علي ذلك", "أولا",
+				"ثانيا", "ثم", "زيادة علي ذلك", "بصيغة أخري" };
+		
+		for(int i = 0 ; i < WeakWords.length ; i++)
+		{
+			WeakWords[i] = pre.arn.normalize(WeakWords[i]);			
+		}
+		
+		int [] sentWW = new int[Sentences.length];
+		int [] sentWordCount = new int[Sentences.length];
+		for(int i = 0 ; i < Sentences.length ; i++ )
+		{
+			for(int j = 0 ; j < WeakWords.length ; j++)
+			{	
+				if (Sentences[i].contains(WeakWords[j]))
+				{
+					sentWW[i]++;
+				}
+			}
+				String[] sentWords = Sentences[i].split(" ");
+				sentWordCount[i] = sentWords.length;	
+		}
+		double[] sentWW_scores0 = new double[Sentences.length];
+		for(int i = 0 ; i< Sentences.length ; i++)
+		{
+			for(int j = 0 ; j < WeakWords.length ; j++)
+			{
+				if(Sentences[i].startsWith(WeakWords[j]))
+				{
+					sentWW_scores0[i] = 1;
+					break;
+					
+				}
+			}
+		}
+		
+		double[] sentWW_scores1 = new double[Sentences.length];
+		for(int i = 0 ; i < Sentences.length ; i++)
+		{
+			if(sentWW_scores0[i] == 0)
+			{
+				sentWW_scores1[i] = ((double)sentWW[i])/ ((double)sentWordCount[i]);
+			}
+			
+		}
+		
+		double[][] sentWW_scores = new double[Sentences.length][2];
+		for(int i = 0 ; i < sentWW_scores.length ; i++)
+		{
+			sentWW_scores[i][0] = sentWW_scores0[i];
+			sentWW_scores[i][1] = sentWW_scores1[i];
+			
+		}
+		return sentWW_scores;
+	}
+	
 
 	private void findlight(String[] words) throws Exception {
 		for (int i = 0; i < words.length; i++)
