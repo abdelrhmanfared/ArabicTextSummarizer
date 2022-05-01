@@ -26,6 +26,8 @@ import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
+import Accuracy.AccuracyMeasures;
+
 //import javafx.scene.control.Cell;
 public class Main {
 
@@ -129,7 +131,7 @@ public class Main {
 		float Precision1,Precision2;
 		float FScore1,FScore2;
 		
-		
+		AccuracyMeasures acMeasures = new AccuracyMeasures();
         while ((line = bufferedReader.readLine()) != null) {
         	System.out.println("Summarizing article #" + ++i + "...");
         	String [] row = line.split(",");
@@ -149,16 +151,19 @@ public class Main {
             
             //System.out.println();
         	
-        	Recall1 = Rouge_1(summary_genrated.get(i), system_generated.get(i),"Recall");
-        	Precision1 = Rouge_1(summary_genrated.get(i), system_generated.get(i),"Precision");
-        	FScore1 = Rouge_1(summary_genrated.get(i), system_generated.get(i),"FScore");
+        	
+        	acMeasures.Rouge1(system_generated.get(i), summary_genrated.get(i));
+        	Recall1 = acMeasures.getRecall();
+        	Precision1 = acMeasures.getPrecision();
+        	FScore1 =acMeasures.getFScore();
         	avgRecall1+=Recall1;
         	avgPrecision1+=Precision1;
         	avgFScore1+=FScore1;
         	
-        	Recall2 = Rouge_2(summary_genrated.get(i), system_generated.get(i),"Recall");
-        	Precision2 = Rouge_2(summary_genrated.get(i), system_generated.get(i),"Precision");
-        	FScore2 = Rouge_2(summary_genrated.get(i), system_generated.get(i),"FScore");
+        	acMeasures.Rouge2(system_generated.get(i), summary_genrated.get(i));
+        	Recall2 = acMeasures.getRecall();
+        	Precision2 = acMeasures.getPrecision();
+        	FScore2 =acMeasures.getFScore();
         	avgRecall2+=Recall2;
         	avgPrecision2+=Precision2;
         	avgFScore2+=FScore2;
@@ -222,6 +227,7 @@ public class Main {
 	            }
 	        }
         }
+        
         System.out.println("Average Recall 1:"+avgRecall1/10.0);
         System.out.println("Average Precision 1:"+avgPrecision1/10.0);
         System.out.println("Average FScore 1:"+avgFScore1/10.0);
@@ -237,101 +243,7 @@ public class Main {
        
 }
 	
-	public static float Rouge_1(String reference,String generated,String Method) {
-		float refGen=0;
-		AraNormalizer arn = new AraNormalizer();
-		generated = arn.normalize(generated);
-		reference = arn.normalize(reference);
-		String generated1[] = generated.trim().replace("\"", "").replaceAll(" ","").split("(?<=\\.| ؟ |!)");
-		String reference1[] = reference.trim().replace("\"", "").replaceAll(" ","").split("(?<=\\.| ؟ |!)");
-		for(String r : reference1)
-			r.replace(".","");
-		for(String g : generated1)
-			g.replace(".","");
-		for(int i=0;i<generated1.length;i++)
-		{
-			for(int j=0;j<reference1.length;j++) {
-			
-				if(generated1[i].equals(reference1[j]))
-					refGen++;
-			}
-		}
-		float Recall = refGen/reference1.length;
-		float Precision = refGen/generated1.length;
-		float FScore = (2*Recall*Precision)/(Recall+Precision);
-		
-		if(Method.equals("Recall"))
-			return Recall;
-		else if(Method.equals("Precision"))
-			return Precision;
-		else if(Method.equals("FScore"))
-		{ if(Float.isNaN(FScore))
-			return 0;
-		  else 
-			return FScore;
-		}
-		else 
-			return -1;
-	}
-	public static float Rouge_2(String reference,String generated,String Method) {
-		float refGen=0;
-		AraNormalizer arn = new AraNormalizer();
-		generated = arn.normalize(generated);
-		reference = arn.normalize(reference);
-		String generated1[] = generated.trim().replace("\"", "").replaceAll(" ","").split("(?<=\\.| ؟ |!)");
-		String reference1[] = reference.trim().replace("\"", "").replaceAll(" ","").split("(?<=\\.| ؟ |!)");
-		for(String r : reference1)
-			r.replace(".","");
-		for(String g : generated1)
-			g.replace(".","");
-		
-		ArrayList<String> generated2 = new ArrayList<String>();
-		ArrayList<String> reference2= new ArrayList<String>();
-	
-		
-		for(int i=0;i<generated1.length;i++)
-		{
-			if(generated1.length == 1)
-				generated2.add(generated1[i]);
-			if(i == generated1.length-1)
-				break;
-		  generated2.add(generated1[i]+generated1[i+1]);
-			
-		}
-		for(int i=0;i<reference1.length;i++)
-		{
-			if(reference1.length == 1)
-				reference2.add(reference1[i]);
-			if(i== reference1.length-1)
-				break;
-			reference2.add(reference1[i]+reference1[i+1]);
-		}
-		
-		for(int i=0;i<generated2.size();i++)
-		{
-			for(int j=0;j<reference2.size();j++) {
-			
-				if(generated2.get(i).equals(reference2.get(j)))
-					refGen++;
-			}
-		}
-		float Recall = refGen/reference2.size();
-		float Precision = refGen/generated2.size();
-		float FScore = (2*Recall*Precision)/(Recall+Precision);
-				
-		if(Method.equals("Recall"))
-			return Recall;
-		else if(Method.equals("Precision"))
-			return Precision;
-		else if(Method.equals("FScore"))
-			{ if(Float.isNaN(FScore))
-				return 0;
-			  else 
-				return FScore;
-			}
-		else 
-			return -1;
-	}
+
 	public static String readfile(String filename) {
 	    try {
 	      File myObj = new File(filename);
@@ -348,7 +260,6 @@ public class Main {
 	    }
 	
 	  }
-	
 	public static void test() {
 	    try {
 	    	LightStemmer1 l1 = new LightStemmer1();

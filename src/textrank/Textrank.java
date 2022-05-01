@@ -41,18 +41,18 @@ public class Textrank {
 		//double[] titleSimilarity = similarityWithTitle(pre.getLight10Sentences(), pre.getTokens(),
 				//pre.getLight10SentencesTokens(), title, pre.KpMinnerWords(7));
 		double[] senCentrality = sentenceCentrality(pre.getRootSentences(),pre.getRootTokens(), pre.getRootSentencesTokens());
-		/*double[] senLength = sentenceLength(pre.getRootSentencesTokens());
+		double[] senLength = sentenceLength(pre.getRootSentencesTokens());
 		double[] cuePhrases = cueWords(pre.getLight10Sentences());
 		double[] strongWords = positiveKeyWords(pre.getLight10Sentences());
 		double[] numberScores = numberScore(pre.getRootSentences(), pre.getRootSentencesTokens());
-		double[] weakWords = WeakWords_Scoring(pre.getLight10Sentences());*/
+		double[] weakWords = WeakWords_Scoring(pre.getLight10Sentences());
 
 		// Ranking
 		ArrayList<Score> sentences_scores = new ArrayList<Score>();
 
 		for (int i = 0; i < pre.getOriginalSentences().length; i++) {
 			sentences_scores.add(new Score(i, /*keyPhrases[i] +*/ sentenceLocation[i] + //titleSimilarity[i] +
-			 senCentrality[i] /*+  senLength[i] + cuePhrases[i] + strongWords[i] + numberScores[i] + weakWords[i]*/));
+			 senCentrality[i] +  senLength[i] + cuePhrases[i] + strongWords[i] + numberScores[i] + weakWords[i]));
 		}
 
 		Collections.sort(sentences_scores, new Sortbyscore());
@@ -355,13 +355,13 @@ private double[] sentenceCentrality(String[] sentences, String[] tokens, String[
 		double [][] CosineSimMatrix;
 		double []CentralityMatrix = new double[sentences.length];
 		CosineSimlarity cosSim = new CosineSimlarity();
-		CosineSimMatrix = cosSim.TF_IDF(sentences, tokens);
-		for(int i=0;i<CosineSimMatrix.length;i++)
+		CosineSimMatrix = cosSim.BOW(sentences, tokens);
+		/*for(int i=0;i<CosineSimMatrix.length;i++)
 		{
 			for(int j=0;j<CosineSimMatrix[i].length;j++)
 				System.out.print(Math.round(CosineSimMatrix[i][j]*100.0)/100.0+" ");
 			System.out.println();
-		}
+		}*/
 				
 		Map<String, Integer> SimlarityDegree = new HashMap<String, Integer>();
 		double MaxDegree = 0;
@@ -381,7 +381,7 @@ private double[] sentenceCentrality(String[] sentences, String[] tokens, String[
 		for(Map.Entry<String, Integer> entry : SimlarityDegree.entrySet())
 			{CentralityMatrix[k] = entry.getValue();k++;
 			CentralityScore = entry.getValue()/MaxDegree;
-			System.out.println(entry.getKey()+" "+Math.round(CentralityScore*100.0)/100.0);}
+			/*System.out.println(entry.getKey()+" "+Math.round(CentralityScore*100.0)/100.0);*/}
 		
 		return CentralityMatrix;
 		}
