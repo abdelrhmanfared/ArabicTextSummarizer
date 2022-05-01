@@ -227,6 +227,46 @@ public class Textrank {
 
 		return SentenceLocationScores;
 	}
+	
+	public double[][] sentencelocationSVM(String[][] paragraphsSentences, int NO_SENTENCES)
+	{
+		double[][] SentenceLocationScores = new double[NO_SENTENCES][5];
+		int lastParagraphStart = NO_SENTENCES - paragraphsSentences[paragraphsSentences.length - 1].length;
+		
+		// FIRST SENTENCES
+				// first parag
+				SentenceLocationScores[0][0] = 1.0;
+				
+				// last parag
+				SentenceLocationScores[lastParagraphStart][1] = 1.0;
+
+
+				// rem parags
+				for (int i = 0, ind = 0; i < paragraphsSentences.length - 2; i++) {
+					ind += paragraphsSentences[i].length;
+					SentenceLocationScores[ind][2] = 1.0;
+				}
+
+				// PARAGRAPHS
+				// first
+				for (int i = 1; i < paragraphsSentences[0].length; i++)
+					SentenceLocationScores[i][4] = 1.0 / Math.sqrt((double) i + 1.0);
+
+				// last
+				for (int i = 1; i < paragraphsSentences[paragraphsSentences.length - 1].length; i++)
+					SentenceLocationScores[lastParagraphStart + i][4] = 1.0 / Math.sqrt((double) i + 1.0);
+
+				// rem
+				int ind = paragraphsSentences[0].length;
+				for (int i = 1; i < paragraphsSentences.length - 1; i++) {
+					ind++;
+					for (int j = 1; j < paragraphsSentences[i].length; j++) {
+						SentenceLocationScores[ind++][3] = 1.0 / Math.sqrt(((double) j + 1.0) + (double) ((i + 1) * (i + 1)));
+					}
+				}
+
+				return SentenceLocationScores;
+	}
 
 	public double[] cosineTitle(String[] titleTokens, String[] token, String[] sentences, String[][] sentenceTokens) {
 		int new_len = token.length + titleTokens.length;
