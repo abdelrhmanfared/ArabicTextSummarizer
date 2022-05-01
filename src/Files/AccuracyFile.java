@@ -1,5 +1,9 @@
 package Files;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Map;
 
@@ -53,7 +57,7 @@ public class AccuracyFile {
 			{Cells2[entry.getKey()] = xsrow2.createCell(entry.getKey());Cells2[entry.getKey()].setCellValue(entry.getValue());}
 		
 	}
-	public void CreateSheet1(ArrayList<String> system_generated,DatasetFile datasetFile) {
+	public void CreateSheet1(ArrayList<String> system_generated,DatasetFile datasetFile) throws IOException {
 		try {
 			for(int i=0;i<system_generated.size();i++)
 			{
@@ -87,6 +91,19 @@ public class AccuracyFile {
 			System.err.println(e.getMessage());
 		}
 		
+		CreateFile("Accuracy.xlsx");
+	       
+	}
+	public void CreateFile(String SheetName) throws IOException {
+		 try 
+	       {
+	       	FileOutputStream fileOutputStream = new FileOutputStream(new File(SheetName));
+	       	this.workbook.write(fileOutputStream);
+	       	/*fileOutputStream = new FileOutputStream(new File("Accuracy2.xlsx"));
+	       	workbook.write(fileOutputStream);*/
+	       	fileOutputStream.close();
+	       	System.out.println("Excel file is Created");
+	       }catch (FileNotFoundException ex) {}
 	}
     /*for(int k=0;k<3;k++) {
     xsrow2 = sheet2.createRow(k+1);

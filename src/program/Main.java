@@ -65,11 +65,13 @@ public class Main {
 			e.printStackTrace();
 			e.getMessage();
 		}		*/
-		Accuracy();
+		 DatasetFile datasetFile =  new DatasetFile();
+		 datasetFile.ReadDataset();
+		 Accuracy(datasetFile);
 
 
 	}
-	public static String 	readall(String fullpath) throws IOException {
+	public static String readall(String fullpath) throws IOException {
 		InputStream fs = new FileInputStream(fullpath);
 		Reader rd = new InputStreamReader(fs, "UTF-8");
         BufferedReader bf = new BufferedReader(rd);
@@ -78,11 +80,9 @@ public class Main {
         return tmp;		
 	}
 
-	public static void Accuracy() throws IOException
+	public static void Accuracy(DatasetFile datasetFile) throws IOException
 	{
 		 AccuracyFile acFile = new AccuracyFile();
-		 DatasetFile datasetFile =  new DatasetFile();
-		 datasetFile.ReadDataset();
 
 		try 
 		{
@@ -91,20 +91,8 @@ public class Main {
 			for(int i=0;i<16;i++)
 				TextRankSummary.add((new Textrank(datasetFile.getOriginal().get(i), null, -1)).getSummarizedText());
 			
-
 		 acFile.CreateSheet1(TextRankSummary,datasetFile);
 		}catch (Exception e) {System.out.println(e.getMessage());}
-		
-       try 
-       {
-       	FileOutputStream fileOutputStream = new FileOutputStream(new File("Accuracy.xlsx"));
-       	acFile.workbook.write(fileOutputStream);
-       	/*fileOutputStream = new FileOutputStream(new File("Accuracy2.xlsx"));
-       	workbook.write(fileOutputStream);*/
-       	fileOutputStream.close();
-       	System.out.println("Excel file is Created");
-       }catch (FileNotFoundException ex) {}
-       
 }
 	
 
