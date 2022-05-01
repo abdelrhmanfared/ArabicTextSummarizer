@@ -18,12 +18,18 @@ import utilities.TrainedTokenizer;
 class CosineSimlarity {
 	HashSet<String> BOW;
 	double[][] cosineBOW;
+	/**
+	 * @return the cosineBOW2
+	 */
+	public double[][] getCosineBOW() {
+		return cosineBOW;
+	}
+
 	Map<String, ArrayList<Pair>> BowMatrix;
 
 	// set of (uniqueToken(T), |T in Si|) for n sentences
-	// of sentences
 	ArrayList<Map<String, Integer>> BowMatrix2;
-
+	
 	public CosineSimlarity(String[][] sentencesTokens) {
 		int NO_SENTENCES = sentencesTokens.length;
 		BowMatrix2 = new ArrayList<Map<String, Integer>>();
@@ -36,14 +42,16 @@ class CosineSimlarity {
 
 			BowMatrix2.add(map);
 		}
+		
+		centeralityMatrix2(sentencesTokens);
 	}
 
-	double[][] centeralityMatrix2(String[][] sentencesTokens) {
+	private void centeralityMatrix2(String[][] sentencesTokens) {
 		int NO_SENTENCES = sentencesTokens.length;
-		double[][] cosineBOW2 = new double[NO_SENTENCES][NO_SENTENCES];
+		double[][] cosineBOW = new double[NO_SENTENCES][NO_SENTENCES];
 
 		for (int i = 0; i < NO_SENTENCES; i++)
-			cosineBOW2[i][i] = 1.0;
+			cosineBOW[i][i] = 1.0;
 
 		for (int i = 0; i < NO_SENTENCES; i++) {
 			for (int j = 0; j < i; j++) {
@@ -65,19 +73,18 @@ class CosineSimlarity {
 				}
 
 				bottom = Math.sqrt(bottom1) * Math.sqrt(bottom2);
-				cosineBOW2[i][j] = top / bottom;
+				cosineBOW[i][j] = top / bottom;
 
 			}
 		}
 
 		for (int i = 0; i < NO_SENTENCES; i++)
 			for (int j = i + 1; j < NO_SENTENCES; j++)
-				cosineBOW2[i][j] = cosineBOW2[j][i];
+				cosineBOW[i][j] = cosineBOW[j][i];
 
-		return cosineBOW2;
 	}
 
-	public double[][] centeralityMatrix(String[] sentences, String[] tokens) throws FileNotFoundException, IOException {
+	private double[][] centeralityMatrix(String[] sentences, String[] tokens) throws FileNotFoundException, IOException {
 		BOW = new HashSet<String>();
 		for (String token : tokens)
 			BOW.add(token);
