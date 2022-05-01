@@ -61,7 +61,6 @@ public class AccuracyFile {
 		try {
 			for(int i=0;i<system_generated.size();i++)
 			{
-			System.out.println("Sentence: "+i);
 	 		AccuracyMeasures acMeasures = new AccuracyMeasures();
 			XSSFRow xsrow = sheet1.createRow(i+1);
 		         for(int j=0;j<9;j++)

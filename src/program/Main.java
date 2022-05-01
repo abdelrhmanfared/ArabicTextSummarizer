@@ -89,7 +89,8 @@ public class Main {
 			Textrank tr;
 			ArrayList<String> TextRankSummary = new ArrayList<String>(); 
 			for(int i=0;i<16;i++)
-				TextRankSummary.add((new Textrank(datasetFile.getOriginal().get(i), null, -1)).getSummarizedText());
+			{			System.out.println("Sentence: "+i);
+				TextRankSummary.add((new Textrank(datasetFile.getOriginal().get(i), null, -1)).getSummarizedText());}
 			
 		 acFile.CreateSheet1(TextRankSummary,datasetFile);
 		}catch (Exception e) {System.out.println(e.getMessage());}
