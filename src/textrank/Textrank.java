@@ -35,12 +35,13 @@ public class Textrank {
 		if (no_sentences > pre.getOriginalSentences().length)
 			throw new Exception("LENGTHS NOT THE SAME!");
 
+		CosineSimlarity cosSim = new CosineSimlarity(pre.getRootSentencesTokens(), pre.tok.tokenize(title));
 		// Extract features
 		//double[] keyPhrases = keyPhrases(pre.getLight10Sentences());
 		double[] sentenceLocation = sentencelocation(pre.getParagraphsSentences(), pre.getOriginalSentences().length);
 		//double[] titleSimilarity = similarityWithTitle(pre.getLight10Sentences(), pre.getTokens(),
 				//pre.getLight10SentencesTokens(), title, pre.KpMinnerWords(7));
-		double[] senCentrality = sentenceCentrality(pre.getRootSentences(),pre.getRootTokens(), pre.getRootSentencesTokens());
+		double[] senCentrality = sentenceCentrality(cosSim, pre.getRootSentences(),pre.getRootTokens(), pre.getRootSentencesTokens());
 		double[] senLength = sentenceLength(pre.getRootSentencesTokens());
 		double[] cuePhrases = cueWords(pre.getLight10Sentences());
 		double[] strongWords = positiveKeyWords(pre.getLight10Sentences());
@@ -389,12 +390,11 @@ public class Textrank {
 
 	// The similarity or the overlapping between a sentence and other sentences in
 	// the document
-private double[] sentenceCentrality(String[] sentences, String[] tokens, String[][] senTokens) throws FileNotFoundException, IOException {
+private double[] sentenceCentrality(CosineSimlarity cosSim, String[] sentences, String[] tokens, String[][] senTokens) throws FileNotFoundException, IOException {
 		
 		double Threshold = 0.2;
 		double [][] CosineSimMatrix;
 		double []CentralityMatrix = new double[sentences.length];
-		CosineSimlarity cosSim = new CosineSimlarity(pre.getRootSentencesTokens());
 		CosineSimMatrix = cosSim.getCosineBOW();
 		/*for(int i=0;i<CosineSimMatrix.length;i++)
 		{
