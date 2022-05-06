@@ -35,13 +35,13 @@ public class Textrank {
 		if (no_sentences > pre.getOriginalSentences().length)
 			throw new Exception("LENGTHS NOT THE SAME!");
 
-		CosineSimlarity cosSim = new CosineSimlarity(pre.getRootSentencesTokens(), pre.tok.tokenize(title));
+		//CosineSimlarity cosSim = new CosineSimlarity(pre.getRootSentencesTokens(), pre.tok.tokenize(title));
 		// Extract features
 		//double[] keyPhrases = keyPhrases(pre.getLight10Sentences());
 		double[] sentenceLocation = sentencelocation(pre.getParagraphsSentences(), pre.getOriginalSentences().length);
 		//double[] titleSimilarity = similarityWithTitle(pre.getLight10Sentences(), pre.getTokens(),
 				//pre.getLight10SentencesTokens(), title, pre.KpMinnerWords(7));
-		double[] senCentrality = sentenceCentrality(cosSim, pre.getRootSentences(),pre.getRootTokens(), pre.getRootSentencesTokens());
+		//double[] senCentrality = sentenceCentrality(cosSim, pre.getRootSentences(),pre.getRootTokens(), pre.getRootSentencesTokens());
 		double[] senLength = sentenceLength(pre.getRootSentencesTokens());
 		double[] cuePhrases = cueWords(pre.getLight10Sentences());
 		double[] strongWords = positiveKeyWords(pre.getLight10Sentences());
@@ -53,7 +53,7 @@ public class Textrank {
 
 		for (int i = 0; i < pre.getOriginalSentences().length; i++) {
 			sentences_scores.add(new Score(i, /*keyPhrases[i] +*/ sentenceLocation[i] + //titleSimilarity[i] +
-			 senCentrality[i] +  senLength[i] + cuePhrases[i] + strongWords[i] + numberScores[i] + weakWords[i]));
+			 /*senCentrality[i] +*/  senLength[i] + cuePhrases[i] + strongWords[i] + numberScores[i] + weakWords[i]));
 		}
 
 		Collections.sort(sentences_scores, new Sortbyscore());

@@ -67,19 +67,19 @@ public class AccuracyFile {
 		         {
 		         	XSSFCell newcell = xsrow.createCell(j);
 		         	if(newcell.getColumnIndex()==0)
-		         		newcell.setCellValue(datasetFile.getOriginal().get(i));
+		         		newcell.setCellValue(datasetFile.getArticles().get(i));
 		         	else if(newcell.getColumnIndex() == 1)
-		         		newcell.setCellValue(datasetFile.getReferenced().get(i));
+		         		newcell.setCellValue(datasetFile.getSummaries().get(i));
 		         	else if(newcell.getColumnIndex() == 2)
 		         		newcell.setCellValue(system_generated.get(i));
 		         	else if(newcell.getColumnIndex() == 3)
-		         		{acMeasures.Rouge1(system_generated.get(i), datasetFile.getReferenced().get(i));newcell.setCellValue(acMeasures.getRecall());}
+		         		{acMeasures.Rouge1(system_generated.get(i), datasetFile.getSummaries().get(i));newcell.setCellValue(acMeasures.getRecall());}
 		         	else if(newcell.getColumnIndex() == 4)
 		         		newcell.setCellValue(acMeasures.getPrecision());
 		         	else if(newcell.getColumnIndex() == 5)
 		         		newcell.setCellValue(acMeasures.getFScore());
 		         	else if(newcell.getColumnIndex() == 6)
-		         		{acMeasures.Rouge2(system_generated.get(i), datasetFile.getReferenced().get(i));newcell.setCellValue(acMeasures.getRecall());}
+		         		{acMeasures.Rouge2(system_generated.get(i), datasetFile.getSummaries().get(i));newcell.setCellValue(acMeasures.getRecall());}
 		         	else if(newcell.getColumnIndex() == 7)
 		         		newcell.setCellValue(acMeasures.getPrecision());
 		         	else if(newcell.getColumnIndex() == 8)
