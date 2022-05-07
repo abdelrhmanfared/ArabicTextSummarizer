@@ -5,64 +5,68 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.commons.collections4.map.HashedMap;
+import org.apache.jasper.tagplugins.jstl.core.Catch;
 import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import Accuracy.AccuracyMeasures;
+import javafx.util.Pair;
 import textrank.Textrank;
+import Files.AverageFile;
 
 public class AccuracyFile {
 	public XSSFWorkbook workbook = new XSSFWorkbook();
-	XSSFSheet sheet1,sheet2;
-	Map<Integer, String> CellNames1,CellNames2;
+	XSSFSheet sheet;
+	Map<Integer, String> CellNames;
+	Map<String,Float> AVGRougeNGrams;
+	static AverageFile averageFile;
+	String MethodName;
 
 	
-	public AccuracyFile() {
+	public AccuracyFile(String MethodName,AverageFile averageFile) throws IOException {
+	  AVGRougeNGrams = new HashMap<String, Float>();
+	  AVGRougeNGrams.put("Recall1",(float)0);
+	  AVGRougeNGrams.put("Recall2",(float)0);
+	  AVGRougeNGrams.put("Precision1",(float)0);
+	  AVGRougeNGrams.put("Precision2",(float)0);
+	  AVGRougeNGrams.put("FScore1",(float)0);
+	  AVGRougeNGrams.put("FScore2",(float)0);
+
+	  this.averageFile = averageFile;
+	  this.MethodName = MethodName;
+	  
+	  //Create First Row
+	  this.sheet = workbook.createSheet(MethodName);
+	  XSSFRow xsrow = sheet.createRow(0);	  
+	  CellNames = new HashedMap<Integer, String>();
+	  CellNames.put(0, "Original");
+	  CellNames.put(1, "Referenced");
+	  CellNames.put(2, "System Generaed");
+	  CellNames.put(3, "Recall 1");
+	  CellNames.put(4, "Precision 1");
+	  CellNames.put(5, "FScore 1");
+	  CellNames.put(6, "Recall 2");
+	  CellNames.put(7, "Precision 2");
+	  CellNames.put(8, "FScore 2");
 		
-	  //Sheet 1 Create First Row
-	  this.sheet1 = workbook.createSheet("Accuracy1");
-	  XSSFRow xsrow1 = sheet1.createRow(0);	  
-	  CellNames1 = new HashedMap<Integer, String>();
-	  CellNames1.put(0, "Original");
-	  CellNames1.put(1, "Referenced");
-	  CellNames1.put(2, "System Generaed");
-	  CellNames1.put(3, "Recall 1");
-	  CellNames1.put(4, "Precision 1");
-	  CellNames1.put(5, "FScore 1");
-	  CellNames1.put(6, "Recall 2");
-	  CellNames1.put(7, "Precision 2");
-	  CellNames1.put(8, "FScore 2");
-		
-		XSSFCell[] Cells1 = new XSSFCell[9];
-		for(Map.Entry<Integer, String> entry : CellNames1.entrySet())
-			{Cells1[entry.getKey()] = xsrow1.createCell(entry.getKey());Cells1[entry.getKey()].setCellValue(entry.getValue());}
-		
-		
-		//Sheet 2 Create First Row
-		this.sheet2 = workbook.createSheet("Accuracy2");		
-		XSSFRow xsrow2 = sheet2.createRow(0);
-		CellNames2 = new HashedMap<Integer, String>();
-		CellNames2.put(0, "Method");
-		CellNames2.put(1, "Measure");
-		CellNames2.put(2, "Rouge 1");
-		CellNames2.put(3, "Rouge 2");
-		
-		XSSFCell[] Cells2 = new XSSFCell[4];
-		for(Map.Entry<Integer, String> entry : CellNames2.entrySet())
-			{Cells2[entry.getKey()] = xsrow2.createCell(entry.getKey());Cells2[entry.getKey()].setCellValue(entry.getValue());}
+		XSSFCell[] Cells = new XSSFCell[9];
+		for(Map.Entry<Integer, String> entry : CellNames.entrySet())
+			{Cells[entry.getKey()] = xsrow.createCell(entry.getKey());Cells[entry.getKey()].setCellValue(entry.getValue());}
 		
 	}
-	public void CreateSheet1(ArrayList<String> system_generated,DatasetFile datasetFile) throws IOException {
+	public void CreateAccuracySheet(ArrayList<String> system_generated,DatasetFile datasetFile) throws IOException {
 		try {
+			XSSFRow xsrow = null;
 			for(int i=0;i<system_generated.size();i++)
 			{
 	 		AccuracyMeasures acMeasures = new AccuracyMeasures();
-			XSSFRow xsrow = sheet1.createRow(i+1);
+			xsrow = sheet.createRow(i+1);
 		         for(int j=0;j<9;j++)
 		         {
 		         	XSSFCell newcell = xsrow.createCell(j);
@@ -73,72 +77,32 @@ public class AccuracyFile {
 		         	else if(newcell.getColumnIndex() == 2)
 		         		newcell.setCellValue(system_generated.get(i));
 		         	else if(newcell.getColumnIndex() == 3)
-		         		{acMeasures.Rouge1(system_generated.get(i), datasetFile.getSummaries().get(i));newcell.setCellValue(acMeasures.getRecall());}
+		         		{acMeasures.Rouge1(system_generated.get(i), datasetFile.getSummaries().get(i));
+		         		newcell.setCellValue(acMeasures.getRecall());
+		         		AVGRougeNGrams.computeIfPresent("Recall1", (k, v) -> v + acMeasures.getRecall());}
 		         	else if(newcell.getColumnIndex() == 4)
-		         		newcell.setCellValue(acMeasures.getPrecision());
+		         		{newcell.setCellValue(acMeasures.getPrecision());AVGRougeNGrams.computeIfPresent("Precision1", (k, v) -> v + acMeasures.getPrecision());}
 		         	else if(newcell.getColumnIndex() == 5)
-		         		newcell.setCellValue(acMeasures.getFScore());
+		         		{newcell.setCellValue(acMeasures.getFScore());AVGRougeNGrams.computeIfPresent("FScore1", (k, v) -> v + acMeasures.getFScore());}
 		         	else if(newcell.getColumnIndex() == 6)
-		         		{acMeasures.Rouge2(system_generated.get(i), datasetFile.getSummaries().get(i));newcell.setCellValue(acMeasures.getRecall());}
+		         		{acMeasures.Rouge2(system_generated.get(i), datasetFile.getSummaries().get(i));newcell.setCellValue(acMeasures.getRecall());
+		         		AVGRougeNGrams.computeIfPresent("Recall2", (k, v) -> v + acMeasures.getRecall());}
 		         	else if(newcell.getColumnIndex() == 7)
-		         		newcell.setCellValue(acMeasures.getPrecision());
+		         		{newcell.setCellValue(acMeasures.getPrecision());AVGRougeNGrams.computeIfPresent("Precision2", (k, v) -> v + acMeasures.getPrecision());}
 		         	else if(newcell.getColumnIndex() == 8)
-		         		newcell.setCellValue(acMeasures.getFScore());
+		         		{newcell.setCellValue(acMeasures.getFScore());AVGRougeNGrams.computeIfPresent("FScore2", (k, v) -> v + acMeasures.getFScore());}
 		         }
 	         }
-		}catch (Exception e) {
-			System.err.println(e.getMessage());
-		}
+			this.averageFile.CalculateAverage(AVGRougeNGrams, system_generated, xsrow, this.MethodName);
+		}catch (Exception e) {System.err.println(e.getMessage());}
 		
-		CreateFile("Accuracy.xlsx");
-	       
+		CreateFile(MethodName+".xlsx");
 	}
-	public void CreateFile(String SheetName) throws IOException {
-		 try 
-	       {
-	       	FileOutputStream fileOutputStream = new FileOutputStream(new File(SheetName));
-	       	this.workbook.write(fileOutputStream);
-	       	/*fileOutputStream = new FileOutputStream(new File("Accuracy2.xlsx"));
-	       	workbook.write(fileOutputStream);*/
+	public void CreateFile(String MethodName) throws IOException {
+		 try{FileOutputStream fileOutputStream = new FileOutputStream(new File(MethodName));
+	       	workbook.write(fileOutputStream);
 	       	fileOutputStream.close();
-	       	System.out.println("Excel file is Created");
+	       	System.out.println(MethodName +" file is Created");
 	       }catch (FileNotFoundException ex) {}
 	}
-    /*for(int k=0;k<3;k++) {
-    xsrow2 = sheet2.createRow(k+1);
-    for(int j=0;j<4;j++)
-    {
-        XSSFCell newcell = xsrow2.createCell(j);
-        if(newcell.getColumnIndex()==0)
-    		newcell.setCellValue("TextRank");
-        if(k == 0) {
-    	if(newcell.getColumnIndex() == 1)
-    		newcell.setCellValue("Recall");
-    	else if(newcell.getColumnIndex() == 2)
-    		newcell.setCellValue(avgRecall1/11.0);
-    	else if(newcell.getColumnIndex() == 3)
-    		newcell.setCellValue(avgRecall2/11.0);
-    	}
-        else if(k == 1)
-        {
-        	if(newcell.getColumnIndex() == 1)
-        		newcell.setCellValue("Precision");
-        	else if(newcell.getColumnIndex() == 2)
-        		newcell.setCellValue(avgPrecision1/11.0);
-        	else if(newcell.getColumnIndex() == 3)
-        		newcell.setCellValue(avgPrecision2/11.0);
-        }
-        else if(k == 2)
-        {
-        	if(newcell.getColumnIndex() == 1)
-        		newcell.setCellValue("FScore");
-        	else if(newcell.getColumnIndex() == 2)
-        		newcell.setCellValue(avgFScore1/11.0);
-        	else if(newcell.getColumnIndex() == 3)
-        		newcell.setCellValue(avgFScore2/11.0);
-        }
-    }
-}
-
-}catch (Exception e) {System.err.println(e.getMessage());}*/
 }

@@ -6,6 +6,7 @@ import java.util.ArrayList;
 
 import Files.AccuracyFile;
 import Files.DatasetFile;
+import Files.AverageFile;
 
 //import javafx.scene.control.Cell;
 public class Main {
@@ -20,12 +21,13 @@ public class Main {
 			// Preprocessing pre = new Preprocessing(ArabicText);
 
 			DatasetFile datasetFile = new DatasetFile();
-			AccuracyFile acFile = new AccuracyFile();
+			AccuracyFile acFile;
+			AverageFile averageFile = new AverageFile();
 
 			ArrayList<String> TextRankSummary = new ArrayList<String>();
 			SentenceDetector sd = new SentenceDetector();
 
-			for (int i = 0; i < datasetFile.size(); i++) {
+			for (int i = 0; i < 75; i++) {
 				String Article = datasetFile.getArticles().get(i);
 				String Title = datasetFile.getTitles().get(i);
 				String Summary = datasetFile.getSummaries().get(i);
@@ -39,10 +41,11 @@ public class Main {
 				
 				TextRankSummary.add(GeneratedSummary);
 			}
+			acFile = new AccuracyFile("TextRank", averageFile);
+			acFile.CreateAccuracySheet(TextRankSummary, datasetFile);
+			acFile = new AccuracyFile("SVM", averageFile);
+			acFile.CreateAccuracySheet(TextRankSummary, datasetFile);
 
-			acFile.CreateSheet1(TextRankSummary, datasetFile);
-
-			// accuracy();
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
