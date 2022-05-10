@@ -1,4 +1,4 @@
-package Accuracy;
+package accuracy;
 
 import java.util.ArrayList;
 

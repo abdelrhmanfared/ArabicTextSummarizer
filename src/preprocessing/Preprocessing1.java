@@ -11,6 +11,7 @@ import utilities.LightStemmer2;
 import utilities.PunctuationsRemover;
 import utilities.RootStemmer;
 import utilities.SentenceDetector;
+import utilities.StanfordPOSTagger;
 import utilities.TrainedTokenizer;
 
 public class Preprocessing1 {
@@ -28,7 +29,8 @@ public class Preprocessing1 {
 
 	private String[] tokens;
 	private String[] rootTokens;
-
+	private String[] keyPhrses;
+	
 	public TrainedTokenizer tok;
 	public RootStemmer rs;
 	public AraNormalizer arn;
@@ -37,6 +39,7 @@ public class Preprocessing1 {
 	public LightStemmer10 ls10;
 	public LightStemmer2 ls2;
 	public SentenceDetector sd;
+	public StanfordPOSTagger stf;
 
 	public Preprocessing1() {
 		tok = new TrainedTokenizer();
@@ -47,6 +50,7 @@ public class Preprocessing1 {
 		ls10 = new LightStemmer10();
 		ls2 = new LightStemmer2();
 		sd = new SentenceDetector();
+		stf = new StanfordPOSTagger();
 	}
 
 	public Preprocessing1(String arabictext) throws IOException, ClassNotFoundException {
@@ -158,6 +162,9 @@ public class Preprocessing1 {
 		rootSentencesTokens = new String[rootSentencesTokensList.size()][];
 		rootSentencesTokens = rootSentencesTokensList.toArray(rootSentencesTokens);
 
+		
+		Extractor extractor = new Extractor();
+		keyPhrses = extractor.getTopN(7, lightText, true);
 	}
 
 	/**
@@ -228,12 +235,9 @@ public class Preprocessing1 {
 		return originalText;
 	}
 
-	public String[] KpMinnerWords(int number) {
+	public String[] getKeyPhrase() {
 		// TODO Auto-generated method stub
-		Extractor extractor = new Extractor();
-		String lightText = getLightText();
-		String[] Words = extractor.getTopN(number, lightText, true);
-		return Words;
+		return keyPhrses;
 	}
 
 }

@@ -4,9 +4,9 @@ import textrank.Textrank;
 import utilities.SentenceDetector;
 import java.util.ArrayList;
 
-import Files.AccuracyFile;
-import Files.DatasetFile;
-import Files.AverageFile;
+import file.AccuracyFile;
+import file.AverageFile;
+import file.DatasetFile;
 
 //import javafx.scene.control.Cell;
 public class Main {

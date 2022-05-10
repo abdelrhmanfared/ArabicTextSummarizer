@@ -73,7 +73,7 @@ public class Textrank {
 	}
 
 	public double[][] Key_phreases_SVM(String[] Sentences) {
-		String Words[] = pre.KpMinnerWords(7);
+		String Words[] = pre.getKeyPhrase();
 		double sentanceScore[][] = new double[Sentences.length][3];
 		// function to get key phrase frequency
 		double kpF[] = KeyphraseFrequency(Sentences, Words);
@@ -85,7 +85,7 @@ public class Textrank {
 // A short list of important terms that provide a condensed summary of the main
 	// topics of a document
 	private double[] keyPhrases(String[] Sentences) {
-		String Words[] = pre.KpMinnerWords(7);
+		String Words[] = pre.getKeyPhrase();
 		// function to get key phrase frequency
 		// key phrase frequency
 		double kpF[] = KeyphraseFrequency(Sentences, Words);

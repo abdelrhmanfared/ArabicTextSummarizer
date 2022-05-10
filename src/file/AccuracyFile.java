@@ -1,4 +1,4 @@
-package Files;
+package file;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -9,16 +9,12 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.commons.collections4.map.HashedMap;
-import org.apache.jasper.tagplugins.jstl.core.Catch;
 import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
-import Accuracy.AccuracyMeasures;
-import javafx.util.Pair;
-import textrank.Textrank;
-import Files.AverageFile;
+import accuracy.AccuracyMeasures;
 
 public class AccuracyFile {
 	public XSSFWorkbook workbook = new XSSFWorkbook();
