@@ -101,7 +101,8 @@ public class CosineSimlarity {
 		}
 
 		bottom = Math.sqrt(bottom1) * Math.sqrt(bottom2);
-		return top / bottom;
+
+		return (top == 0) ? 0 : top / bottom;
 	}
 
 }
