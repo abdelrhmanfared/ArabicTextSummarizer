@@ -390,18 +390,19 @@ public class Textrank {
 
 	// The similarity or the overlapping between a sentence and other sentences in
 	// the document
+	/*
 private double[] sentenceCentrality(CosineSimlarity cosSim, String[] sentences, String[] tokens, String[][] senTokens) throws FileNotFoundException, IOException {
 		
 		double Threshold = 0.2;
 		double [][] CosineSimMatrix;
 		double []CentralityMatrix = new double[sentences.length];
 		CosineSimMatrix = cosSim.getCosineBOW();
-		/*for(int i=0;i<CosineSimMatrix.length;i++)
-		{
-			for(int j=0;j<CosineSimMatrix[i].length;j++)
-				System.out.print(Math.round(CosineSimMatrix[i][j]*100.0)/100.0+" ");
-			System.out.println();
-		}*/
+		//for(int i=0;i<CosineSimMatrix.length;i++)
+		//{
+		//	for(int j=0;j<CosineSimMatrix[i].length;j++)
+		//		System.out.print(Math.round(CosineSimMatrix[i][j]*100.0)/100.0+" ");
+		//	System.out.println();
+		//}
 				
 		Map<String, Integer> SimlarityDegree = new HashMap<String, Integer>();
 		double MaxDegree = 0;
@@ -421,11 +422,11 @@ private double[] sentenceCentrality(CosineSimlarity cosSim, String[] sentences, 
 		for(Map.Entry<String, Integer> entry : SimlarityDegree.entrySet())
 			{CentralityMatrix[k] = entry.getValue();k++;
 			CentralityScore = entry.getValue()/MaxDegree;
-			/*System.out.println(entry.getKey()+" "+Math.round(CentralityScore*100.0)/100.0);*/}
+			//System.out.println(entry.getKey()+" "+Math.round(CentralityScore*100.0)/100.0);}
 		
 		return CentralityMatrix;
 		}
-
+*/
 	private double[] sentenceLength(String[][] sentences_words) {
 		double[] sentences_score = new double[sentences_words.length];
 		int[] sentences_lengths = new int[sentences_words.length];
