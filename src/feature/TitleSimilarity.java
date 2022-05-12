@@ -1,5 +1,8 @@
 package feature;
 
+import java.util.Arrays;
+import java.util.List;
+
 import preprocessing.Preprocessing1;
 import similarity.CosineSimlarity;
 
@@ -25,6 +28,7 @@ public class TitleSimilarity {
 		// TODO Auto-generated constructor stub
 		String[][] sentencesTokens = pre.getLight10SentencesTokens();
 		String[] tokens = pre.getLight10Tokens();
+		
 		String[] titleTokens = title.split(" ");
 		for (int i = 0; i < titleTokens.length; i++) {
 			titleTokens[i] = pre.arn.normalize(titleTokens[i]);
@@ -63,14 +67,13 @@ public class TitleSimilarity {
 	}
 	
 	private String[] concat_Tokens_Title(String[] tokens, String[] titleTokens) {
-		String[] newArr = new String[tokens.length + titleTokens.length];
+		List<String> list = Arrays.asList(tokens);
+		
+		for (String token : titleTokens)
+			if(!list.contains(token))
+				list.add(token);
 
-		for (int i = 0; i < tokens.length; i++)
-			newArr[i] = tokens[i];
-		for (int i = 0; i < titleTokens.length; i++)
-			newArr[i] = titleTokens[tokens.length + i];
-
-		return newArr;
+		return list.toArray(new String[list.size()]);
 	}
 
 	private double[] getTitleSimilarityMatrix(CosineSimlarity cosineSimlarity, int NO_SENTENCES) {

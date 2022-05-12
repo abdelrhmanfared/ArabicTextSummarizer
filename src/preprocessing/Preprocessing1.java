@@ -3,6 +3,7 @@ package preprocessing;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import KPminer.Extractor;
@@ -65,9 +66,9 @@ public class Preprocessing1 {
 		lightText = "";
 
 		// Sentences
-		ArrayList<String> originalSentencesList = new ArrayList<String>();
-		ArrayList<String> light10SentencesList = new ArrayList<String>();
-		ArrayList<String> rootSentencesList = new ArrayList<String>();
+		List<String> originalSentencesList = new ArrayList<String>();
+		List<String> light10SentencesList = new ArrayList<String>();
+		List<String> rootSentencesList = new ArrayList<String>();
 
 		// Paragraphs
 		String[] paragraphs = arabictext.split("(?<=\\.| ؟ |!)(\\s*)((\\r?\\n){2,})");
@@ -75,8 +76,8 @@ public class Preprocessing1 {
 		paragraphsSentences = new String[NO_PARAGRAPHS][];
 
 		// Sentences' Tokens
-		ArrayList<String[]> light10SentencesTokensList = new ArrayList<String[]>();
-		ArrayList<String[]> rootSentencesTokensList = new ArrayList<String[]>();
+		List<String[]> light10SentencesTokensList = new ArrayList<String[]>();
+		List<String[]> rootSentencesTokensList = new ArrayList<String[]>();
 
 		// light10SentencesTokens = new String[NO_SENTENCES][];
 		// rootSentencesTokens = new String[NO_SENTENCES][];
@@ -98,15 +99,18 @@ public class Preprocessing1 {
 				String[] sentenceTokens = tok.tokenize(normalizedSentence);
 				int NO_TOKENS = sentenceTokens.length;
 
-				String[] light10SentenceTokens = new String[NO_TOKENS];
-				String[] rootSentenceTokens = new String[NO_TOKENS];
+				List<String> light10SentenceTokens = new ArrayList<String>();
+				List<String> rootSentenceTokens = new ArrayList<String>();
+				// String[] light10SentenceTokens = new String[NO_TOKENS];
+				// String[] rootSentenceTokens = new String[NO_TOKENS];
+
 				// light10SentencesTokens[j] = new String[NO_TOKENS];
 				// rootSentencesTokens[j] = new String[NO_TOKENS];
 
 				String light10Sentence = "";
 				String rootSentence = "";
 
-				for (int k = 0; k < NO_TOKENS; k++) {
+				for (int k = 0; k < NO_TOKENS - 1; k++) {
 					if (Words.STOP_WORDS.contains(sentenceTokens[k]))
 						continue;
 
@@ -126,18 +130,24 @@ public class Preprocessing1 {
 					rootTokensSet.add(rootToken);
 
 					// Sentences' Tokens
-					light10SentenceTokens[k] = light10Token;
-					rootSentenceTokens[k] = rootToken;
+					light10SentenceTokens.add(light10Token);
+					rootSentenceTokens.add(rootToken);
 				}
+				// Text
+				lightText += ".";
 
+				// Sentences
+				light10Sentence += ".";
+				rootSentence += ".";
+				
 				originalSentencesList.add(sentences[j]);
 				light10SentencesList.add(light10Sentence.trim());
 				rootSentencesList.add(rootSentence.trim());
 				// light10Sentences[j] = light10Sentence.trim();
 				// rootSentences[j] = rootSentence.trim();
 
-				light10SentencesTokensList.add(light10SentenceTokens);
-				rootSentencesTokensList.add(rootSentenceTokens);
+				light10SentencesTokensList.add(light10SentenceTokens.toArray(new String[light10SentenceTokens.size()]));
+				rootSentencesTokensList.add(rootSentenceTokens.toArray(new String[rootSentenceTokens.size()]));
 
 				// TESTING !!!!!
 				// System.out.println(originalSentences[i]);
@@ -217,7 +227,7 @@ public class Preprocessing1 {
 	public String[] getTokens() {
 		return tokens;
 	}
-	
+
 	/**
 	 * @return the light10Tokens
 	 */
