@@ -24,6 +24,7 @@ public class TitleSimilarity {
 	public TitleSimilarity(Preprocessing1 pre, String title) {
 		// TODO Auto-generated constructor stub
 		String[][] sentencesTokens = pre.getLight10SentencesTokens();
+		String[] tokens = pre.getLight10Tokens();
 		String[] titleTokens = title.split(" ");
 		for (int i = 0; i < titleTokens.length; i++) {
 			titleTokens[i] = pre.arn.normalize(titleTokens[i]);
@@ -33,7 +34,8 @@ public class TitleSimilarity {
 
 		int NO_SENTENCES = pre.getOriginalSentences().length;
 		String[][] Sentences_Title = concat_Sentences_Title(sentencesTokens, titleTokens);
-		CosineSimlarity cosineSimlarity = new CosineSimlarity(Sentences_Title);
+		String[] Tokens_Title = concat_Tokens_Title(tokens, titleTokens);
+		CosineSimlarity cosineSimlarity = new CosineSimlarity(Sentences_Title, Tokens_Title);
 
 		double[] TitleSimilarityMatrix = getTitleSimilarityMatrix(cosineSimlarity, NO_SENTENCES);
 
@@ -56,6 +58,17 @@ public class TitleSimilarity {
 		for (int i = 0; i < sentencesTokens.length; i++)
 			newArr[i] = sentencesTokens[i];
 		newArr[sentencesTokens.length] = titleTokens;
+
+		return newArr;
+	}
+	
+	private String[] concat_Tokens_Title(String[] tokens, String[] titleTokens) {
+		String[] newArr = new String[tokens.length + titleTokens.length];
+
+		for (int i = 0; i < tokens.length; i++)
+			newArr[i] = tokens[i];
+		for (int i = 0; i < titleTokens.length; i++)
+			newArr[i] = titleTokens[tokens.length + i];
 
 		return newArr;
 	}

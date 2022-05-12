@@ -11,18 +11,14 @@ public class CosineSimlarity {
 	private Map<String, Double> ISF;
 	private double[][] TF;
 
-	public CosineSimlarity(String[][] sentencesTokens) {
+	public CosineSimlarity(String[][] sentencesTokens, String[] tokens) {
 		NO_SENTENCES = sentencesTokens.length;
 		// unique token -> 0 based index
 		tokensIndices = new HashMap<String, Integer>();
 
-		for (int i = 0, ind = 0; i < NO_SENTENCES; i++) {
-			for (String token : sentencesTokens[i]) {
-				if (!tokensIndices.containsKey(token)) {
-					tokensIndices.put(token, ind++);
-				}
-			}
-		}
+		int ind = 0;
+		for (String token : tokens)
+			tokensIndices.put(token, ind++);
 
 		NO_WORDS = tokensIndices.size();
 

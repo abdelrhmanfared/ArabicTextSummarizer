@@ -20,7 +20,8 @@ public class SentenceCenterality {
 		// TODO Auto-generated constructor stub
 		int NO_SENTENCES = pre.getOriginalSentences().length;
 		String[] sentences = pre.getRootSentences();
-		CosineSimlarity cosineSimilarity = new CosineSimlarity(pre.getRootSentencesTokens());
+		String[] tokens=pre.getRootTokens();
+		CosineSimlarity cosineSimilarity = new CosineSimlarity(pre.getRootSentencesTokens(), tokens);
 
 		double Threshold = 0.1;
 		double[][] CosineSimMatrix;

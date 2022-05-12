@@ -32,6 +32,7 @@ public class Preprocessing1 {
 
 	private String[] tokens;
 	private String[] rootTokens;
+	private String[] light10Tokens;
 	private String[] keyPhrses;
 
 	public TrainedTokenizer tok;
@@ -82,6 +83,7 @@ public class Preprocessing1 {
 
 		// Tokens
 		Set<String> tokensSet = new HashSet<String>();
+		Set<String> light10TokensSet = new HashSet<String>();
 		Set<String> rootTokensSet = new HashSet<String>();
 
 		for (int i = 0; i < NO_PARAGRAPHS; i++) {
@@ -120,6 +122,7 @@ public class Preprocessing1 {
 
 					// Tokens
 					tokensSet.add(sentenceTokens[k]);
+					light10TokensSet.add(light10Token);
 					rootTokensSet.add(rootToken);
 
 					// Sentences' Tokens
@@ -155,6 +158,7 @@ public class Preprocessing1 {
 
 		// Tokens
 		tokens = tokensSet.toArray(new String[tokensSet.size()]);
+		light10Tokens = light10TokensSet.toArray(new String[light10TokensSet.size()]);
 		rootTokens = rootTokensSet.toArray(new String[rootTokensSet.size()]);
 
 		// Sentences' Tokens
@@ -212,6 +216,13 @@ public class Preprocessing1 {
 	 */
 	public String[] getTokens() {
 		return tokens;
+	}
+	
+	/**
+	 * @return the light10Tokens
+	 */
+	public String[] getLight10Tokens() {
+		return light10Tokens;
 	}
 
 	/**
