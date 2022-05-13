@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.util.Scanner;
 
 public class ArabicTextFile {
+	public static String Title = "اللغة العربية كأداة علمية";
 	public static String getArabicText() throws IOException {
 		String ArabicText = readfile("ArabicText.txt");
 		return ArabicText;

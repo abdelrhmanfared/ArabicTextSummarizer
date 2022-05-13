@@ -2,6 +2,7 @@ package feature;
 
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.List;
 
 import preprocessing.Preprocessing1;
 
@@ -25,8 +26,8 @@ public class KeyPhrases {
 
 	public KeyPhrases(Preprocessing1 pre) throws ClassNotFoundException, IOException {
 		// TODO Auto-generated constructor stub
-		String[] keyPhrases = pre.getKeyPhrase();
-		String[] light10Sentences = pre.getLight10Sentences();
+		String[] keyPhrases = pre.getKeyPhrases();
+		List<String> light10Sentences = pre.getLight10SentencesList();
 
 		// key phrase frequency
 		double[] kpF = KeyphraseFrequency(light10Sentences, keyPhrases);
@@ -39,12 +40,12 @@ public class KeyPhrases {
 		svmFetures = KpScoreSVM(kpL, ProperName, kpF, keyPhrases, light10Sentences);
 	}
 
-	private double[] KeyphraseFrequency(String[] sentences, String[] words) {
+	private double[] KeyphraseFrequency(List<String> light10Sentences, String[] words) {
 		int totalKPF = 0;
 		int SentanceScore[] = new int[words.length];
-		for (int i = 0; i < sentences.length; i++) {
+		for (int i = 0; i < light10Sentences.size(); i++) {
 			for (int j = 0; j < words.length; j++) {
-				if (sentences[i].contains(" " + words[j] + " ")) {
+				if (light10Sentences.get(i).contains(" " + words[j] + " ")) {
 					totalKPF++;
 					SentanceScore[j]++;
 				}
@@ -77,7 +78,7 @@ public class KeyPhrases {
 // verbs (VB, VBD, VBP etc.), prepositions (IN) might be more frequent.
 
 		int pN[] = new int[words.length];
-		String txt = pre.getOrginal();
+		String txt = pre.getOriginalText();
 		String pos = pre.stf.tagText(txt);
 		pos = pre.arn.normalize(pos);
 		pos = pre.dr.removeDiacritics(pos);
@@ -96,16 +97,16 @@ public class KeyPhrases {
 		return pN;
 	}
 
-	private double[] KpScore(int[] kpL, int[] ProperName, double[] kpF, String[] words, String[] sentences) {
+	private double[] KpScore(int[] kpL, int[] ProperName, double[] kpF, String[] words, List<String> light10Sentences) {
 		double KpScore[] = new double[words.length];
 		for (int i = 0; i < words.length; i++) {
 			KpScore[i] = ProperName[i] * kpF[i] * 1.0 * Math.sqrt(kpL[i]);
 		}
 		double SentanceKpScore[] = new double[words.length];
 
-		for (int i = 0; i < sentences.length; i++) {
+		for (int i = 0; i < light10Sentences.size(); i++) {
 			for (int j = 0; j < words.length; j++) {
-				if (sentences[i].contains(" " + words[j] + " ")) {
+				if (light10Sentences.get(i).contains(" " + words[j] + " ")) {
 					SentanceKpScore[i] += KpScore[j];
 				}
 			}
@@ -113,12 +114,13 @@ public class KeyPhrases {
 		return SentanceKpScore;
 	}
 
-	private double[][] KpScoreSVM(int[] kpL, int[] ProperName, double[] kpF, String[] words, String[] sentences) {
+	private double[][] KpScoreSVM(int[] kpL, int[] ProperName, double[] kpF, String[] words,
+			List<String> light10Sentences) {
 		double SentanceKpScore[][] = new double[words.length][3];
 
-		for (int i = 0; i < sentences.length; i++) {
+		for (int i = 0; i < light10Sentences.size(); i++) {
 			for (int j = 0; j < words.length; j++) {
-				if (sentences[i].contains(" " + words[j] + " ")) {
+				if (light10Sentences.get(i).contains(" " + words[j] + " ")) {
 					SentanceKpScore[i][0] += kpF[j];
 					SentanceKpScore[i][1] = (kpL[j] >= 2) ? 1 : 0;
 					SentanceKpScore[i][2] = --ProperName[j];

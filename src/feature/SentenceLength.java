@@ -1,6 +1,7 @@
 package feature;
 
 import java.util.Arrays;
+import java.util.List;
 
 import preprocessing.Preprocessing1;
 
@@ -24,20 +25,20 @@ public class SentenceLength {
 
 	public SentenceLength(Preprocessing1 pre) {
 		// TODO Auto-generated constructor stub
-		String[][] rootSentencesTokens = pre.getRootSentencesTokens();
-		scoreBasedFeature = new double[rootSentencesTokens.length];
-		svmFetures = new double[rootSentencesTokens.length][2];
-		int[] sentences_lengths = new int[rootSentencesTokens.length];
+		List<List<String>> rootSentencesTokens = pre.getRootSentencesTokensList();
+		scoreBasedFeature = new double[rootSentencesTokens.size()];
+		svmFetures = new double[rootSentencesTokens.size()][2];
+		int[] sentences_lengths = new int[rootSentencesTokens.size()];
 
-		for (int i = 0; i < rootSentencesTokens.length; i++)
-			sentences_lengths[i] = rootSentencesTokens[i].length;
+		for (int i = 0; i < rootSentencesTokens.size(); i++)
+			sentences_lengths[i] = rootSentencesTokens.get(i).size();
 
 		int[] help = sentenceLength_helper(sentences_lengths);
 		int _q1 = help[0], max = help[1], _q3 = help[2];
 
-		for (int i = 0; i < rootSentencesTokens.length; i++)
-			if (rootSentencesTokens[i].length > _q1 && rootSentencesTokens[i].length < _q3)
-				svmFetures[i][0] = scoreBasedFeature[i] = (double) rootSentencesTokens[i].length / max;
+		for (int i = 0; i < rootSentencesTokens.size(); i++)
+			if (rootSentencesTokens.get(i).size() > _q1 && rootSentencesTokens.get(i).size() < _q3)
+				svmFetures[i][0] = scoreBasedFeature[i] = (double) rootSentencesTokens.get(i).size() / max;
 			else
 				svmFetures[i][1] = 1;
 

@@ -1,7 +1,9 @@
 package feature;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import preprocessing.Preprocessing1;
 import similarity.*;
@@ -18,10 +20,10 @@ public class SentenceCenterality {
 
 	public SentenceCenterality(Preprocessing1 pre) {
 		// TODO Auto-generated constructor stub
-		int NO_SENTENCES = pre.getOriginalSentences().length;
-		String[] sentences = pre.getRootSentences();
-		String[] tokens=pre.getRootTokens();
-		CosineSimlarity cosineSimilarity = new CosineSimlarity(pre.getRootSentencesTokens(), tokens);
+		int NO_SENTENCES = pre.getOriginalSentencesList().size();
+		List<String> sentences = pre.getRootSentencesList();
+		Set<String> tokens=pre.getRootTokensSet();
+		CosineSimlarity cosineSimilarity = new CosineSimlarity(pre.getRootSentencesTokensList(), tokens);
 
 		double Threshold = 0.1;
 		double[][] CosineSimMatrix;
@@ -43,7 +45,7 @@ public class SentenceCenterality {
 				if (CosineSimMatrix[i][j] >= Threshold)
 					SentenceDegree++;
 
-			SimlarityDegree.put(sentences[i], SentenceDegree);
+			SimlarityDegree.put(sentences.get(i), SentenceDegree);
 			if (SentenceDegree > MaxDegree)
 				MaxDegree = SentenceDegree;
 		}

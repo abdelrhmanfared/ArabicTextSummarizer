@@ -25,7 +25,7 @@ public class SentenceLocation {
 		// TODO Auto-generated constructor stub
 		
 		String[][] paragraphsSentences = pre.getParagraphsSentences();
-		int NO_SENTENCES = pre.getOriginalSentences().length;
+		int NO_SENTENCES = pre.getOriginalSentencesList().size();
 		int lastParagraphStart = NO_SENTENCES - paragraphsSentences[paragraphsSentences.length - 1].length;
 
 		scoreBasedFeature = new double[NO_SENTENCES];

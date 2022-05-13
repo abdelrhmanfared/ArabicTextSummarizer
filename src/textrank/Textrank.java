@@ -23,7 +23,7 @@ public class Textrank {
 	}
 
 	public Textrank(String text, String title, int no_sentences) throws Exception {
-		pre = new Preprocessing1(text);
+		/*pre = new Preprocessing1(text);
 		summarizedText = "";
 
 		// Parameters
@@ -34,28 +34,28 @@ public class Textrank {
 
 		if (no_sentences > pre.getOriginalSentences().length)
 			throw new Exception("LENGTHS NOT THE SAME!");
-
+*/
 		//CosineSimlarity cosSim = new CosineSimlarity(pre.getRootSentencesTokens(), pre.tok.tokenize(title));
 		// Extract features
 		//double[] keyPhrases = keyPhrases(pre.getLight10Sentences());
-		double[] sentenceLocation = sentencelocation(pre.getParagraphsSentences(), pre.getOriginalSentences().length);
+		//double[] sentenceLocation = sentencelocation(pre.getParagraphsSentences(), pre.getOriginalSentences().length);
 		//double[] titleSimilarity = similarityWithTitle(pre.getLight10Sentences(), pre.getTokens(),
 				//pre.getLight10SentencesTokens(), title, pre.KpMinnerWords(7));
 		//double[] senCentrality = sentenceCentrality(cosSim, pre.getRootSentences(),pre.getRootTokens(), pre.getRootSentencesTokens());
-		double[] senLength = sentenceLength(pre.getRootSentencesTokens());
+		/*double[] senLength = sentenceLength(pre.getRootSentencesTokens());
 		double[] cuePhrases = cueWords(pre.getLight10Sentences());
 		double[] strongWords = positiveKeyWords(pre.getLight10Sentences());
 		double[] numberScores = numberScore(pre.getRootSentences(), pre.getRootSentencesTokens());
-		double[] weakWords = WeakWords_Scoring(pre.getLight10Sentences());
+		double[] weakWords = WeakWords_Scoring(pre.getLight10Sentences());*/
 
 		// Ranking
 		ArrayList<Score> sentences_scores = new ArrayList<Score>();
 
-		for (int i = 0; i < pre.getOriginalSentences().length; i++) {
-			sentences_scores.add(new Score(i, /*keyPhrases[i] +*/ sentenceLocation[i] + //titleSimilarity[i] +
-			 /*senCentrality[i] +*/  senLength[i] + cuePhrases[i] + strongWords[i] + numberScores[i] + weakWords[i]));
-		}
-
+		//for (int i = 0; i < pre.getOriginalSentences().length; i++) {
+			//sentences_scores.add(new Score(i, /*keyPhrases[i] +*/ sentenceLocation[i] + //titleSimilarity[i] +
+			 ///*senCentrality[i] +*/  senLength[i] + cuePhrases[i] + strongWords[i] + numberScores[i] + weakWords[i]));
+		//}
+/*
 		Collections.sort(sentences_scores, new Sortbyscore());
 
 		int Summarylength = no_sentences;
@@ -69,9 +69,9 @@ public class Textrank {
 
 		for (Score score : summary)
 			summarizedText += pre.getOriginalSentences()[score.index];
-
+*/
 	}
-
+/*
 	public double[][] Key_phreases_SVM(String[] Sentences) {
 		String Words[] = pre.getKeyPhrase();
 		double sentanceScore[][] = new double[Sentences.length][3];
@@ -81,9 +81,10 @@ public class Textrank {
 		int ProperName[] = ProperName(Words);
 		return KpScoreSVM(kpL, ProperName, kpF, Words, Sentences);
 	}
-
+*/
 // A short list of important terms that provide a condensed summary of the main
 	// topics of a document
+	/*
 	private double[] keyPhrases(String[] Sentences) {
 		String Words[] = pre.getKeyPhrase();
 		// function to get key phrase frequency
@@ -268,7 +269,8 @@ public class Textrank {
 
 				return SentenceLocationScores;
 	}
-
+*/
+	/*
 	public double[] cosineTitle(String[] titleTokens, String[] token, String[] sentences, String[][] sentenceTokens) {
 		int new_len = token.length + titleTokens.length;
 		String[] tokens = new String[new_len];
@@ -387,7 +389,7 @@ public class Textrank {
 
 		return TitleSimilarityScores;
 	}
-
+*/
 	// The similarity or the overlapping between a sentence and other sentences in
 	// the document
 	/*
@@ -427,6 +429,7 @@ private double[] sentenceCentrality(CosineSimlarity cosSim, String[] sentences, 
 		return CentralityMatrix;
 		}
 */
+	/*
 	private double[] sentenceLength(String[][] sentences_words) {
 		double[] sentences_score = new double[sentences_words.length];
 		int[] sentences_lengths = new int[sentences_words.length];
@@ -713,5 +716,5 @@ private double[] sentenceCentrality(CosineSimlarity cosSim, String[] sentences, 
 			}
 			words[i] = lightText;
 		}
-	}
+	}*/
 }

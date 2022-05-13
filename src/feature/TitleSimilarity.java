@@ -1,7 +1,10 @@
 package feature;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import preprocessing.Preprocessing1;
 import similarity.CosineSimlarity;
@@ -26,28 +29,31 @@ public class TitleSimilarity {
 
 	public TitleSimilarity(Preprocessing1 pre, String title) {
 		// TODO Auto-generated constructor stub
-		String[][] sentencesTokens = pre.getLight10SentencesTokens();
-		String[] tokens = pre.getLight10Tokens();
-		
+		List<List<String>> sentencesTokens = pre.getLight10SentencesTokensList();
+		Set<String> tokens = pre.getLight10TokensSet();
+
 		String[] titleTokens = title.split(" ");
+		title = "";
 		for (int i = 0; i < titleTokens.length; i++) {
 			titleTokens[i] = pre.arn.normalize(titleTokens[i]);
 			titleTokens[i] = pre.dr.removeDiacritics(titleTokens[i]);
 			titleTokens[i] = pre.ls10.findStem(titleTokens[i]);
+			title += " " + titleTokens[i];
 		}
+		title = title.trim();
 
-		int NO_SENTENCES = pre.getOriginalSentences().length;
-		String[][] Sentences_Title = concat_Sentences_Title(sentencesTokens, titleTokens);
-		String[] Tokens_Title = concat_Tokens_Title(tokens, titleTokens);
+		int NO_SENTENCES = sentencesTokens.size();
+		List<List<String>> Sentences_Title = concat_Sentences_Title(sentencesTokens, titleTokens);
+		Set<String> Tokens_Title = concat_Tokens_Title(tokens, titleTokens);
 		CosineSimlarity cosineSimlarity = new CosineSimlarity(Sentences_Title, Tokens_Title);
-
 		double[] TitleSimilarityMatrix = getTitleSimilarityMatrix(cosineSimlarity, NO_SENTENCES);
 
 		scoreBasedFeature = new double[NO_SENTENCES];
 		svmFetures = new double[NO_SENTENCES][2];
 
 		for (int i = 0; i < NO_SENTENCES; i++) {
-			int commonKeyPhrases = getCommonKeyPhrases(pre.getKeyPhrase(), sentencesTokens[i], titleTokens);
+			int commonKeyPhrases = getCommonKeyPhrases(pre.getKeyPhrases(), pre.getLight10SentencesList().get(i),
+					title);
 			svmFetures[i][0] = scoreBasedFeature[i] = TitleSimilarityMatrix[i] * Math.sqrt(1 + commonKeyPhrases);
 
 			if (commonKeyPhrases > 0)
@@ -56,24 +62,18 @@ public class TitleSimilarity {
 
 	}
 
-	private String[][] concat_Sentences_Title(String[][] sentencesTokens, String[] titleTokens) {
-		String[][] newArr = new String[sentencesTokens.length + 1][];
-
-		for (int i = 0; i < sentencesTokens.length; i++)
-			newArr[i] = sentencesTokens[i];
-		newArr[sentencesTokens.length] = titleTokens;
-
+	private List<List<String>> concat_Sentences_Title(List<List<String>> sentencesTokens, String[] titleTokens) {
+		List<List<String>> newArr = new ArrayList<List<String>>(sentencesTokens);
+		newArr.add(Arrays.asList(titleTokens));
 		return newArr;
 	}
-	
-	private String[] concat_Tokens_Title(String[] tokens, String[] titleTokens) {
-		List<String> list = Arrays.asList(tokens);
-		
-		for (String token : titleTokens)
-			if(!list.contains(token))
-				list.add(token);
 
-		return list.toArray(new String[list.size()]);
+	private Set<String> concat_Tokens_Title(Set<String> tokens, String[] titleTokens) {
+		Set<String> newSet = new HashSet<String>(tokens);
+		for (String token : titleTokens)
+			newSet.add(token);
+
+		return newSet;
 	}
 
 	private double[] getTitleSimilarityMatrix(CosineSimlarity cosineSimlarity, int NO_SENTENCES) {
@@ -86,18 +86,12 @@ public class TitleSimilarity {
 		return TitleSimilarityMatrix;
 	}
 
-	private int getCommonKeyPhrases(String[] KeyPhrses, String[] sentence, String[] title) {
+	private int getCommonKeyPhrases(String[] KeyPhrases, String sentence, String title) {
 		int counter = 0;
-		for (String titleToken : title)
-			if (contains(KeyPhrses, titleToken) && contains(sentence, titleToken))
+		for (String keyPhrase : KeyPhrases)
+			if (title.contains(keyPhrase) && sentence.contains(keyPhrase))
 				counter++;
 		return counter;
-	}
 
-	private boolean contains(String[] arr, String val) {
-		for (String el : arr)
-			if (el.equals(val))
-				return true;
-		return false;
 	}
 }

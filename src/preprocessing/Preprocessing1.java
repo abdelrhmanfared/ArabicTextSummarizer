@@ -21,20 +21,20 @@ import word.Words;
 public class Preprocessing1 {
 	private String lightText;
 	private String originalText;
-
-	private String[] originalSentences;
-	private String[] light10Sentences;
-	private String[] rootSentences;
-
 	private String[][] paragraphsSentences;
 
-	private String[][] light10SentencesTokens;
-	private String[][] rootSentencesTokens;
+	private List<String> originalSentencesList;
+	private List<String> light10SentencesList;
+	private List<String> rootSentencesList;
 
-	private String[] tokens;
-	private String[] rootTokens;
-	private String[] light10Tokens;
-	private String[] keyPhrses;
+	private List<List<String>> light10SentencesTokensList;
+	private List<List<String>> rootSentencesTokensList;
+
+	private Set<String> tokensSet;
+	private Set<String> light10TokensSet;
+	private Set<String> rootTokensSet;
+
+	private String[] keyPhrases;
 
 	public TrainedTokenizer tok;
 	public RootStemmer rs;
@@ -66,9 +66,9 @@ public class Preprocessing1 {
 		lightText = "";
 
 		// Sentences
-		List<String> originalSentencesList = new ArrayList<String>();
-		List<String> light10SentencesList = new ArrayList<String>();
-		List<String> rootSentencesList = new ArrayList<String>();
+		originalSentencesList = new ArrayList<String>();
+		light10SentencesList = new ArrayList<String>();
+		rootSentencesList = new ArrayList<String>();
 
 		// Paragraphs
 		String[] paragraphs = arabictext.split("(?<=\\.| ؟ |!)(\\s*)((\\r?\\n){2,})");
@@ -76,16 +76,16 @@ public class Preprocessing1 {
 		paragraphsSentences = new String[NO_PARAGRAPHS][];
 
 		// Sentences' Tokens
-		List<String[]> light10SentencesTokensList = new ArrayList<String[]>();
-		List<String[]> rootSentencesTokensList = new ArrayList<String[]>();
+		light10SentencesTokensList = new ArrayList<List<String>>();
+		rootSentencesTokensList = new ArrayList<List<String>>();
 
 		// light10SentencesTokens = new String[NO_SENTENCES][];
 		// rootSentencesTokens = new String[NO_SENTENCES][];
 
 		// Tokens
-		Set<String> tokensSet = new HashSet<String>();
-		Set<String> light10TokensSet = new HashSet<String>();
-		Set<String> rootTokensSet = new HashSet<String>();
+		tokensSet = new HashSet<String>();
+		light10TokensSet = new HashSet<String>();
+		rootTokensSet = new HashSet<String>();
 
 		for (int i = 0; i < NO_PARAGRAPHS; i++) {
 			String[] sentences = paragraphsSentences[i] = sd.detectSentences(paragraphs[i]);
@@ -101,11 +101,6 @@ public class Preprocessing1 {
 
 				List<String> light10SentenceTokens = new ArrayList<String>();
 				List<String> rootSentenceTokens = new ArrayList<String>();
-				// String[] light10SentenceTokens = new String[NO_TOKENS];
-				// String[] rootSentenceTokens = new String[NO_TOKENS];
-
-				// light10SentencesTokens[j] = new String[NO_TOKENS];
-				// rootSentencesTokens[j] = new String[NO_TOKENS];
 
 				String light10Sentence = "";
 				String rootSentence = "";
@@ -139,65 +134,35 @@ public class Preprocessing1 {
 				// Sentences
 				light10Sentence += ".";
 				rootSentence += ".";
-				
+
 				originalSentencesList.add(sentences[j]);
 				light10SentencesList.add(light10Sentence.trim());
 				rootSentencesList.add(rootSentence.trim());
-				// light10Sentences[j] = light10Sentence.trim();
-				// rootSentences[j] = rootSentence.trim();
 
-				light10SentencesTokensList.add(light10SentenceTokens.toArray(new String[light10SentenceTokens.size()]));
-				rootSentencesTokensList.add(rootSentenceTokens.toArray(new String[rootSentenceTokens.size()]));
-
-				// TESTING !!!!!
-				// System.out.println(originalSentences[i]);
-				// System.out.println(normalizedSentence);
-				// System.out.println(light10Sentences[i]);
-				// System.out.println(rootSentences[i]);
-				// END TESTING !!!!!
+				light10SentencesTokensList.add(light10SentenceTokens);
+				rootSentencesTokensList.add(rootSentenceTokens);
 			}
 		}
 
 		// Text
 		lightText = lightText.trim();
 
-		// Sentences
-		originalSentences = originalSentencesList.toArray(new String[originalSentencesList.size()]);
-		light10Sentences = light10SentencesList.toArray(new String[light10SentencesList.size()]);
-		rootSentences = rootSentencesList.toArray(new String[rootSentencesList.size()]);
-
-		// Tokens
-		tokens = tokensSet.toArray(new String[tokensSet.size()]);
-		light10Tokens = light10TokensSet.toArray(new String[light10TokensSet.size()]);
-		rootTokens = rootTokensSet.toArray(new String[rootTokensSet.size()]);
-
-		// Sentences' Tokens
-		light10SentencesTokens = light10SentencesTokensList.toArray(new String[light10SentencesTokensList.size()][]);
-		rootSentencesTokens = rootSentencesTokensList.toArray(new String[rootSentencesTokensList.size()][]);
-
 		Extractor extractor = new Extractor();
-		keyPhrses = extractor.getTopN(7, lightText, true);
+		keyPhrases = extractor.getTopN(7, lightText, true);
 	}
 
 	/**
-	 * @return the originalSentences
+	 * @return the lightText
 	 */
-	public String[] getOriginalSentences() {
-		return originalSentences;
+	public String getLightText() {
+		return lightText;
 	}
 
 	/**
-	 * @return the light10Sentences
+	 * @return the originalText
 	 */
-	public String[] getLight10Sentences() {
-		return light10Sentences;
-	}
-
-	/**
-	 * @return the rootSentences
-	 */
-	public String[] getRootSentences() {
-		return rootSentences;
+	public String getOriginalText() {
+		return originalText;
 	}
 
 	/**
@@ -208,55 +173,65 @@ public class Preprocessing1 {
 	}
 
 	/**
-	 * @return the lightSentencesTokens
+	 * @return the originalSentencesList
 	 */
-	public String[][] getLight10SentencesTokens() {
-		return light10SentencesTokens;
+	public List<String> getOriginalSentencesList() {
+		return originalSentencesList;
 	}
 
 	/**
-	 * @return the rootSentencesTokens
+	 * @return the light10SentencesList
 	 */
-	public String[][] getRootSentencesTokens() {
-		return rootSentencesTokens;
+	public List<String> getLight10SentencesList() {
+		return light10SentencesList;
 	}
 
 	/**
-	 * @return the tokens
+	 * @return the rootSentencesList
 	 */
-	public String[] getTokens() {
-		return tokens;
+	public List<String> getRootSentencesList() {
+		return rootSentencesList;
 	}
 
 	/**
-	 * @return the light10Tokens
+	 * @return the light10SentencesTokensList
 	 */
-	public String[] getLight10Tokens() {
-		return light10Tokens;
+	public List<List<String>> getLight10SentencesTokensList() {
+		return light10SentencesTokensList;
 	}
 
 	/**
-	 * @return the rootTokens
+	 * @return the rootSentencesTokensList
 	 */
-	public String[] getRootTokens() {
-		return rootTokens;
+	public List<List<String>> getRootSentencesTokensList() {
+		return rootSentencesTokensList;
 	}
 
 	/**
-	 * @return the lightText
+	 * @return the tokensSet
 	 */
-	public String getLightText() {
-		return lightText;
+	public Set<String> getTokensSet() {
+		return tokensSet;
 	}
 
-	public String getOrginal() {
-		// TODO Auto-generated method stub
-		return originalText;
+	/**
+	 * @return the light10TokensSet
+	 */
+	public Set<String> getLight10TokensSet() {
+		return light10TokensSet;
 	}
 
-	public String[] getKeyPhrase() {
-		// TODO Auto-generated method stub
-		return keyPhrses;
+	/**
+	 * @return the rootTokensSet
+	 */
+	public Set<String> getRootTokensSet() {
+		return rootTokensSet;
 	}
 
+	/**
+	 * @return the keyPhrses
+	 */
+	public String[] getKeyPhrases() {
+		return keyPhrases;
+	}
 }
