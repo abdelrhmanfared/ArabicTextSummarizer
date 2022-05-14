@@ -71,7 +71,8 @@ public class Preprocessing1 {
 		rootSentencesList = new ArrayList<String>();
 
 		// Paragraphs
-		String[] paragraphs = arabictext.split("(?<=\\.| ؟ |!)(\\s*)((\\r?\\n){2,})");
+		String[] paragraphs = arabictext.split("(?<=\\.| ؟ |!)(\\s*)((\\r?\\n)+)");
+//		String[] paragraphs = arabictext.split("(\\r?\\n)+");
 		int NO_PARAGRAPHS = paragraphs.length;
 		paragraphsSentences = new String[NO_PARAGRAPHS][];
 

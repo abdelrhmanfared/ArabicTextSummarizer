@@ -37,8 +37,10 @@ public class DatasetFile {
 		fileInputStream.close();
 
 		for (int i = 0; i < FileName.size(); i++) {
-			Articles.add(readall(path + "\\Articles\\" + FileName.get(i) + ".txt"));
-			Summaries.add(readall(path + "\\Summaries\\" + FileName.get(i) + "_A.txt"));
+			Articles.add(
+					addSpacesAroundPeriods(ArabicTextFile.readfile(path + "\\Articles\\" + FileName.get(i) + ".txt")));
+			Summaries.add(addSpacesAroundPeriods(
+					ArabicTextFile.readfile(path + "\\Summaries\\" + FileName.get(i) + "_A.txt")));
 		}
 
 	}
@@ -59,6 +61,32 @@ public class DatasetFile {
 		return tmp;
 	}
 
+	private String addSpacesAroundPeriods(String arabicText) {
+		String Temp = "";
+		Temp += arabicText.charAt(0);
+		for (int i = 1; i < arabicText.length() - 1; i++) {
+			if (arabicText.charAt(i) == '.') {
+				char charBefore = arabicText.charAt(i - 1);
+				char charAfter = arabicText.charAt(i + 1);
+
+				if (charBefore != '.' && charBefore != ' ')
+					Temp += ' ';
+
+				Temp += '.';
+
+				if (charAfter != '.' && charAfter != ' ')
+					Temp += ' ';
+			} else {
+				Temp += arabicText.charAt(i);
+			}
+		}
+		if (arabicText.charAt(arabicText.length() - 2) != ' ')
+			Temp += ' ';
+		Temp += arabicText.charAt(arabicText.length() - 1);
+
+		return Temp;
+	}
+
 	public ArrayList<String> getArticles() {
 		return Articles;
 	}
@@ -71,8 +99,7 @@ public class DatasetFile {
 		return Titles;
 	}
 
-	public int size()
-	{
+	public int size() {
 		return Articles.size();
 	}
 }
