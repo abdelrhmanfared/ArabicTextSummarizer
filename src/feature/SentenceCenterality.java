@@ -22,7 +22,7 @@ public class SentenceCenterality {
 		// TODO Auto-generated constructor stub
 		int NO_SENTENCES = pre.getOriginalSentencesList().size();
 		List<String> sentences = pre.getRootSentencesList();
-		Set<String> tokens=pre.getRootTokensSet();
+		Set<String> tokens = pre.getRootTokensSet();
 		CosineSimlarity cosineSimilarity = new CosineSimlarity(pre.getRootSentencesTokensList(), tokens);
 
 		double Threshold = 0.1;
@@ -38,23 +38,23 @@ public class SentenceCenterality {
 		 */
 
 		Map<String, Integer> SimlarityDegree = new HashMap<String, Integer>();
-		double MaxDegree = 0;
-		int SentenceDegree = 0;
+		int MaxDegree = 0;
 		for (int i = 0; i < CosineSimMatrix.length; i++) {
-			for (int j = 0; j < CosineSimMatrix[i].length; j++)
+			int SentenceDegree = 0;
+			for (int j = 0; j < CosineSimMatrix[i].length; j++) {
 				if (CosineSimMatrix[i][j] >= Threshold)
 					SentenceDegree++;
+			}
 
 			SimlarityDegree.put(sentences.get(i), SentenceDegree);
 			if (SentenceDegree > MaxDegree)
 				MaxDegree = SentenceDegree;
 		}
-		int k = 0;
+
 		double CentralityScore = 0;
-		for (Map.Entry<String, Integer> entry : SimlarityDegree.entrySet()) {
-			CentralityMatrix[k] = entry.getValue();
-			k++;
-			CentralityScore = entry.getValue() / MaxDegree;
+		for (int i = 0; i < NO_SENTENCES; i++) {
+			CentralityScore = (double) SimlarityDegree.get(sentences.get(i)) / MaxDegree;
+			CentralityMatrix[i] = CentralityScore;
 			/*
 			 * System.out.println(entry.getKey()+" "+Math.round(CentralityScore*100.0)/100.0
 			 * );

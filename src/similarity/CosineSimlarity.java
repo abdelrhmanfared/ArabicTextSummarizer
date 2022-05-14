@@ -94,9 +94,9 @@ public class CosineSimlarity {
 		// Creating set of unique tokens in Si and Sj
 		List<String> list = new ArrayList<String>(sentencesTokens.get(sentence_i_ind));
 		list.addAll(sentencesTokens.get(sentence_j_ind));
-		Set<String> commonTokens = new HashSet<String>(list);
+		Set<String> tokensInSiSjSet = new HashSet<String>(list);
 
-		for (String token : commonTokens) {
+		for (String token : tokensInSiSjSet) {
 			int tokenIndex = tokensIndices.get(token);
 			double TFs1 = TF[sentence_i_ind][tokenIndex];
 			double TFs2 = TF[sentence_j_ind][tokenIndex];

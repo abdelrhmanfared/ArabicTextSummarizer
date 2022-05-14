@@ -61,12 +61,10 @@ public class SentenceLength {
 		int _q1 = q1 - (int) (1.5f * iqr);
 		int _q3 = q3 + (int) (1.5f * iqr);
 
-		int max = 0;
-		for (int i = 0; i < values.length; i++) {
-			if (values[i] > _q1 && values[i] < _q3)
-				if (values[i] > max)
-					max = values[i];
-		}
+		int i = values.length - 1;
+		while (values[i] > _q3)
+			i--;
+		int max = values[i];
 
 		res[0] = _q1;
 		res[1] = max;
@@ -77,6 +75,9 @@ public class SentenceLength {
 	// Function to give
 	// index of the median
 	static int median(int a[], int l, int r) {
+		if(l==r)
+			return l;
+		
 		int n = r - l + 1;
 		n = (n + 1) / 2 - 1;
 		return n + l;
