@@ -12,9 +12,9 @@ public class SentenceCenterality {
 	private double[] svm_scoreBasedFeature;
 
 	/**
-	 * @return the scoreBasedFeature
+	 * @return both scoreBased & svm Features
 	 */
-	public double[] getScoreBasedFeature() {
+	public double[] getSVM_ScoreBasedFeature() {
 		return svm_scoreBasedFeature;
 	}
 

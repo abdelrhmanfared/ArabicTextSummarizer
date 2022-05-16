@@ -39,26 +39,10 @@ public class DatasetFile {
 		for (int i = 0; i < FileName.size(); i++) {
 			Articles.add(
 					addSpacesAroundPeriods(ArabicTextFile.readfile(path + "\\Articles\\" + FileName.get(i) + ".txt")));
-			Summaries.add(addSpacesAroundPeriods(
-					ArabicTextFile.readfile(path + "\\Summaries\\" + FileName.get(i) + "_A.txt")));
+			Summaries.add(
+					addSpacesAroundPeriods(ArabicTextFile.readfile(path + "\\Summaries\\" + FileName.get(i) + "_A.txt")));
 		}
 
-	}
-
-	private String readall(String fullpath) throws IOException {
-		InputStream fs = new FileInputStream(fullpath);
-		Reader rd = new InputStreamReader(fs, "UTF-8");
-		BufferedReader bf = new BufferedReader(rd);
-
-		String tmp = "", s = "";
-		while ((s = bf.readLine()) != null)
-			tmp += s;
-
-		bf.close();
-		rd.close();
-		fs.close();
-
-		return tmp;
 	}
 
 	private String addSpacesAroundPeriods(String arabicText) {

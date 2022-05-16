@@ -2,6 +2,7 @@ package preprocessing;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -24,9 +25,11 @@ public class Preprocessing1 {
 	private String[][] paragraphsSentences;
 
 	private List<String> originalSentencesList;
+	private List<String> normalizedSentencesList;
 	private List<String> light10SentencesList;
 	private List<String> rootSentencesList;
 
+	private List<List<String>> normalizedSentencesTokensList;
 	private List<List<String>> light10SentencesTokensList;
 	private List<List<String>> rootSentencesTokensList;
 
@@ -67,6 +70,7 @@ public class Preprocessing1 {
 
 		// Sentences
 		originalSentencesList = new ArrayList<String>();
+		normalizedSentencesList = new ArrayList<String>();
 		light10SentencesList = new ArrayList<String>();
 		rootSentencesList = new ArrayList<String>();
 
@@ -77,6 +81,7 @@ public class Preprocessing1 {
 		paragraphsSentences = new String[NO_PARAGRAPHS][];
 
 		// Sentences' Tokens
+		normalizedSentencesTokensList = new ArrayList<List<String>>();
 		light10SentencesTokensList = new ArrayList<List<String>>();
 		rootSentencesTokensList = new ArrayList<List<String>>();
 
@@ -137,9 +142,12 @@ public class Preprocessing1 {
 				rootSentence += ".";
 
 				originalSentencesList.add(sentences[j]);
+				normalizedSentencesList.add(normalizedSentence);
 				light10SentencesList.add(light10Sentence.trim());
 				rootSentencesList.add(rootSentence.trim());
 
+				// Sentences' Tokens
+				normalizedSentencesTokensList.add(Arrays.asList(sentenceTokens));
 				light10SentencesTokensList.add(light10SentenceTokens);
 				rootSentencesTokensList.add(rootSentenceTokens);
 			}
@@ -181,6 +189,13 @@ public class Preprocessing1 {
 	}
 
 	/**
+	 * @return the normalizedSentencesList
+	 */
+	public List<String> getNormalizedSentencesList() {
+		return normalizedSentencesList;
+	}
+
+	/**
 	 * @return the light10SentencesList
 	 */
 	public List<String> getLight10SentencesList() {
@@ -192,6 +207,13 @@ public class Preprocessing1 {
 	 */
 	public List<String> getRootSentencesList() {
 		return rootSentencesList;
+	}
+
+	/**
+	 * @return the normalizedSentencesTokensList
+	 */
+	public List<List<String>> getNormalizedSentencesTokensList() {
+		return normalizedSentencesTokensList;
 	}
 
 	/**
