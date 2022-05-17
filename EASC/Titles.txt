@@ -120,34 +120,34 @@ politics (9)*
 Art and Music (4)*
 Art and Music (5)*
 Art and Music (6)*
-education (1)*
-education (2)*
-finance (2)*
-finance (3)*
-finance (4)*
-finance (5)*
-finance (6)*
-finance (7)*
-finance (8)*
-finance (9)*
-finance (10)*
-finance (11)*
-finance (12)*
-finance (13)*
-finance (14)*
-finance (16)*
-finance (17)*
-health (1)*
-health (5)*
-health (6)*
-politics (1)*
-politics (10)*
-politics (11)*
-politics (12)*
-politics (13)*
-religion (4)*
-Science and Technology (1)*
-Science and Technology (3)*
-Science and Technology (6)*
-Science and Technology (7)*
-Science and Technology (13)*
+education (1)*فنون التعامل مع الزوج
+education (2)*البرنامج التأهيلي للطلاب المستجدين
+finance (2)*الإصلاحات في هيكل النظام المالي
+finance (3)*تحركات الأسعار
+finance (4)*الدولار 
+finance (5)*إنتاج الإثيلين
+finance (6)*المنتدى الزراعي
+finance (7)*ارتفاع اسعار النفط
+finance (8)*تكامل الأسواق الماليه
+finance (9)*تاثيرات سوق الأسهم
+finance (10)*قمة المؤسسات المستثمرة
+finance (11)*البترول والثروة المعدنية
+finance (12)*انجازات البريد السعودي
+finance (13)*السلوكيات الترويحية للسياح
+finance (14)* صالح كامل يستقيل
+finance (16)*قواعد كوريا الشمالية
+finance (17)*خدمات المشتركين بالكهرباء
+health (1)*الانتحار
+health (5)*سباق الجري
+health (6)*الصحة ابتسامة
+politics (1)*القبض على وافد باكستاني 
+politics (10)*الانتخابات الرئاسية الايرانيه
+politics (11)*العلاقات الدبلوماسية بين عراقيون وسوريا 
+politics (12)*تعديل الدستور 
+politics (13)*الانتخابات الفلسطينية
+religion (4)* تلاوة القرآن
+Science and Technology (1)* الكمبيوتر 
+Science and Technology (3)* الإنترنت 
+Science and Technology (6)* الطاقة الشمسية
+Science and Technology (7)* الطيران المصري
+Science and Technology (13)* مايكروسوفت 
