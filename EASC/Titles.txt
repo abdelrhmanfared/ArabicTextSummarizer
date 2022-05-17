@@ -104,22 +104,22 @@ tourisms (11)*البتراء
 tourisms (12)*أهرامات الجيزة
 tourisms (13)*مكتبة الإسكندرية
 tourisms (14)*بيج بن
-Art and Music (7)*
-education (3)*
-environment (3)*
-health (4)*
-health (12)*
-health (13)*
-politics (2)*
-politics (3)*
-politics (4)*
-politics (5)*
-politics (7)*
-politics (8)*
-politics (9)*
-Art and Music (4)*
-Art and Music (5)*
-Art and Music (6)*
+Art and Music (7)*عام الكيخوتي
+education (3)*الإصلاح في الأردن
+environment (3)*عدم طرح النفايات
+health (4)*اضرار حذاء الكعب العالي
+health (12)*الغذاء والصحة في شهر رمضان
+health (13)*أمان طفلك
+politics (2)*ندوة المحاسبين الفرنكوفيين
+politics (3)*إعادة تشكيل اللجنة الدائمة للجنسية
+politics (4)*دور مصر في القضية الفلسطينية
+politics (5)*مقابلة مع جلالة الملك عبدالله الثاني
+politics (7)*القمة العربية
+politics (8)*القاء قنبلة قرب الرئيس بوش
+politics (9)*المعتقلين بمصر
+Art and Music (4)*معرض خير الانام
+Art and Music (5)*مرئيات العموم
+Art and Music (6)*عرض أزياء للمصمم الراحل بسيل سودة
 education (1)*
 education (2)*
 finance (2)*
