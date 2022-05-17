@@ -52,7 +52,7 @@ public class TitleSimilarity {
 		svmFetures = new double[NO_SENTENCES][2];
 
 		for (int i = 0; i < NO_SENTENCES; i++) {
-			int commonKeyPhrases = getCommonKeyPhrases(pre.getKeyPhrases(), pre.getLight10SentencesList().get(i),
+			int commonKeyPhrases = getCommonKeyPhrases(pre.getLight10KeyPhrases(), pre.getLight10SentencesList().get(i),
 					title);
 			svmFetures[i][0] = scoreBasedFeature[i] = TitleSimilarityMatrix[i] * Math.sqrt(1 + commonKeyPhrases);
 

@@ -22,6 +22,7 @@ import word.Words;
 public class Preprocessing1 {
 	private String lightText;
 	private String originalText;
+	private String normalizedText;
 	private String[][] paragraphsSentences;
 
 	private List<String> originalSentencesList;
@@ -37,7 +38,8 @@ public class Preprocessing1 {
 	private Set<String> light10TokensSet;
 	private Set<String> rootTokensSet;
 
-	private String[] keyPhrases;
+	private String[] normalizedKeyPhrases;
+	private String[] light10KeyPhrases;
 
 	public TrainedTokenizer tok;
 	public RootStemmer rs;
@@ -67,6 +69,7 @@ public class Preprocessing1 {
 		arabictext = arabictext.trim();
 		originalText = arabictext;
 		lightText = "";
+		normalizedText = "";
 
 		// Sentences
 		originalSentencesList = new ArrayList<String>();
@@ -120,6 +123,7 @@ public class Preprocessing1 {
 
 					// Text
 					lightText += " " + light10Token;
+					normalizedText += " " + sentenceTokens[k];
 
 					// Sentences
 					light10Sentence += " " + light10Token;
@@ -136,6 +140,7 @@ public class Preprocessing1 {
 				}
 				// Text
 				lightText += ".";
+				normalizedText += ".";
 
 				// Sentences
 				light10Sentence += ".";
@@ -156,9 +161,20 @@ public class Preprocessing1 {
 
 		// Text
 		lightText = lightText.trim();
+		normalizedText = normalizedText.trim();
 
 		Extractor extractor = new Extractor();
-		keyPhrases = extractor.getTopN(7, lightText, true);
+		normalizedKeyPhrases = extractor.getTopN(7, normalizedText, true);
+		light10KeyPhrases = new String[normalizedKeyPhrases.length];
+
+		for (int i = 0; i < normalizedKeyPhrases.length; i++) {
+			String[] tokens = tok.tokenize(normalizedKeyPhrases[i]);
+			String stem = "";
+			for (int j = 0; j < tokens.length; j++)
+				stem += " " + ls10.findStem(tokens[j]);
+			stem = stem.trim();
+			light10KeyPhrases[i] = stem;
+		}
 	}
 
 	/**
@@ -255,7 +271,14 @@ public class Preprocessing1 {
 	/**
 	 * @return the keyPhrses
 	 */
-	public String[] getKeyPhrases() {
-		return keyPhrases;
+	public String[] getNormalizedKeyPhrases() {
+		return normalizedKeyPhrases;
+	}
+
+	/**
+	 * @return the keyPhrses
+	 */
+	public String[] getLight10KeyPhrases() {
+		return light10KeyPhrases;
 	}
 }

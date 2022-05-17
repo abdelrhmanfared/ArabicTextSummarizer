@@ -3,6 +3,10 @@ package feature;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import org.eclipse.jdt.internal.compiler.flow.ExceptionHandlingFlowContext;
 
 import preprocessing.Preprocessing1;
 
@@ -26,7 +30,7 @@ public class KeyPhrases {
 
 	public KeyPhrases(Preprocessing1 pre) throws ClassNotFoundException, IOException {
 		// TODO Auto-generated constructor stub
-		String[] keyPhrases = pre.getKeyPhrases();
+		String[] keyPhrases = pre.getLight10KeyPhrases();
 		List<String> light10Sentences = pre.getLight10SentencesList();
 
 		// key phrase frequency
@@ -34,31 +38,35 @@ public class KeyPhrases {
 		// key phrase length
 		int[] kpL = KeyphraseLength(keyPhrases);
 		// proper names
-		int[] ProperName = ProperName(keyPhrases, pre);
+		int[] ProperName = ProperName(pre.getNormalizedKeyPhrases(), pre);
 
 		scoreBasedFeature = KpScore(kpL, ProperName, kpF, keyPhrases, light10Sentences);
 		svmFetures = KpScoreSVM(kpL, ProperName, kpF, keyPhrases, light10Sentences);
 	}
 
-	private double[] KeyphraseFrequency(List<String> light10Sentences, String[] words) {
+	private double[] KeyphraseFrequency(List<String> light10Sentences, String[] keyPhrases) {
 		int totalKPF = 0;
-		int SentanceScore[] = new int[words.length];
-		for (int i = 0; i < light10Sentences.size(); i++) {
-			for (int j = 0; j < words.length; j++) {
-				if (light10Sentences.get(i).contains(" " + words[j] + " ")) {
-					totalKPF++;
-					SentanceScore[j]++;
+		int SKP[] = new int[keyPhrases.length];
+		for (int i = 0; i < keyPhrases.length; i++) {
+			Pattern pattern = Pattern.compile("\\b" + keyPhrases[i] + "\\b");
+			for (int j = 0; j < light10Sentences.size(); j++) {
+				Matcher matcher = pattern.matcher(light10Sentences.get(j));
+				int count = (int) matcher.results().count();
+				if (count > 0) {
+					SKP[i]++;
+					totalKPF += count;
 				}
 			}
 		}
-		double Score[] = new double[words.length];
+
+		double KPF[] = new double[keyPhrases.length];
 		if (totalKPF == 0)
-			return Score;
-		for (int i = 0; i < Score.length; i++)
-			Score[i] = (SentanceScore[i] * 1.0 / totalKPF);
+			return KPF;
+		for (int i = 0; i < KPF.length; i++)
+			KPF[i] = (SKP[i] * 1.0 / totalKPF);
 
 		// TODO Auto-generated method stub
-		return Score;
+		return KPF;
 	}
 
 	private int[] KeyphraseLength(String[] words) {
@@ -71,59 +79,71 @@ public class KeyPhrases {
 		return kpL;
 	}
 
-	private int[] ProperName(String[] words, Preprocessing1 pre) throws IOException, ClassNotFoundException {
+	private int[] ProperName(String[] keyPhrases, Preprocessing1 pre) throws IOException, ClassNotFoundException {
 
 		// POS Tagging
 // In English data, determiners (DT), nouns (NN, NNS, NNP etc.),
 // verbs (VB, VBD, VBP etc.), prepositions (IN) might be more frequent.
-
-		int pN[] = new int[words.length];
 		String txt = pre.getOriginalText();
 		String pos = pre.stf.tagText(txt);
-		pos = pre.arn.normalize(pos);
-		pos = pre.dr.removeDiacritics(pos);
-		String Proper_Names[] = pos.split("/|\\s");
+		String POS_TAGS[] = pos.split("\\s");
+
+		int pN[] = new int[keyPhrases.length];
 		Arrays.fill(pN, 1);
-		for (int i = 0; i < Proper_Names.length; i++) {
-			Proper_Names[i] = pre.ls10.findStem(Proper_Names[i]);
-			for (int j = 0; j < words.length; j++) {
-				if (Proper_Names[i].contains(" " + words[j] + " ")) {
-					if (Proper_Names[i].equals("NNP") || Proper_Names[i].equals("NNPS"))
+
+		for (String tag : POS_TAGS) {
+			String[] word_tag = tag.split("/");
+			if (word_tag[1].equals("NNP") || word_tag[1].equals("NNPS")) {
+
+				String word = pre.arn.normalize(word_tag[0]);
+				word = pre.dr.removeDiacritics(word);
+//				word = pre.ls10.findStem(word);
+
+				for (int j = 0; j < keyPhrases.length; j++) {
+//					if (keyPhrases[j].matches(".*\\b" + word + "\\b.*")) {
+					if (keyPhrases[j].contains(word)) {
 						pN[j] = 2;
+					}
 				}
 			}
+
 		}
 
 		return pN;
 	}
 
-	private double[] KpScore(int[] kpL, int[] ProperName, double[] kpF, String[] words, List<String> light10Sentences) {
-		double KpScore[] = new double[words.length];
-		for (int i = 0; i < words.length; i++) {
+	private double[] KpScore(int[] kpL, int[] ProperName, double[] kpF, String[] keyPhrases,
+			List<String> light10Sentences) {
+		double KpScore[] = new double[keyPhrases.length];
+		for (int i = 0; i < keyPhrases.length; i++) {
 			KpScore[i] = ProperName[i] * kpF[i] * 1.0 * Math.sqrt(kpL[i]);
 		}
-		double SentanceKpScore[] = new double[words.length];
 
-		for (int i = 0; i < light10Sentences.size(); i++) {
-			for (int j = 0; j < words.length; j++) {
-				if (light10Sentences.get(i).contains(" " + words[j] + " ")) {
-					SentanceKpScore[i] += KpScore[j];
-				}
+		double SentanceKpScore[] = new double[light10Sentences.size()];
+
+		for (int i = 0; i < keyPhrases.length; i++) {
+			Pattern pattern = Pattern.compile(".*\\b" + keyPhrases[i] + "\\b.*");
+			for (int j = 0; j < light10Sentences.size(); j++) {
+				Matcher matcher = pattern.matcher(light10Sentences.get(j));
+				if (matcher.find())
+					SentanceKpScore[j] += KpScore[i];
 			}
 		}
 		return SentanceKpScore;
 	}
 
-	private double[][] KpScoreSVM(int[] kpL, int[] ProperName, double[] kpF, String[] words,
+	private double[][] KpScoreSVM(int[] kpL, int[] ProperName, double[] kpF, String[] keyPhrases,
 			List<String> light10Sentences) {
-		double SentanceKpScore[][] = new double[words.length][3];
+		double SentanceKpScore[][] = new double[light10Sentences.size()][3];
 
-		for (int i = 0; i < light10Sentences.size(); i++) {
-			for (int j = 0; j < words.length; j++) {
-				if (light10Sentences.get(i).contains(" " + words[j] + " ")) {
-					SentanceKpScore[i][0] += kpF[j];
-					SentanceKpScore[i][1] = (kpL[j] >= 2) ? 1 : 0;
-					SentanceKpScore[i][2] = --ProperName[j];
+		for (int i = 0; i < keyPhrases.length; i++) {
+			Pattern pattern = Pattern.compile(".*\\b" + keyPhrases[i] + "\\b.*");
+			for (int j = 0; j < light10Sentences.size(); j++) {
+				Matcher matcher = pattern.matcher(light10Sentences.get(j));
+				if (matcher.find()) {
+					SentanceKpScore[j][0] += kpF[i];
+					SentanceKpScore[j][1] = (kpL[i] >= 2) ? 1 : 0;
+					SentanceKpScore[j][2] = (ProperName[i] == 2) ? 1 : 0;
 				}
 			}
 		}
