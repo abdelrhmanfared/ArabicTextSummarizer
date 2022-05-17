@@ -40,7 +40,7 @@ public class WeakWords {
 					svmFetures[i][0] = 1.0;
 				} else {
 					svmFetures[i][1] = scoreBasedFeature[i] = (-1)
-							* ((double) wc.NO_WORDS_IN_SENTENCES[i] / pre.getNormalizedSentencesTokensList().size());
+							* ((double) wc.NO_WORDS_IN_SENTENCES[i] / pre.getNormalizedSentencesTokensList().get(i).size());
 				}
 			}
 		}

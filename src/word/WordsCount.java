@@ -14,14 +14,14 @@ public class WordsCount {
 		total = 0;
 
 		for (String word : Words) {
-			Pattern pattern = Pattern.compile(".*\\b" + word + "\\b.*");
+			Pattern pattern = Pattern.compile("\\b" + word + "\\b");
 			for (int i = 0; i < Sentences.size(); i++) {
 				Matcher matcher = pattern.matcher(Sentences.get(i));
 
-				while (matcher.find()) {
-					NO_WORDS_IN_SENTENCES[i]++;
-					total++;
-				}
+				int count = (int) matcher.results().count();
+				NO_WORDS_IN_SENTENCES[i] += count;
+				total += count;
+
 			}
 		}
 

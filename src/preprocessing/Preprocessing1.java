@@ -147,7 +147,8 @@ public class Preprocessing1 {
 				rootSentencesList.add(rootSentence.trim());
 
 				// Sentences' Tokens
-				normalizedSentencesTokensList.add(Arrays.asList(sentenceTokens));
+				normalizedSentencesTokensList
+						.add(Arrays.asList(Arrays.copyOf(sentenceTokens, sentenceTokens.length - 1)));
 				light10SentencesTokensList.add(light10SentenceTokens);
 				rootSentencesTokensList.add(rootSentenceTokens);
 			}

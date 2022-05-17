@@ -12,7 +12,7 @@ public class NumberExistence extends WordFeature {
 
 	public NumberExistence(Preprocessing1 pre) {
 		// TODO Auto-generated constructor stub
-		super(pre.getRootSentencesList(), new String[] { "\\d" });
+		super(pre.getRootSentencesList(), new String[] { "\\d+" });
 	}
 
 }
