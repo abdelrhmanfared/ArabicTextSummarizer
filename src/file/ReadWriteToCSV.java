@@ -13,18 +13,18 @@ import com.opencsv.exceptions.CsvException;
 
 public class ReadWriteToCSV {
 	private FileWriter outputfile;
-	private FileReader filereader;
+//	private FileReader filereader;
 	private CSVWriter writer;
-	private CSVReader csvReader;
+//	private CSVReader csvReader;
 	private File file;
 
-	public ReadWriteToCSV(String filePath_Write , String filePath_Read)  throws IOException {
+	public ReadWriteToCSV(String filePath_Write)  throws IOException {
 		// create FileWriter object with file as parameter
 		outputfile = new FileWriter(filePath_Write);
-		filereader = new FileReader(filePath_Read);
+//		filereader = new FileReader(filePath_Read);
         // create csvReader object passing
         // file reader as a parameter
-		csvReader = new CSVReader(filereader);
+//		csvReader = new CSVReader(filereader);
  
 		// create CSVWriter object filewriter object as parameter
 		writer = new CSVWriter(outputfile);
@@ -40,10 +40,10 @@ public class ReadWriteToCSV {
 			writer.writeNext(line);
 	}
 
-	public String[][] Read() throws IOException, CsvException {
-        List<String[]> allData = csvReader.readAll();
-        return allData.toArray(new String[allData.size()][]);
-	}
+//	public String[][] Read() throws IOException, CsvException {
+//        List<String[]> allData = csvReader.readAll();
+//        return allData.toArray(new String[allData.size()][]);
+//	}
 	public void finalize() throws IOException {
 		// resources to be close
 		// closing writer connection

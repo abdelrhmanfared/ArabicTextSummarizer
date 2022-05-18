@@ -87,15 +87,18 @@ public class FeaturesExtraction {
 		}
 	}
 
-	public String GenrateSVMSummary(String [][] vector) {
-		
-		String Summary = ""; 
+	public String GenrateSVMSummary(String[] vector) {
+
+		String Summary = "";
 		int Cnt = 0;
-		for (int i=0;i<articlePre.getParagraphsSentences().length;i++) {
-			for (int j=0;j<articlePre.getParagraphsSentences()[i].length;j++) {
-				Summary +=(vector[Cnt++][18].equals("1"))?articlePre.getOriginalSentencesList().get(Cnt):"";				
+		for (int i = 0; i < articlePre.getParagraphsSentences().length; i++) {
+			boolean check = false;
+			for (int j = 0; j < articlePre.getParagraphsSentences()[i].length; j++) {
+				Summary += (vector[Cnt].equals("1")) ? articlePre.getOriginalSentencesList().get(Cnt) : "";
+				check |= vector[Cnt++].equals("1");
 			}
-			Summary+="\n";
+			if (check)
+				Summary += "\n";
 		}
 		return Summary;
 	}
