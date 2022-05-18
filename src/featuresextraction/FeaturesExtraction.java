@@ -1,29 +1,32 @@
 package featuresextraction;
 
 import java.io.IOException;
+import java.util.HashSet;
+import java.util.Set;
 
 import feature.*;
 import preprocessing.Preprocessing1;
 
 public class FeaturesExtraction {
 	private String[][] vector;
+	private Preprocessing1 articlePre;
 
 	public FeaturesExtraction(String text, String title) throws ClassNotFoundException, IOException {
 		// TODO Auto-generated constructor stub
-		Preprocessing1 pre = new Preprocessing1(text);
+		articlePre = new Preprocessing1(text);
 
-		KeyPhrases f1 = new KeyPhrases(pre);
-		SentenceLocation f2 = new SentenceLocation(pre);
-		TitleSimilarity f3 = new TitleSimilarity(pre, title);
-		SentenceCenterality f4 = new SentenceCenterality(pre);
-		SentenceLength f5 = new SentenceLength(pre);
-		CueWords f6 = new CueWords(pre);
-		StrongWords f7 = new StrongWords(pre);
-		NumberExistence f8 = new NumberExistence(pre);
-		WeakWords f9 = new WeakWords(pre);
+		KeyPhrases f1 = new KeyPhrases(articlePre);
+		SentenceLocation f2 = new SentenceLocation(articlePre);
+		TitleSimilarity f3 = new TitleSimilarity(articlePre, title);
+		SentenceCenterality f4 = new SentenceCenterality(articlePre);
+		SentenceLength f5 = new SentenceLength(articlePre);
+		CueWords f6 = new CueWords(articlePre);
+		StrongWords f7 = new StrongWords(articlePre);
+		NumberExistence f8 = new NumberExistence(articlePre);
+		WeakWords f9 = new WeakWords(articlePre);
 
 		// SVM Vector
-		vector = new String[pre.getOriginalSentencesList().size()][19]; // 0->18
+		vector = new String[articlePre.getOriginalSentencesList().size()][19]; // 0->18
 
 		/*
 		 * , "KPL", "PNV", "First Sentence in First Paragraph",
@@ -38,7 +41,7 @@ public class FeaturesExtraction {
 		 * "weak word score in other location in sentence", "Label"
 		 */
 		for (int i = 0; i < vector.length; i++) {
-			
+
 			vector[i][0] = String.valueOf(f1.getSvmFetures()[i][0]); // KPF
 			vector[i][1] = String.valueOf(f1.getSvmFetures()[i][1]); // KPL
 			vector[i][2] = String.valueOf(f1.getSvmFetures()[i][2]); // PNV
@@ -57,7 +60,30 @@ public class FeaturesExtraction {
 			vector[i][15] = String.valueOf(f8.getSVM_ScoreBasedFeature()[i]); // number scores
 			vector[i][16] = String.valueOf(f9.getSvmFetures()[i][0]); // sentence begins with weak word
 			vector[i][17] = String.valueOf(f9.getSvmFetures()[i][1]); // weak word score in other location in sentence
-			vector[i][18] = String.valueOf(0); // Label (Sentence Exists in reference summary)
+		}
+	}
+
+	public FeaturesExtraction(String text, String title, String refSummary) throws ClassNotFoundException, IOException {
+		this(text, title);
+
+		Preprocessing1 summaryPre = new Preprocessing1(refSummary);
+		// Optimal Solution that requires without bad format
+		/*
+		 *
+		 * Set<String> summary = new HashSet<String>(); for(String sen :
+		 * pre.getNormalizedSentencesList()) summary.add(sen);
+		 */
+
+		for (int i = 0; i < vector.length; i++) {
+			int found = 0;
+
+			for (String summarySentence : summaryPre.getNormalizedSentencesList())
+				if (articlePre.getNormalizedSentencesList().get(i).contains(summarySentence)) {
+					found = 1;
+					break;
+				}
+
+			vector[i][18] = String.valueOf(found); // Label (Sentence Exists in reference summary)
 		}
 	}
 

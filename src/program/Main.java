@@ -28,7 +28,7 @@ public class Main {
 //			AverageFile averageFile = new AverageFile();
 //
 //			ArrayList<String> TextRankSummary = new ArrayList<String>();
-			SentenceDetector sd = new SentenceDetector();
+//			SentenceDetector sd = new SentenceDetector();
 
 			ReadWriteToCSV CSV_Writer = new ReadWriteToCSV("ML_Data.csv");
 			CSV_Writer.Write(new String[][] { { "KPF", "KPL", "PNV", "First Sentence in First Paragraph",
@@ -39,7 +39,7 @@ public class Main {
 					"number scores", "sentence begins with weak word", "weak word score in other location in sentence",
 					"Label" } });
 
-			for (int i = 105; i < datasetFile.size(); i++) {
+			for (int i = 0; i < datasetFile.size(); i++) {
 				String Article = datasetFile.getArticles().get(i);
 				String Title = datasetFile.getTitles().get(i);
 				String Summary = datasetFile.getSummaries().get(i);
@@ -50,7 +50,7 @@ public class Main {
 
 //				testDataset(Article, Summary);
 //				int SUMMARY_NO_SENTENCES = sd.detectSentences(Summary).length;
-				FeaturesExtraction fe = new FeaturesExtraction(Article, Title);
+				FeaturesExtraction fe = new FeaturesExtraction(Article, Title, Summary);
 				CSV_Writer.Write(fe.get_svm_vectors());
 
 				// End Testing
