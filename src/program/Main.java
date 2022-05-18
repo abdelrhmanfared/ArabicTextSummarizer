@@ -30,7 +30,7 @@ public class Main {
 //			ArrayList<String> TextRankSummary = new ArrayList<String>();
 //			SentenceDetector sd = new SentenceDetector();
 
-			ReadWriteToCSV CSV_Writer = new ReadWriteToCSV("ML_Data.csv");
+			/*ReadWriteToCSV CSV_Writer = new ReadWriteToCSV("ML_Data.csv","ML_Data.csv");
 			CSV_Writer.Write(new String[][] { { "KPF", "KPL", "PNV", "First Sentence in First Paragraph",
 					"First sentence in last Paragraph", "First sentence in any of other paragraphs",
 					"Sentence location in other paragraphs", "Sentence location in first and last paragraph",
@@ -38,7 +38,7 @@ public class Main {
 					"sentence length is short/long", "sentence length equation", "cue phrases", "strong words",
 					"number scores", "sentence begins with weak word", "weak word score in other location in sentence",
 					"Label" } });
-
+*/
 			for (int i = 0; i < datasetFile.size(); i++) {
 				String Article = datasetFile.getArticles().get(i);
 				String Title = datasetFile.getTitles().get(i);
@@ -51,7 +51,7 @@ public class Main {
 //				testDataset(Article, Summary);
 //				int SUMMARY_NO_SENTENCES = sd.detectSentences(Summary).length;
 				FeaturesExtraction fe = new FeaturesExtraction(Article, Title, Summary);
-				CSV_Writer.Write(fe.get_svm_vectors());
+	//			CSV_Writer.Write(fe.get_svm_vectors());
 
 				// End Testing
 //				int SUMMARY_NO_SENTENCES = sd.detectSentences(Summary).length;
@@ -64,7 +64,7 @@ public class Main {
 //			acFile.CreateAccuracySheet(TextRankSummary, datasetFile);
 //			acFile = new AccuracyFile("SVM", averageFile);
 //			acFile.CreateAccuracySheet(TextRankSummary, datasetFile);
-			CSV_Writer.finalize();
+		//	CSV_Writer.finalize();
 
 		} catch (Exception e) {
 			// TODO Auto-generated catch block

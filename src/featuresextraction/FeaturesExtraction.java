@@ -87,6 +87,19 @@ public class FeaturesExtraction {
 		}
 	}
 
+	public String GenrateSVMSummary(String [][] vector) {
+		
+		String Summary = ""; 
+		int Cnt = 0;
+		for (int i=0;i<articlePre.getParagraphsSentences().length;i++) {
+			for (int j=0;j<articlePre.getParagraphsSentences()[i].length;j++) {
+				Summary +=(vector[Cnt++][18].equals("1"))?articlePre.getOriginalSentencesList().get(Cnt):"";				
+			}
+			Summary+="\n";
+		}
+		return Summary;
+	}
+
 	public String[][] get_svm_vectors() {
 		return vector;
 	}

@@ -10,6 +10,9 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import KPminer.FeatureExtractor;
+import featuresextraction.FeaturesExtraction;
+import file.ReadWriteToCSV;
 import textrank.Textrank;
 
 /**
@@ -40,6 +43,14 @@ public class Working extends HttpServlet {
 		try {
 			// String text = program.Main.readfile("ArabicText.txt");
 			tr = new Textrank(text, null, -1);
+			FeaturesExtraction Feature = new FeaturesExtraction(text,"");
+			ReadWriteToCSV csv = new ReadWriteToCSV("", "");
+			csv.Write(Feature.get_svm_vectors());
+			// Run python 
+			// Read CSv
+			// genrate Summary from object Feature
+			
+			ProcessBuilder pb = new ProcessBuilder();
 			request.setAttribute("original", text);
 			request.setAttribute("result", tr.getSummarizedText());
 			request.getRequestDispatcher("HomeJSP.jsp").forward(request, response);
@@ -48,8 +59,8 @@ public class Working extends HttpServlet {
 			e.printStackTrace();
 		}
 	}
-
-	/**
+		
+		/**
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse
 	 *      response)
 	 */
