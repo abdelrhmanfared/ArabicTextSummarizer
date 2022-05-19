@@ -94,7 +94,7 @@ public class FeaturesExtraction {
 		for (int i = 0; i < articlePre.getParagraphsSentences().length; i++) {
 			boolean check = false;
 			for (int j = 0; j < articlePre.getParagraphsSentences()[i].length; j++) {
-				Summary += (vector[Cnt].equals("1")) ? articlePre.getOriginalSentencesList().get(Cnt) : "";
+				Summary += (vector[Cnt].equals("1")) ? articlePre.getOriginalSentencesList().get(Cnt) + " ": "";
 				check |= vector[Cnt++].equals("1");
 			}
 			if (check)
