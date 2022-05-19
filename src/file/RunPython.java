@@ -9,8 +9,8 @@ public class RunPython {
 
 	public RunPython() {
 		try {
-			String programPath = System.getProperty("user.dir") + "\\pythonProject\\predict.py";
-			String pythonExePath = System.getProperty("user.dir") + "\\pythonProject\\venv\\Scripts\\python.exe";
+			String programPath = "C:\\pythonProject\\predict.py";
+			String pythonExePath = "C:\\pythonProject\\venv\\Scripts\\python.exe";
 
 			ProcessBuilder pb = new ProcessBuilder(pythonExePath, programPath);
 			Process p = pb.start();

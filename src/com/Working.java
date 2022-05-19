@@ -42,7 +42,7 @@ public class Working extends HttpServlet {
 		String text = request.getParameter("originalText");
 		try {
 			FeaturesExtraction Feature = new FeaturesExtraction(text, "اللغة العربية كاداة علمية");
-			ReadWriteToCSV csv = new ReadWriteToCSV("pythonProject\\TextVectors.csv");
+			ReadWriteToCSV csv = new ReadWriteToCSV("C:\\pythonProject\\TextVectors.csv");
 			csv.Write(new String[][] { { "KPF", "KPL", "PNV", "First Sentence in First Paragraph",
 					"First sentence in last Paragraph", "First sentence in any of other paragraphs",
 					"Sentence location in other paragraphs", "Sentence location in first and last paragraph",
