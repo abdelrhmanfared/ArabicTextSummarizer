@@ -12,10 +12,12 @@ import org.apache.commons.collections4.map.HashedMap;
 
 import featuresextraction.FeaturesExtraction;
 import file.AccuracyFile;
+import file.ArabicTextFile;
 import file.AverageFile;
 import file.DatasetFile;
 import file.ReadWriteToCSV;
 import file.RunPython;
+import preprocessing.Preprocessing;
 import preprocessing.Preprocessing1;
 
 //import javafx.scene.control.Cell;
@@ -40,7 +42,7 @@ public class Main {
 //					"number scores", "sentence begins with weak word", "weak word score in other location in sentence",
 //					"Label" } });
 //*/
-			RunPython py = new RunPython();
+
 //			for (int i = 0; i < datasetFile.size(); i++) {
 //				String Article = datasetFile.getArticles().get(i);
 //				String Title = datasetFile.getTitles().get(i);
@@ -95,7 +97,7 @@ public class Main {
 //		String correctSummary = "";
 		for (String sen : summary_sentences.getNormalizedSentencesList())
 			if (!map.contains(sen.trim())) {
-				System.out.println("احا");
+				System.out.println("Error");
 				System.out.println(sen);
 			}
 
