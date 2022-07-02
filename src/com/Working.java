@@ -52,7 +52,7 @@ public class Working extends HttpServlet {
 			String summary = "";
 
 			if (teq.equals("Score Based"))
-				summary = summarize.getScoreBasedSummary((double) 1 / 3);// score
+				summary = summarize.getScoreBasedSummary(-1);// score
 			else if (teq.equals("SVM"))
 				summary = summarize.getSVMSummary();
 			else

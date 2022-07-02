@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import feature.*;
@@ -41,7 +42,7 @@ public class Summarize {
 		f9 = new WeakWords(articlePre);
 	}
 
-	public String getScoreBasedSummary(double ratio) throws UnknownHostException, IOException {
+	public String getScoreBasedSummary(int no_sentences) throws UnknownHostException, IOException {
 		ArrayList<Score> sentences_scores = new ArrayList<Score>();
 
 		for (int i = 0; i < articlePre.getOriginalSentencesList().size(); i++) {
@@ -53,7 +54,10 @@ public class Summarize {
 		}
 
 		Collections.sort(sentences_scores, new Sortbyscore());
-		int Summarylength = (int) (ratio * articlePre.getOriginalSentencesList().size());
+		
+		int Summarylength = no_sentences;
+		if(no_sentences == -1)
+			Summarylength = (int) ((double)1/3 * articlePre.getOriginalSentencesList().size());
 
 		Set<Integer> summaryIndices = new HashSet<Integer>();
 		for (int i = 0; i < Summarylength; i++)
@@ -69,7 +73,7 @@ public class Summarize {
 
 	public String getSVMSummary() throws UnknownHostException, IOException {
 
-		String[][] featureVectors = get_svm_vectors();
+		String[][] featureVectors = getFeatureVectors();
 		writeVectorToCsv(featureVectors);
 
 		String[] labels = RunPython.getLabels(true);
@@ -79,7 +83,7 @@ public class Summarize {
 
 	public String getNNSummary() throws UnknownHostException, IOException {
 
-		String[][] featureVectors = get_svm_vectors();
+		String[][] featureVectors = getFeatureVectors();
 		writeVectorToCsv(featureVectors);
 
 		String[] labels = RunPython.getLabels(false);
@@ -103,7 +107,7 @@ public class Summarize {
 		return Summary;
 	}
 
-	public String[][] get_svm_vectors() {
+	public String[][] getFeatureVectors() {
 		// Machine learning feature Vector
 		String[][] featureVectors = new String[articlePre.getOriginalSentencesList().size()][19]; // 0->18
 
@@ -147,8 +151,8 @@ public class Summarize {
 		return featureVectors;
 	}
 
-	public String[][] get_svm_vectors(String refSummary) throws ClassNotFoundException, IOException {
-		Preprocessing1 summaryPre = new Preprocessing1(refSummary);
+	public String[][] getFeatureVectors(List<String> refSummary) throws ClassNotFoundException, IOException {
+		
 		// Optimal Solution that requires without bad format
 		/*
 		 *
@@ -156,11 +160,11 @@ public class Summarize {
 		 * pre.getNormalizedSentencesList()) summary.add(sen);
 		 */
 
-		String[][] featureVectors = get_svm_vectors();
+		String[][] featureVectors = getFeatureVectors();
 		for (int i = 0; i < featureVectors.length; i++) {
 			int found = 0;
 
-			for (String summarySentence : summaryPre.getNormalizedSentencesList())
+			for (String summarySentence : refSummary)
 				if (articlePre.getNormalizedSentencesList().get(i).contains(summarySentence)) {
 					found = 1;
 					break;

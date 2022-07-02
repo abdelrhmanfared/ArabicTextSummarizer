@@ -1,6 +1,7 @@
 package accuracy;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import utilities.AraNormalizer;
 
@@ -9,61 +10,58 @@ public class AccuracyMeasures {
 	public float Recall; 
 	public float Precision;	
 	public float FScore;
-	public String Generated;
-	public String Referenced;
+	public List<String> Generated;
+	public List<String> Referenced;
 	
-	public void Rouge1(String Generated,String Referenced) {
+	public void Rouge1(List<String> Generated,List<String> Referenced) {
 		this.Generated = Generated;
 		this.Referenced = Referenced;
 		
-		String[] Gen = UniGram(this.Generated);
-		String[] Ref = UniGram(this.Referenced);
-		float refGen = CalculateSimlarity(Gen, Ref);
+		float refGen = CalculateSimlarity(Generated, Referenced);
 
-		this.Recall = refGen/Ref.length;
-		this.Precision = refGen/Gen.length;
+		this.Recall = refGen/Referenced.size();
+		this.Precision = refGen/Generated.size();
 		this.FScore = (Float.isNaN((2*Recall*Precision)/(Recall+Precision))? 0 : (2*Recall*Precision)/(Recall+Precision));
 	}
-	public void Rouge2(String Generated,String Referenced) {
+	public void Rouge2(List<String> Generated,List<String> Referenced) {
 		this.Generated = Generated;
 		this.Referenced = Referenced;
 		
-		String[] Gen = BiGram(Generated).toArray(new String[0]);
-		String[] Ref = BiGram(Referenced).toArray(new String[0]);
+		ArrayList<String> Gen = BiGram(Generated);
+		ArrayList<String> Ref = BiGram(Referenced);
 		float refGen = CalculateSimlarity(Gen, Ref);
 	
-		this.Recall = refGen/Ref.length;
-		this.Precision = refGen/Gen.length;
+		this.Recall = refGen/Referenced.size();
+		this.Precision = refGen/Generated.size();
 		this.FScore = (Float.isNaN((2*Recall*Precision)/(Recall+Precision))? 0 : (2*Recall*Precision)/(Recall+Precision));
 		
 	}
-	public String[] UniGram(String Article) {
-		AraNormalizer arn = new AraNormalizer();
-		Article = arn.normalize(Article);
-		String sentences[] = Article.trim().replace("\"", "").replaceAll(" ","").split("(?<=\\.| ؟ |!)");
-		for(String s : sentences)
-			s.replace(".","");
-		return sentences;
-	}
-	public ArrayList<String> BiGram(String Article){
-		String[] ArticleSentences = UniGram(Article);
+//	public String[] UniGram(String Article) {
+//		AraNormalizer arn = new AraNormalizer();
+//		Article = arn.normalize(Article);
+//		String sentences[] = Article.trim().replace("\"", "").replaceAll(" ","").split("(?<=\\.| ؟ |!)");
+//		for(String s : sentences)
+//			s.replace(".","");
+//		return sentences;
+//	}
+	public ArrayList<String> BiGram(List<String> ArticleSentences){
 		ArrayList<String> BiGramSentences = new ArrayList<String>();
-		for(int i=0;i<ArticleSentences.length;i++)
+		for(int i=0;i<ArticleSentences.size();i++)
 		{
-			if(ArticleSentences.length == 1)
-				BiGramSentences.add(ArticleSentences[i]);
-			if(i == ArticleSentences.length-1)
+			if(ArticleSentences.size() == 1)
+				BiGramSentences.add(ArticleSentences.get(i));
+			if(i == ArticleSentences.size()-1)
 				break;
-		  BiGramSentences.add(ArticleSentences[i]+ArticleSentences[i+1]);
+		  BiGramSentences.add(ArticleSentences.get(i)+ArticleSentences.get(i));
 			
 		}
 		return BiGramSentences;
 	}
-	public float CalculateSimlarity(String[] Gen,String[] Ref) {
+	public float CalculateSimlarity(List<String> Gen, List<String> Ref) {
 		float refGen = 0;
-		for(int i=0;i<Gen.length;i++)
-			for(int j=0;j<Ref.length;j++) 
-				if(Gen[i].equals(Ref[j]))
+		for(int i=0;i<Gen.size();i++)
+			for(int j=0;j<Ref.size();j++) 
+				if(Gen.get(i).contains(Ref.get(j)))
 					refGen++;
 		return refGen;
 	}

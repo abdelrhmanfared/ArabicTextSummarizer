@@ -6,6 +6,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.collections4.map.HashedMap;
@@ -56,7 +57,7 @@ public class AccuracyFile {
 			{Cells[entry.getKey()] = xsrow.createCell(entry.getKey());Cells[entry.getKey()].setCellValue(entry.getValue());}
 		
 	}
-	public void CreateAccuracySheet(ArrayList<String> system_generated,DatasetFile datasetFile) throws IOException {
+	public void CreateAccuracySheet(List<List<String>> system_generated, List<List<String>> referenced) throws IOException {
 		try {
 			XSSFRow xsrow = null;
 			for(int i=0;i<system_generated.size();i++)
@@ -67,13 +68,13 @@ public class AccuracyFile {
 		         {
 		         	XSSFCell newcell = xsrow.createCell(j);
 		         	if(newcell.getColumnIndex()==0)
-		         		newcell.setCellValue(datasetFile.getArticles().get(i));
+		         		newcell.setCellValue("");
 		         	else if(newcell.getColumnIndex() == 1)
-		         		newcell.setCellValue(datasetFile.getSummaries().get(i));
+		         		newcell.setCellValue("");
 		         	else if(newcell.getColumnIndex() == 2)
-		         		newcell.setCellValue(system_generated.get(i));
+		         		newcell.setCellValue("");
 		         	else if(newcell.getColumnIndex() == 3)
-		         		{acMeasures.Rouge1(system_generated.get(i), datasetFile.getSummaries().get(i));
+		         		{acMeasures.Rouge1(system_generated.get(i), referenced.get(i));
 		         		newcell.setCellValue(acMeasures.getRecall());
 		         		AVGRougeNGrams.computeIfPresent("Recall1", (k, v) -> v + acMeasures.getRecall());}
 		         	else if(newcell.getColumnIndex() == 4)
@@ -81,7 +82,7 @@ public class AccuracyFile {
 		         	else if(newcell.getColumnIndex() == 5)
 		         		{newcell.setCellValue(acMeasures.getFScore());AVGRougeNGrams.computeIfPresent("FScore1", (k, v) -> v + acMeasures.getFScore());}
 		         	else if(newcell.getColumnIndex() == 6)
-		         		{acMeasures.Rouge2(system_generated.get(i), datasetFile.getSummaries().get(i));newcell.setCellValue(acMeasures.getRecall());
+		         		{acMeasures.Rouge2(system_generated.get(i), referenced.get(i));newcell.setCellValue(acMeasures.getRecall());
 		         		AVGRougeNGrams.computeIfPresent("Recall2", (k, v) -> v + acMeasures.getRecall());}
 		         	else if(newcell.getColumnIndex() == 7)
 		         		{newcell.setCellValue(acMeasures.getPrecision());AVGRougeNGrams.computeIfPresent("Precision2", (k, v) -> v + acMeasures.getPrecision());}

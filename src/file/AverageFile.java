@@ -5,6 +5,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.collections4.map.HashedMap;
@@ -34,7 +35,7 @@ public class AverageFile {
 			{Cells[entry.getKey()] = xsrow.createCell(entry.getKey());Cells[entry.getKey()].setCellValue(entry.getValue());}
 		CreateFile("Average.xlsx",-1,"",this.workbook);
 	}
-	public void CalculateAverage(Map<String, Float> AVGRNGram,ArrayList<String> system_generated,XSSFRow xsrow,String MethodName) throws IOException {
+	public void CalculateAverage(Map<String, Float> AVGRNGram,List<List<String>> system_generated,XSSFRow xsrow,String MethodName) throws IOException {
 		int counter = 0;
 		for(int i=0;i<3;i++) {
 			if(AVGindex == 0){xsrow =  sheet.createRow(AVGindex+1);AVGindex=2;}
