@@ -19,8 +19,8 @@ public class AccuracyMeasures {
 		
 		float refGen = CalculateSimlarity(Generated, Referenced);
 
-		this.Recall = refGen/Referenced.size();
-		this.Precision = refGen/Generated.size();
+		this.Recall = (Referenced.size()==0)? 0 : refGen/Referenced.size();
+		this.Precision = (Generated.size()==0)? 0 : refGen/Generated.size();
 		this.FScore = (Float.isNaN((2*Recall*Precision)/(Recall+Precision))? 0 : (2*Recall*Precision)/(Recall+Precision));
 	}
 	public void Rouge2(List<String> Generated,List<String> Referenced) {
@@ -31,8 +31,8 @@ public class AccuracyMeasures {
 		ArrayList<String> Ref = BiGram(Referenced);
 		float refGen = CalculateSimlarity(Gen, Ref);
 	
-		this.Recall = refGen/Referenced.size();
-		this.Precision = refGen/Generated.size();
+		this.Recall = (Referenced.size()==0)? 0 : refGen/Referenced.size();
+		this.Precision = (Generated.size()==0)? 0 : refGen/Generated.size();
 		this.FScore = (Float.isNaN((2*Recall*Precision)/(Recall+Precision))? 0 : (2*Recall*Precision)/(Recall+Precision));
 		
 	}
