@@ -1,8 +1,6 @@
 package com;
 
-import java.io.File;
 import java.io.IOException;
-import java.io.PrintWriter;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -10,11 +8,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import KPminer.FeatureExtractor;
-import featuresextraction.FeaturesExtraction;
-import file.ReadWriteToCSV;
-import file.RunPython;
-import textrank.Textrank;
+import file.ArabicTextFile;
+import summarization.Summarize;
 
 /**
  * Servlet implementation class Working
@@ -38,27 +33,37 @@ public class Working extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		// TODO Auto-generated method stub
+		long startTime = System.currentTimeMillis();
+
 		request.setCharacterEncoding("UTF-8");
 		String text = request.getParameter("originalText");
 		try {
-			FeaturesExtraction Feature = new FeaturesExtraction(text, "اللغة العربية كاداة علمية");
-			ReadWriteToCSV csv = new ReadWriteToCSV("C:\\pythonProject\\TextVectors.csv");
-			csv.Write(new String[][] { { "KPF", "KPL", "PNV", "First Sentence in First Paragraph",
-					"First sentence in last Paragraph", "First sentence in any of other paragraphs",
-					"Sentence location in other paragraphs", "Sentence location in first and last paragraph",
-					"cosine Similarity with title", "common keyphrases with title", "sentence centrality",
-					"sentence length is short/long", "sentence length equation", "cue phrases", "strong words",
-					"number scores", "sentence begins with weak word", "weak word score in other location in sentence",
-					"Label" } });
-			csv.Write(Feature.get_svm_vectors());
-			csv.finalize();
-			// Run python
-			RunPython py = new RunPython();
-			// genrate Summary from object Feature
-			String summary = Feature.GenrateSVMSummary(py.labels);
-			ProcessBuilder pb = new ProcessBuilder();
+			long startTime2 = System.currentTimeMillis();
+
+			// Feature Extraction
+			String title = ArabicTextFile.Title;
+			Summarize summarize = new Summarize(text, title);
+
+			long stopTime2 = System.currentTimeMillis();
+			System.out.println("Feature Extraction Time : " + (stopTime2 - startTime2) + "ms");
+
+			// Sumarization
+			String teq = request.getParameter("TechniquesBox");
+			String summary = "";
+
+			if (teq.equals("Score Based"))
+				summary = summarize.getScoreBasedSummary((double) 1 / 3);// score
+			else if (teq.equals("SVM"))
+				summary = summarize.getSVMSummary();
+			else
+				summary = summarize.getNNSummary();// nn
+
 			request.setAttribute("original", text);
 			request.setAttribute("result", summary);
+
+			long stopTime = System.currentTimeMillis();
+			System.out.println("Run Time : " + (stopTime - startTime) + "ms");
+
 			request.getRequestDispatcher("HomeJSP.jsp").forward(request, response);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block

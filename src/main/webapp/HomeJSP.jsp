@@ -27,16 +27,15 @@
 <div class="page">
      <div class="container">
          <div class="leftcon">
+             <form action="Working" method="post" class="form">
              <div class="topHeader">
                  <header class="Header">Original</header>
-                 <select name="" id="TechniquesBox">
-                     <option selected disabled>Technique</option>
-                     <option value="">Text Rank</option>
-                     <option value="">SVM</option>
-                     <option value="">Neural Network</option>
+                 <select name="TechniquesBox" id="TechniquesBox">
+                     <option value="Score Based">Score Based</option>
+                     <option value="SVM">SVM</option>
+                     <option value="Neural Network">Neural Network</option>
                  </select>
              </div>
-             <form action="Working" method="post" class="form">
              <div class="AreaField">
                 <textarea name="originalText" id="textarea1" cols="30" rows="10">${original }</textarea>
              </div>

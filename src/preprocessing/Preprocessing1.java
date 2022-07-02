@@ -1,5 +1,6 @@
 package preprocessing;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -11,7 +12,6 @@ import KPminer.Extractor;
 import utilities.AraNormalizer;
 import utilities.DiacriticsRemover;
 import utilities.LightStemmer10;
-import utilities.LightStemmer2;
 import utilities.PunctuationsRemover;
 import utilities.RootStemmer;
 import utilities.SentenceDetector;
@@ -20,9 +20,9 @@ import utilities.TrainedTokenizer;
 import word.Words;
 
 public class Preprocessing1 {
-	private String lightText;
+//	private String lightText;
 	private String originalText;
-	private String normalizedText;
+//	private String normalizedText;
 	private String[][] paragraphsSentences;
 
 	private List<String> originalSentencesList;
@@ -34,69 +34,44 @@ public class Preprocessing1 {
 	private List<List<String>> light10SentencesTokensList;
 	private List<List<String>> rootSentencesTokensList;
 
-	private Set<String> tokensSet;
+//	private Set<String> tokensSet;
 	private Set<String> light10TokensSet;
 	private Set<String> rootTokensSet;
 
-	private String[] normalizedKeyPhrases;
+	private String[] keyPhrases;
 	private String[] light10KeyPhrases;
 
-	public TrainedTokenizer tok;
-	public RootStemmer rs;
-	public AraNormalizer arn;
-	public DiacriticsRemover dr;
-	public PunctuationsRemover pr;
-	public LightStemmer10 ls10;
-	public LightStemmer2 ls2;
-	public SentenceDetector sd;
-	public StanfordPOSTagger stf;
+	public static TrainedTokenizer tok = new TrainedTokenizer();
+	public static RootStemmer rs = new RootStemmer();
+	public static AraNormalizer arn = new AraNormalizer();
+	public static DiacriticsRemover dr = new DiacriticsRemover();
+	public static PunctuationsRemover pr = new PunctuationsRemover();
+	public static LightStemmer10 ls10 = new LightStemmer10();
+	public static SentenceDetector sd = new SentenceDetector();
+	public static StanfordPOSTagger stf = new StanfordPOSTagger();
+	public static Extractor extractor = new Extractor();
 
 	public Preprocessing1() {
-		tok = new TrainedTokenizer();
-		rs = new RootStemmer();
-		arn = new AraNormalizer();
-		dr = new DiacriticsRemover();
-		pr = new PunctuationsRemover();
-		ls10 = new LightStemmer10();
-		ls2 = new LightStemmer2();
-		sd = new SentenceDetector();
-		stf = new StanfordPOSTagger();
 	}
 
 	public Preprocessing1(String arabictext) throws IOException, ClassNotFoundException {
-		this();
+		init();
 
+//		long startTime = System.currentTimeMillis();
 		arabictext = arabictext.trim();
 		originalText = arabictext;
-		lightText = "";
-		normalizedText = "";
+//		lightText = "";
+//		normalizedText = "";
 
-		// Sentences
-		originalSentencesList = new ArrayList<String>();
-		normalizedSentencesList = new ArrayList<String>();
-		light10SentencesList = new ArrayList<String>();
-		rootSentencesList = new ArrayList<String>();
-
-		// Paragraphs
+		// Detect Paragraphs
 		String[] paragraphs = arabictext.split("(?<=\\.| ؟ |!)(\\s*)((\\r?\\n)+)");
 //		String[] paragraphs = arabictext.split("(\\r?\\n)+");
 		int NO_PARAGRAPHS = paragraphs.length;
 		paragraphsSentences = new String[NO_PARAGRAPHS][];
 
-		// Sentences' Tokens
-		normalizedSentencesTokensList = new ArrayList<List<String>>();
-		light10SentencesTokensList = new ArrayList<List<String>>();
-		rootSentencesTokensList = new ArrayList<List<String>>();
-
-		// light10SentencesTokens = new String[NO_SENTENCES][];
-		// rootSentencesTokens = new String[NO_SENTENCES][];
-
-		// Tokens
-		tokensSet = new HashSet<String>();
-		light10TokensSet = new HashSet<String>();
-		rootTokensSet = new HashSet<String>();
-
+		// Iterate over paragraphs
 		for (int i = 0; i < NO_PARAGRAPHS; i++) {
+			// Detect sentences in the paragraph
 			String[] sentences = paragraphsSentences[i] = sd.detectSentences(paragraphs[i]);
 			int NO_SENTENCES = sentences.length;
 
@@ -122,15 +97,15 @@ public class Preprocessing1 {
 					String rootToken = rs.findRoot(sentenceTokens[k]);
 
 					// Text
-					lightText += " " + light10Token;
-					normalizedText += " " + sentenceTokens[k];
+//					lightText += " " + light10Token;
+//					normalizedText += " " + sentenceTokens[k];
 
 					// Sentences
 					light10Sentence += " " + light10Token;
 					rootSentence += " " + rootToken;
 
 					// Tokens
-					tokensSet.add(sentenceTokens[k]);
+//					tokensSet.add(sentenceTokens[k]);
 					light10TokensSet.add(light10Token);
 					rootTokensSet.add(rootToken);
 
@@ -139,8 +114,8 @@ public class Preprocessing1 {
 					rootSentenceTokens.add(rootToken);
 				}
 				// Text
-				lightText += ".";
-				normalizedText += ".";
+//				lightText += ".";
+//				normalizedText += ".";
 
 				// Sentences
 				light10Sentence += ".";
@@ -160,29 +135,54 @@ public class Preprocessing1 {
 		}
 
 		// Text
-		lightText = lightText.trim();
-		normalizedText = normalizedText.trim();
+//		lightText = lightText.trim();
+//		normalizedText = normalizedText.trim();
 
-		Extractor extractor = new Extractor();
-		normalizedKeyPhrases = extractor.getTopN(7, normalizedText, true);
-		light10KeyPhrases = new String[normalizedKeyPhrases.length];
+//		long stopTime = System.currentTimeMillis();
+//		System.out.println("Preprocessing Time : " + (stopTime - startTime) + "ms");
 
-		for (int i = 0; i < normalizedKeyPhrases.length; i++) {
-			String[] tokens = tok.tokenize(normalizedKeyPhrases[i]);
+//		startTime = System.currentTimeMillis();
+
+		keyPhrases = extractor.getTopN(7, originalText, true);// new String[]{"لغه عرب
+
+		light10KeyPhrases = new String[keyPhrases.length];
+
+		for (int i = 0; i < keyPhrases.length; i++) {
+			String[] tokens = tok.tokenize(keyPhrases[i]);
 			String stem = "";
 			for (int j = 0; j < tokens.length; j++)
 				stem += " " + ls10.findStem(tokens[j]);
 			stem = stem.trim();
 			light10KeyPhrases[i] = stem;
 		}
+//		stopTime = System.currentTimeMillis();
+//		System.out.println("keyphrases extraction Time : " + (stopTime - startTime) + "ms");
+	}
+
+	private void init() throws ClassNotFoundException, IOException {
+		// Sentences
+		originalSentencesList = new ArrayList<String>();
+		normalizedSentencesList = new ArrayList<String>();
+		light10SentencesList = new ArrayList<String>();
+		rootSentencesList = new ArrayList<String>();
+
+		// Sentences' Tokens
+		normalizedSentencesTokensList = new ArrayList<List<String>>();
+		light10SentencesTokensList = new ArrayList<List<String>>();
+		rootSentencesTokensList = new ArrayList<List<String>>();
+
+		// Tokens
+//		tokensSet = new HashSet<String>();
+		light10TokensSet = new HashSet<String>();
+		rootTokensSet = new HashSet<String>();
 	}
 
 	/**
 	 * @return the lightText
 	 */
-	public String getLightText() {
-		return lightText;
-	}
+//	public String getLightText() {
+//		return lightText;
+//	}
 
 	/**
 	 * @return the originalText
@@ -250,9 +250,9 @@ public class Preprocessing1 {
 	/**
 	 * @return the tokensSet
 	 */
-	public Set<String> getTokensSet() {
-		return tokensSet;
-	}
+//	public Set<String> getTokensSet() {
+//		return tokensSet;
+//	}
 
 	/**
 	 * @return the light10TokensSet
@@ -271,14 +271,19 @@ public class Preprocessing1 {
 	/**
 	 * @return the keyPhrses
 	 */
-	public String[] getNormalizedKeyPhrases() {
-		return normalizedKeyPhrases;
+	public String[] getKeyPhrases() {
+		return keyPhrases;
 	}
 
 	/**
 	 * @return the keyPhrses
+	 * @throws IOException 
+	 * @throws FileNotFoundException 
 	 */
-	public String[] getLight10KeyPhrases() {
+	public String[] getLight10KeyPhrases() throws FileNotFoundException, IOException {
+		// عصرنا","مدن","حديث","علم","اهل","لغه
+		// عرب","لغه"};
+		
 		return light10KeyPhrases;
 	}
 }

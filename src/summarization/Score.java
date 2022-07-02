@@ -1,4 +1,4 @@
-package textrank;
+package summarization;
 
 import java.util.Comparator;
 
@@ -22,13 +22,13 @@ class Sortbyscore implements Comparator<Score> {
 	}
 }
 
-class Sortbyindex implements Comparator<Score> {
-
-	// Method
-	// Sorting in ascending order of index number
-	public int compare(Score a, Score b) {
-
-		return a.index - b.index;
-	}
-}
+//class Sortbyindex implements Comparator<Score> {
+//
+//	// Method
+//	// Sorting in ascending order of index number
+//	public int compare(Score a, Score b) {
+//
+//		return a.index - b.index;
+//	}
+//}
 

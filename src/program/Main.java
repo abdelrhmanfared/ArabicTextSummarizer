@@ -5,28 +5,30 @@ import utilities.SentenceDetector;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.collections4.map.HashedMap;
 
-import featuresextraction.FeaturesExtraction;
 import file.AccuracyFile;
 import file.ArabicTextFile;
 import file.AverageFile;
 import file.DatasetFile;
 import file.ReadWriteToCSV;
 import file.RunPython;
-import preprocessing.Preprocessing;
 import preprocessing.Preprocessing1;
+import summarization.Summarize;
 
 //import javafx.scene.control.Cell;
 public class Main {
 
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
-//		try {
-//			DatasetFile datasetFile = new DatasetFile();
+		try {
+			Preprocessing1 pre = new Preprocessing1();
+			
+			DatasetFile datasetFile = new DatasetFile();
 //			AccuracyFile acFile;
 //			AverageFile averageFile = new AverageFile();
 //
@@ -43,16 +45,16 @@ public class Main {
 //					"Label" } });
 //*/
 
-//			for (int i = 0; i < datasetFile.size(); i++) {
-//				String Article = datasetFile.getArticles().get(i);
-//				String Title = datasetFile.getTitles().get(i);
-//				String Summary = datasetFile.getSummaries().get(i);
+			for (int i = 34; i < 60; i++) {
+				String Article = datasetFile.getArticles().get(i);
+				String Title = datasetFile.getTitles().get(i);
+				String Summary = datasetFile.getSummaries().get(i);
 //
-//				System.out.println("Summarizing Article " + Title + " #" + i);
+				System.out.println("Summarizing Article " + Title + " #" + i);
 //
 //				// Testing Features !
 //
-//				testDataset(Article, Summary);
+				testDataset(Article, Summary);
 //				int SUMMARY_NO_SENTENCES = sd.detectSentences(Summary).length;
 //				FeaturesExtraction fe = new FeaturesExtraction(Article, Title, Summary);
 //				CSV_Writer.Write(fe.get_svm_vectors());
@@ -63,17 +65,17 @@ public class Main {
 //				String GeneratedSummary = textrank.getSummarizedText();
 //
 //				TextRankSummary.add(GeneratedSummary);
-//			}
+			}
 //			acFile = new AccuracyFile("TextRank", averageFile);
 //			acFile.CreateAccuracySheet(TextRankSummary, datasetFile);
 //			acFile = new AccuracyFile("SVM", averageFile);
 //			acFile.CreateAccuracySheet(TextRankSummary, datasetFile);
 //			CSV_Writer.finalize();
 //
-//		} catch (Exception e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		System.out.println("Program Finished Successfully !");
 
 	}
@@ -82,20 +84,20 @@ public class Main {
 //		SentenceDetector sd = new SentenceDetector();
 //		String[] article_sentences = sd.detectSentences(article);
 //		String[] summary_sentences = sd.detectSentences(summary);
-		Preprocessing1 article_sentences = new Preprocessing1(article);
-		Preprocessing1 summary_sentences = new Preprocessing1(summary);
+		List<String> article_sentences = new Preprocessing1(article).getNormalizedSentencesList();
+		List<String> summary_sentences = new Preprocessing1(summary).getNormalizedSentencesList();
 
-		if (article_sentences.getNormalizedSentencesList().get(2)
-				.equals(summary_sentences.getNormalizedSentencesList().get(0)))
-			;
-		System.out.println("correct");
+//		if (article_sentences.getNormalizedSentencesList().get(2)
+//				.equals(summary_sentences.getNormalizedSentencesList().get(0)))
+//			;
+//		System.out.println("correct");
 
 		Set<String> map = new HashSet<String>();
-		for (String sen : article_sentences.getNormalizedSentencesList())
+		for (String sen : article_sentences)
 			map.add(sen.trim());
 
 //		String correctSummary = "";
-		for (String sen : summary_sentences.getNormalizedSentencesList())
+		for (String sen : summary_sentences)
 			if (!map.contains(sen.trim())) {
 				System.out.println("Error");
 				System.out.println(sen);

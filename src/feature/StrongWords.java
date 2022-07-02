@@ -4,7 +4,6 @@ import java.util.List;
 
 import preprocessing.Preprocessing1;
 import word.Words;
-import word.WordsCount;
 
 public class StrongWords extends WordFeature{
 	private int[] svmFetures;

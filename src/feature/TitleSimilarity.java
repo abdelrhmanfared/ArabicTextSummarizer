@@ -1,5 +1,7 @@
 package feature;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -27,7 +29,7 @@ public class TitleSimilarity {
 		return svmFetures;
 	}
 
-	public TitleSimilarity(Preprocessing1 pre, String title) {
+	public TitleSimilarity(Preprocessing1 pre, String title) throws FileNotFoundException, IOException {
 		// TODO Auto-generated constructor stub
 		List<List<String>> sentencesTokens = pre.getLight10SentencesTokensList();
 		Set<String> tokens = pre.getLight10TokensSet();
@@ -35,9 +37,9 @@ public class TitleSimilarity {
 		String[] titleTokens = title.split(" ");
 		title = "";
 		for (int i = 0; i < titleTokens.length; i++) {
-			titleTokens[i] = pre.arn.normalize(titleTokens[i]);
-			titleTokens[i] = pre.dr.removeDiacritics(titleTokens[i]);
-			titleTokens[i] = pre.ls10.findStem(titleTokens[i]);
+			titleTokens[i] = Preprocessing1.arn.normalize(titleTokens[i]);
+			titleTokens[i] = Preprocessing1.dr.removeDiacritics(titleTokens[i]);
+			titleTokens[i] = Preprocessing1.ls10.findStem(titleTokens[i]);
 			title += " " + titleTokens[i];
 		}
 		title = title.trim();

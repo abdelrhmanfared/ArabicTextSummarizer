@@ -43,12 +43,8 @@ public class RootStemmer {
 		RootStemmer.roots = roots;
 	}
 	
-	 /** Creates new form ASASinterface */
-    public RootStemmer() {
-        initVariables();
-    }
 
-    private static void initVariables()
+    static
     {
         rootFound = false;
         stopwordFound = false;
@@ -82,7 +78,16 @@ public class RootStemmer {
     // find the root of the given token 
     public String findRoot ( String token )
     {   
-        initVariables();
+    	//Abdullah's Edit: Commented this line !
+//        initVariables();
+    	
+    	//Abdullah's Edit: Added these lines !
+    	rootFound = false;
+        stopwordFound = false;
+        fromSuffixes = false;
+        rootNotFound = false;
+        //End Edits
+    	
         token=token.trim();
 		String[] txtToken=token.split("\\s");
 		if (txtToken.length > 1)

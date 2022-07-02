@@ -11,13 +11,33 @@ import edu.stanford.nlp.tagger.maxent.MaxentTagger;
 
 public class StanfordPOSTagger {
 	
+	static MaxentTagger tagger;
+	static ArabicSegmenter seg;
+	
+	static {
+		//		long startTime = System.currentTimeMillis();
+		try {
+			tagger = new MaxentTagger("data/arabic-accurate.tagger");
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+//		long stopTime = System.currentTimeMillis();
+//		System.out.println("loading tagger Time : " + (stopTime - startTime) + "ms");
+		
+//		startTime = System.currentTimeMillis();
+		Properties props = new Properties();
+	    seg = new ArabicSegmenter(props);
+	    seg.loadSegmenter("data/arabic-segmenter-atbtrain.ser.gz");
+//		stopTime = System.currentTimeMillis();
+//		System.out.println("loading segmenter Time : " + (stopTime - startTime) + "ms");
+	}
+	
 	public String tagText(String text) throws IOException, ClassNotFoundException
 	{
-		MaxentTagger tagger = new MaxentTagger("data/arabic-accurate.tagger");
-		
-		Properties props = new Properties();
-	    ArabicSegmenter seg = new ArabicSegmenter(props);
-	    seg.loadSegmenter("data/arabic-segmenter-atbtrain.ser.gz");
 	    
 	    String[] tokens=text.split("\\s");
 	    StringBuffer segTokens=new StringBuffer();
@@ -25,7 +45,7 @@ public class StanfordPOSTagger {
 	    for (int i=0;i<tokens.length;i++)
 	    {
 	    List<HasWord> txtseg=seg.segment(tokens[i]);
-	    System.out.println(txtseg); // return List<HasWord>
+//	    System.out.println(txtseg); // return List<HasWord>
 	    String txtAfterseg="";
 	    for(HasWord s:txtseg)
 	         {
