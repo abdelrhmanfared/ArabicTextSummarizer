@@ -16,12 +16,9 @@ public class RunPython {
 		
 		//csv path
 		String csv_path = System.getProperty("user.dir") + "\\TextVectors.csv";
-		writer.println(csv_path);
+		writer.print(csv_path + "*" + Boolean.toString(isSVM));
 		writer.flush();
 		
-		//teq
-		writer.println(isSVM);
-		writer.flush();
 		
 		DataInputStream inputStream = new DataInputStream(socket.getInputStream()); 
 		String labels = (String)inputStream.readUTF();
